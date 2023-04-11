@@ -22,11 +22,19 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    //스웨거
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.6'
+
+    // hibernate-spatial 좌표를 위한거
+    implementation 'org.hibernate:hibernate-spatial:5.6.11.Final'
+
+
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'org.postgresql:postgresql'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
 }
 
 tasks.named('test') {
