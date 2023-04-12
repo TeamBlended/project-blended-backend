@@ -22,13 +22,16 @@ public class CategoryController {
         return ResponseEntity.ok(categoryList);
     }
 
-    @PostMapping("category")
+    @PostMapping("/category")
     public ResponseEntity<CategoryDto> create(@RequestBody CategoryDto createRequestDto){
         CategoryEntity result = categoryService.addCategory(createRequestDto);
         return (result != null ) ?
-                ResponseEntity.status(HttpStatus.OK).body(result.toResponse()) :
+                ResponseEntity.status(HttpStatus.CREATED).body(result.toResponse()) :
                 ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        //return ResponseEntity.ok(new CategoryDto((List<CategoryDto>) result));
     }
-
+    @GetMapping("/category/{id}")
+    public ResponseEntity<String> getCategoryNameById(@PathVariable Long id) {
+        String categoryName = categoryService.getCategoryNameById(id);
+        return ResponseEntity.ok(categoryName);
+    }
 }

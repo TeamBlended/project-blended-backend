@@ -2,14 +2,15 @@ package com.gdsc.blended.category.entity;
 
 import com.gdsc.blended.category.dto.CategoryDto;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @NoArgsConstructor
 @Entity
+@Getter
 @Table(name = "POST_CATEGORY")
-@Builder
 public class CategoryEntity {
     @Id
     @Column(name = "category_id")
@@ -21,8 +22,7 @@ public class CategoryEntity {
 
 
     @Builder
-    public CategoryEntity(Long id, String name) {
-        this.id = id;
+    public CategoryEntity( String name) {
         this.name = name;
     }
 
