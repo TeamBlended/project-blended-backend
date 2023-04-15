@@ -28,6 +28,8 @@ dependencies {
     // hibernate-spatial 좌표를 위한거
     implementation 'org.hibernate:hibernate-spatial:5.6.11.Final'
 
+    //oauth2.0
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
