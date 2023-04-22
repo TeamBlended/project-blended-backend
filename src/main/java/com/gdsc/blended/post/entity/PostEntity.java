@@ -1,38 +1,62 @@
 package com.gdsc.blended.post.entity;
 
 import com.gdsc.blended.BaseTime.BaseTimeEntity;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.geo.Point;
+import com.gdsc.blended.category.entity.CategoryEntity;
+import lombok.*;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import javax.validation.constraints.NotNull;
+
 @Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
+@Builder
 @Table(name = "POST")
 public class PostEntity extends BaseTimeEntity {
-    // TODO
-    // FiXME
-    // - 속성 값 제대로 넣어주기
+
     @Id
     @Column(name = "post_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column
+    @NotNull
     private String title;
 
     // varchar를 넘어서는 큰 데이터를 넣을 때 @Lob 사용
-    @Lob
+    //@Lob
+    @NotNull
     private String content;
 
-    private String status;
+    private Boolean status;
 
-    @Column(columnDefinition = "GEOMETRY")
-    private Point reagion;
-    private String view_count;
-    private String scrab_count;
-    private Long category_id;
-    //private Long user_id
+    //private Point region;
+    @Column(name = "view_count")
+    private Long viewCount;
+
+    @Column(name = "scrap_count")
+    private Long scrapCount;
+
+    @Column(name = "max_recruits")
+    private Long maxRecruits;
+
+    @Column(name = "recruited")
+    private Long recruited;
+
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private CategoryEntity category;
+
+    //TODO .. 사진 추가
+    //TODO .. 로그인 이휴 유저정보 추가
+    //TODO .. maxRecruits를 0일떄 어떻게 해야할까?
+    //TODO .. 지리정보 추가
+    /*
+   @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user_id;
+     */
+
 }

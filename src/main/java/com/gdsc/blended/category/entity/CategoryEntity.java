@@ -4,12 +4,14 @@ import com.gdsc.blended.category.dto.CategoryDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 
 @NoArgsConstructor
 @Entity
 @Getter
+@Setter
 @Table(name = "POST_CATEGORY")
 public class CategoryEntity {
     @Id
