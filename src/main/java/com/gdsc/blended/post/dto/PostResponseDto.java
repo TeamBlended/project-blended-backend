@@ -38,5 +38,4 @@ public class PostResponseDto {
         this.recruited = postEntity.getRecruited();
         this.category = postEntity.getCategory().getId();
     }
-
 }
