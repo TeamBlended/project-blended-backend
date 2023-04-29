@@ -83,8 +83,9 @@ jobs:
       if: contains(github.ref, 'feature/BLDD-67')
       run: |
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-          docker build . --file Dockerfile-dev --tag ${{ secrets.DOCKER_REPO }}/blended-dev:latest
-          docker push ${{ secrets.DOCKER_REPO }}/blended-dev:latest
+          docker build --tag ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}
+          docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}
+        
      
           
     ## deploy to production
