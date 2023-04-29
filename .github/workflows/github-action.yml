@@ -86,7 +86,7 @@ jobs:
           docker build -f Dockerfile-dev -t ${{ secrets.DOCKER_REPO }}/blended-dev .
           docker images
           docker ps
-          docker push ${{ secrets.DOCKER_REPO }}/blended-dev
+          docker push ${{ secrets.DOCKER_REPO }}/blended-dev:latest
           
     ## deploy to production
     - name: Deploy to prod
