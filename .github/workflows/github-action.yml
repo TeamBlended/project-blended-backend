@@ -68,18 +68,18 @@ jobs:
       if: contains(github.ref, 'main')
       run: |
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-          docker build -f Dockerfile-prod -t ${{ secrets.DOCKER_REPO }}/blended-prod .
-          docker push ${{ secrets.DOCKER_REPO }}/blended-prod
+          docker build -f Dockerfile-dev -t ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}-prod.
+          docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}-prod 
           
     ## docker build & push to develop
     - name: Docker build & push to dev
       if: contains(github.ref, 'develop')
       run: |
-          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-          docker build -f Dockerfile-dev -t ${{ secrets.DOCKER_REPO }}/blended-dev .
-          docker push ${{ secrets.DOCKER_REPO }}/blended-dev
+        docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+        docker build -f Dockerfile-dev -t ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}-dev.
+        docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}-dev
      #########################     
-    - name: Docker build & push to dev
+    - name: Docker build & push to BLDD-67
       if: contains(github.ref, 'feature/BLDD-67')
       run: |
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
@@ -98,8 +98,8 @@ jobs:
           username: ec2-user
           envs: GITHUB_SHA
           script: |
-              sudo docker rm -f $(docker ps -qa)
-              sudo docker pull ${{ secrets.DOCKER_REPO }}/blended-prod
+              sudo docker rm -f $(docker ps -a -q)
+              sudo docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}-prod
               docker-compose up -d
               docker image prune -f
 
@@ -114,8 +114,8 @@ jobs:
 #        password: ${{ secrets.PASSWORD }}
 #        port: 22
 #        script: |
-#            sudo docker rm -f $(docker ps -qa)
-#            sudo docker pull ${{ secrets.DOCKER_REPO }}/blended-dev
+#            sudo docker rm -f $(docker ps -a -q)
+#            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}
 #            docker-compose up -d
 #            docker image prune -f
     #####################################        
@@ -130,7 +130,7 @@ jobs:
         port: 22
         script: |
             sudo docker rm -f $(docker ps -a -q)
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}-dev
             docker-compose up -d
             docker image prune -f
 
