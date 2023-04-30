@@ -129,8 +129,7 @@ jobs:
         password: ${{ secrets.PASSWORD }}
         port: 22
         script: |
-            sudo docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-            sudo docker rm -f $(docker ps -qa)
+            sudo docker rm -f $(docker ps -a -q)
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}
             docker-compose up -d
             docker image prune -f
