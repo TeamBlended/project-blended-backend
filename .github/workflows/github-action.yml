@@ -9,7 +9,7 @@ name: Java CI with Gradle
 
 on:
   push:
-    branches: [ "develop", "main", "feature/BLDD-67"]
+    branches: [ "develop", "main"]
   pull_request:
     branches: [ "develop", "main"]
 
@@ -50,14 +50,6 @@ jobs:
           touch ./application-prod.properties
           echo "${{ secrets.PROPERTIES_PROD }}" > ./application-prod.properties
       shell: bash
-#############################
-    - name: make application-dev.properties
-      if: contains(github.ref, 'feature/BLDD-67')
-      run: |
-        cd ./src/main/resources
-        touch ./application-dev.properties
-        echo "${{ secrets.PROPERTIES_DEV }}" > ./application-dev.properties
-      shell: bash
 
     ## gradle build
     - name: Build with Gradle
@@ -77,14 +69,8 @@ jobs:
       run: |
         docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
         docker build -f Dockerfile-dev -t ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}-dev.
-        docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}-dev
-     #########################     
-    - name: Docker build & push to BLDD-67
-      if: contains(github.ref, 'feature/BLDD-67')
-      run: |
-          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-          docker build -f Dockerfile-dev -t ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }} .
-          docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}
+        docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}-dev   
+   
         
      
           
@@ -104,35 +90,21 @@ jobs:
               docker image prune -f
 
     ## deploy to develop
-#    - name: Deploy to dev
-#      uses: appleboy/ssh-action@master
-#      id: deploy-dev
-#      if: contains(github.ref, 'develop')
-#      with:
-#        host: ${{ secrets.HOST_DEV }}
-#        username: ${{ secrets.USERNAME }}
-#        password: ${{ secrets.PASSWORD }}
-#        port: 22
-#        script: |
-#            sudo docker rm -f $(docker ps -a -q)
-#            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}
-#            docker-compose up -d
-#            docker image prune -f
-    #####################################        
     - name: Deploy to dev
       uses: appleboy/ssh-action@master
       id: deploy-dev
-      if: contains(github.ref, 'feature/BLDD-67')
+      if: contains(github.ref, 'develop')
       with:
         host: ${{ secrets.HOST_DEV }}
         username: ${{ secrets.USERNAME }}
         password: ${{ secrets.PASSWORD }}
         port: 22
         script: |
-          cd /home/ubuntu/project
-          sudo docker rm -f ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}
-          sudo docker pull jsangmin99/project-blended-backend
-          docker-compose up -d
-          docker image prune -f
+            cd /home/ubuntu/project
+            sudo docker rm -f $(docker ps -a -q)
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}-dev
+            docker-compose up -d
+            docker image prune -f
+  
 
 
