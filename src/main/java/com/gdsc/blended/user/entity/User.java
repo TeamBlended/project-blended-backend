@@ -28,17 +28,15 @@ public class User {
 
     private String provider;
 
-    private String location;
-
-
+    //private String location;
+    
 
     @Builder
-    public User(Long userId, String name, String email, String password, UserType type){
+    public User(Long userId, String name, String email, UserType type){
         this.userId = userId;
         this.name = name;
         this.email = email;
         this.type = type;
-        this.location = location;
     }
 
     public User(Long userId){
