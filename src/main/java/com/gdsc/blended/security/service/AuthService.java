@@ -22,7 +22,6 @@ public class AuthService {
     private final UserRepository userRepository;
     private final JwtTokenizer jwtTokenizer;
     private final RefreshTokenRepository refreshTokenRepository;
-    private final UserMapper userMapper;
 
     //oauth 회원가입
 
