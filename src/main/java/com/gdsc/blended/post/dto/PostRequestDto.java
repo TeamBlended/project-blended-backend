@@ -16,16 +16,16 @@ public class PostRequestDto {
     private String content;
     private Long maxRecruit;
     private String locationName;
-    private Double longitude;
-    private Double latitude;
+    private Double latitude; //위도
+    private Double longitude; //경도
 
     public PostEntity toEntity(CategoryEntity category) {
         PostEntity postEntity = new PostEntity();
         postEntity.setTitle(title);
         postEntity.setContent(content);
         postEntity.setLocationName(locationName);
-        Point point = new GeometryFactory(new PrecisionModel(), 4326).createPoint(new Coordinate(longitude, latitude));
-        postEntity.setLocation(point);
+        postEntity.setLatitude(latitude);
+        postEntity.setLongitude(longitude);
         postEntity.setStatus(true);
         postEntity.setViewCount(0L);
         postEntity.setScrapCount(0L);

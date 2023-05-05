@@ -18,7 +18,8 @@ public class PostResponseDto {
     private String title;
     private String content;
     private String locationName;
-    private LocationDto location;
+    private Double latitude;
+    private Double longitude;
     private Boolean status;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -32,7 +33,9 @@ public class PostResponseDto {
         this.id = postEntity.getId();
         this.title = postEntity.getTitle();
         this.content = postEntity.getContent();
-        this.location = new LocationDto(postEntity.getLocation());
+        this.locationName = postEntity.getLocationName();
+        this.latitude = postEntity.getLatitude();
+        this.longitude = postEntity.getLongitude();
         this.status = postEntity.getStatus();
         this.createdAt = postEntity.getCreatedDate();
         this.updatedAt = postEntity.getModifiedDate();

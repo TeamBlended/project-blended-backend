@@ -34,7 +34,8 @@ public class PostEntity extends BaseTimeEntity {
     private Boolean status;
 
     private String locationName;
-    private Point location;
+    private Double latitude; //위도
+    private Double longitude; //경도
 
     @Column(name = "view_count")
     private Long viewCount;
