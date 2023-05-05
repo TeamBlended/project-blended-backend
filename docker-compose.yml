@@ -1,0 +1,11 @@
+version: "3.9"
+services:
+  app:
+    image: jsangmin99/project-blended-backend
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://svc.sel3.cloudtype.app:30441/blended-db?useSSL=false
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=1q2w3e4r
