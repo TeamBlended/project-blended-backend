@@ -6,6 +6,7 @@ import com.gdsc.blended.post.dto.PostRequestDto;
 import com.gdsc.blended.post.dto.PostResponseDto;
 import com.gdsc.blended.post.entity.PostEntity;
 import com.gdsc.blended.post.repository.PostRepository;
+import com.gdsc.blended.user.entity.User;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,6 +49,7 @@ public class PostService {
 
     //TODO .. 만약에 기존 모집인원이 4명이여서 3명 참가했는데 2명으로 수정한다면?,,,
 
+    @Transactional
     public PostResponseDto updatePost(Long postId, PostRequestDto postRequestDto) {
         PostEntity postEntity = findById(postId);
 
@@ -60,17 +62,18 @@ public class PostService {
         return new PostResponseDto(updatedPost);
     }
 
-    public PostResponseDto detailPost(Long postId) {
+    @Transactional
+    public PostResponseDto detailPost(Long postId, User loginuser) {
         Optional<PostEntity> optionalPostEntity = postRepository.findById(postId);
         if (optionalPostEntity.isEmpty()) {
             return null;
         }
-
         PostEntity postEntity = optionalPostEntity.get();
-        postEntity.increaseViewCount(); // 조회수 증가
-        PostEntity savedPostEntity = postRepository.save(postEntity);
-
-        return new PostResponseDto(savedPostEntity);
+        if (!postEntity.getUserId().equals(loginuser.getUserId())) {
+            postEntity.increaseViewCount(); // 조회수 증가
+            postRepository.save(postEntity);
+        }
+        return new PostResponseDto(postEntity);
     }
 
 }

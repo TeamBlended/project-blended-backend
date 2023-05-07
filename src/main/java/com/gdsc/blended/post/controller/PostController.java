@@ -3,6 +3,7 @@ package com.gdsc.blended.post.controller;
 import com.gdsc.blended.post.dto.PostRequestDto;
 import com.gdsc.blended.post.dto.PostResponseDto;
 import com.gdsc.blended.post.service.PostService;
+import com.gdsc.blended.user.entity.User;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,17 +44,17 @@ public class PostController {
         postService.deletePost(postId);
         return ResponseEntity.noContent().build();
     }
-    //TODO .. 게시글 상세 구현
-
+    //게시글 상세 구현
+    //조회수 구현
     @GetMapping("/posts/detail/{postId}")
-    public ResponseEntity<PostResponseDto> detailPost(@PathVariable Long postId){
-        PostResponseDto postResponseDto = postService.detailPost(postId);
+    public ResponseEntity<PostResponseDto> detailPost(@PathVariable Long postId, @AuthenticationPrincipal User loginUser){
+        PostResponseDto postResponseDto = postService.detailPost(postId, loginUser);
         if (postResponseDto == null) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(postResponseDto);
+
     }
-    //TODO .. 조회수 구현
 
     //TODO .. 찜수 구현
 
