@@ -2,6 +2,7 @@ package com.gdsc.blended.post.entity;
 
 import com.gdsc.blended.BaseTime.BaseTimeEntity;
 import com.gdsc.blended.category.entity.CategoryEntity;
+import javafx.geometry.Pos;
 import lombok.*;
 
 import javax.persistence.*;
@@ -48,6 +49,10 @@ public class PostEntity extends BaseTimeEntity {
     @ManyToOne
     @JoinColumn(name = "category_id")
     private CategoryEntity category;
+
+    public void increaseViewCount() {
+        this.viewCount++;
+    }
 
     //TODO .. 사진 추가
     //TODO .. 로그인 이휴 유저정보 추가

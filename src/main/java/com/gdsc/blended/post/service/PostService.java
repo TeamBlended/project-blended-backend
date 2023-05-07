@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
@@ -58,4 +59,18 @@ public class PostService {
 
         return new PostResponseDto(updatedPost);
     }
+
+    public PostResponseDto detailPost(Long postId) {
+        Optional<PostEntity> optionalPostEntity = postRepository.findById(postId);
+        if (optionalPostEntity.isEmpty()) {
+            return null;
+        }
+
+        PostEntity postEntity = optionalPostEntity.get();
+        postEntity.increaseViewCount(); // 조회수 증가
+        PostEntity savedPostEntity = postRepository.save(postEntity);
+
+        return new PostResponseDto(savedPostEntity);
+    }
+
 }
