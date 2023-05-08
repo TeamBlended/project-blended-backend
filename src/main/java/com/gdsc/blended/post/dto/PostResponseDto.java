@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.xml.stream.Location;
 import java.time.LocalDateTime;
 
 @Getter
@@ -16,6 +17,9 @@ public class PostResponseDto {
     private Long id;
     private String title;
     private String content;
+    private String locationName;
+    private Double latitude;
+    private Double longitude;
     private Boolean status;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -29,6 +33,9 @@ public class PostResponseDto {
         this.id = postEntity.getId();
         this.title = postEntity.getTitle();
         this.content = postEntity.getContent();
+        this.locationName = postEntity.getLocationName();
+        this.latitude = postEntity.getLatitude();
+        this.longitude = postEntity.getLongitude();
         this.status = postEntity.getStatus();
         this.createdAt = postEntity.getCreatedDate();
         this.updatedAt = postEntity.getModifiedDate();
