@@ -4,6 +4,7 @@ import com.gdsc.blended.BaseTime.BaseTimeEntity;
 import com.gdsc.blended.category.entity.CategoryEntity;
 import com.gdsc.blended.user.entity.User;
 import lombok.*;
+import org.locationtech.jts.geom.Point;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -33,7 +34,10 @@ public class PostEntity extends BaseTimeEntity {
 
     private Boolean status;
 
-    //private Point region;
+    private String locationName;
+    private Double latitude; //위도
+    private Double longitude; //경도
+
     @Column(name = "view_count")
     private Long viewCount;
 
