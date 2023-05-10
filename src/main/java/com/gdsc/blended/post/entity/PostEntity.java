@@ -2,6 +2,7 @@ package com.gdsc.blended.post.entity;
 
 import com.gdsc.blended.BaseTime.BaseTimeEntity;
 import com.gdsc.blended.category.entity.CategoryEntity;
+import com.gdsc.blended.user.entity.User;
 import lombok.*;
 import org.locationtech.jts.geom.Point;
 
@@ -53,14 +54,18 @@ public class PostEntity extends BaseTimeEntity {
     @JoinColumn(name = "category_id")
     private CategoryEntity category;
 
+    public void increaseViewCount() {
+        this.viewCount++;
+    }
+
     //TODO .. 사진 추가
     //TODO .. 로그인 이휴 유저정보 추가
     //TODO .. maxRecruits를 0일떄 어떻게 해야할까?
     //TODO .. 지리정보 추가
-    /*
+
    @ManyToOne
     @JoinColumn(name = "user_id")
-    private User user_id;
-     */
+    private User userId;
+
 
 }
