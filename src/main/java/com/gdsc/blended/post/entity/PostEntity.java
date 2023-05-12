@@ -63,8 +63,7 @@ public class PostEntity extends BaseTimeEntity {
     //TODO .. maxRecruits를 0일떄 어떻게 해야할까?
     //TODO .. 지리정보 추가
 
-   @ManyToOne
-    @JoinColumn(name = "user_id")
+    @ManyToOne
     private User userId;
 
 
