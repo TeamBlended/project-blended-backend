@@ -13,20 +13,25 @@ import javax.persistence.*;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private Long userId;
 
-    @Column(unique = true)
+    @Column(name = "user_name", unique = true)
     private String name;
 
-    @Column(unique = true)
+    @Column(name = "email", unique = true)
     private String email;
 
     private String role;
 
     @Enumerated(value = EnumType.STRING)
+    @Column(name = "user_type")
     private UserType type;
 
     private String provider;
+
+    @Column(name = "user_profile_image")
+    private String profileImage;
 
     //private String location;
     
