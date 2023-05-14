@@ -6,7 +6,6 @@ import com.gdsc.blended.post.dto.PostRequestDto;
 import com.gdsc.blended.post.dto.PostResponseDto;
 import com.gdsc.blended.post.entity.PostEntity;
 import com.gdsc.blended.post.repository.PostRepository;
-import com.gdsc.blended.user.entity.User;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,7 +44,6 @@ public class PostService {
     @Transactional
     public void deletePost(Long postId) {
         PostEntity postEntity = findById(postId);
-
         postRepository.delete(postEntity);
     }
 
@@ -70,16 +68,13 @@ public class PostService {
     }
 
     @Transactional
-    public PostResponseDto detailPost(Long postId, User loginuser) {
+    public PostResponseDto detailPost(Long postId) {
         Optional<PostEntity> optionalPostEntity = postRepository.findById(postId);
         if (optionalPostEntity.isEmpty()) {
             return null;
         }
         PostEntity postEntity = optionalPostEntity.get();
-        if (!postEntity.getUserId().equals(loginuser.getUserId())) {
-            postEntity.increaseViewCount(); // 조회수 증가
-            postRepository.save(postEntity);
-        }
+
         return new PostResponseDto(postEntity);
     }
 
