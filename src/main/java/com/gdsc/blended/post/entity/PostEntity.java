@@ -2,7 +2,6 @@ package com.gdsc.blended.post.entity;
 
 import com.gdsc.blended.BaseTime.BaseTimeEntity;
 import com.gdsc.blended.category.entity.CategoryEntity;
-import com.gdsc.blended.user.entity.User;
 import lombok.*;
 import org.locationtech.jts.geom.Point;
 
@@ -63,9 +62,8 @@ public class PostEntity extends BaseTimeEntity {
     //TODO .. maxRecruits를 0일떄 어떻게 해야할까?
     //TODO .. 지리정보 추가
 
-   @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User userId;
+    //@ManyToOne
+    //private User userId;
 
 
 }
