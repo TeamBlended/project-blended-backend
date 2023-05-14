@@ -43,9 +43,17 @@ public class PostController {
         postService.deletePost(postId);
         return ResponseEntity.noContent().build();
     }
-    //TODO .. 게시글 상세 구현
+    //게시글 상세 구현
+    //조회수 구현
+    @GetMapping("/posts/detail/{postId}")
+    public ResponseEntity<PostResponseDto> detailPost(@PathVariable Long postId ){
+        PostResponseDto postResponseDto = postService.detailPost(postId);
+        if (postResponseDto == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(postResponseDto);
 
-    //TODO .. 조회수 구현
+    }
 
     //TODO .. 찜수 구현
 
