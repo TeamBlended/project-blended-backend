@@ -1,5 +1,6 @@
 package com.gdsc.blended.common.image.controller;
 
+import com.gdsc.blended.common.image.dto.ImageDto;
 import com.gdsc.blended.common.image.service.S3UploadService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,9 +18,14 @@ public class ImageUploadController {
 
     //이미지 업로드
     @PostMapping("/upload")
-    public ResponseEntity uploadImage(@RequestParam("post") String post, @RequestPart(value = "file") MultipartFile multipartFile) throws IOException {
+    public ResponseEntity uploadImage(MultipartFile multipartFile) throws IOException {
         return new ResponseEntity<>(s3UploadService.upload(multipartFile), HttpStatus.CREATED);
     }
 
-    //이미지 삭제
+    /* 이미지 삭제
+    @DeleteMapping("/delete")
+    public ResponseEntity deleteFile(@RequestBody ImageDto imageDto) {
+        s3UploadService.delete(imageDto.getImage());
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }*/
 }

@@ -1,4 +1,4 @@
-package com.gdsc.blended.common.dto;
+package com.gdsc.blended.common.image.dto;
 
 import com.gdsc.blended.common.image.entity.Image;
 import lombok.Getter;

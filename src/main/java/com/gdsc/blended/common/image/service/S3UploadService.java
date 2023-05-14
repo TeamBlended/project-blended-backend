@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -41,5 +42,9 @@ public class S3UploadService {
         return amazonS3.getUrl(bucket, s3FileName).toString();
     }
 
-    //delete
+    /* delete
+    public void delete(String path) {
+        String key = URLDecoder.decode(path.replace("s3://blended-post/test/", ""));
+        amazonS3.deleteObject(bucket, key);
+    }*/
 }
