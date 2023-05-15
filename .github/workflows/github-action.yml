@@ -102,7 +102,7 @@ jobs:
         script: |
             cd /home/ubuntu/project
             sudo docker rm -f $(docker ps -a -q)
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}:dev
+            sudo docker pull jsangmin99/project-blended-backend:dev
             docker-compose up -d
             docker image prune -f
   
