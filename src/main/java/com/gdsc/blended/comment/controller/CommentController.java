@@ -19,6 +19,7 @@ public class CommentController {
         this.commentService = commentService;
     }
 
+    @Operation(summary = "댓글작성")
     @PostMapping()
     public ResponseEntity<CommentResponseDto> createComment(@RequestBody CommentRequestDto requestDto,@PathVariable Long postId) {
         CommentResponseDto responseDto = commentService.createComment(requestDto,postId);
@@ -37,6 +38,7 @@ public class CommentController {
         return ResponseEntity.ok(comments);
     }
 
+    @Operation(summary = "댓글 수정")
     @PutMapping("/{commentId}")
     public ResponseEntity<CommentResponseDto> updateComment(@RequestBody CommentRequestDto requestDto, @PathVariable Long commentId){
         CommentResponseDto updateComment = commentService.updateComment(requestDto, commentId);
@@ -51,6 +53,7 @@ public class CommentController {
         return ResponseEntity.ok(deleteComment);
     }
 
+    @Operation(summary = "댓글 DB까지 삭제")
     @DeleteMapping("/{commentId}")
     public ResponseEntity<Void> realDeleteComment(@PathVariable Long commentId){
         commentService.realDeleteComment(commentId);
