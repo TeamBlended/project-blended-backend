@@ -20,6 +20,6 @@ public class SwaggerConfig {
         return new OpenAPI()
                 .info(new Info().title("Blended API")
                         .description("블랜디드 백엔드 API 명세서")
-                        .version("v0.0.1"));
+                        .version("v0.0.2"));
     }
 }
