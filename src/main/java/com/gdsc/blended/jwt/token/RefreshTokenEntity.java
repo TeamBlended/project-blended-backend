@@ -1,13 +1,14 @@
 package com.gdsc.blended.jwt.token;
 
 import com.gdsc.blended.user.entity.UserEntity;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import javax.persistence.*;
+
 
 @Getter
 @Setter

@@ -2,9 +2,8 @@ package com.gdsc.blended.common.image.service;
 
 import com.gdsc.blended.common.image.entity.Image;
 import com.gdsc.blended.common.image.repository.ImageRepository;
-import com.gdsc.blended.exception.BusinessLogicException;
-import com.gdsc.blended.exception.ExceptionCode;
-import lombok.RequiredArgsConstructor;
+import com.gdsc.blended.common.image.exception.BusinessLogicException;
+import com.gdsc.blended.common.image.exception.ExceptionCode;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;

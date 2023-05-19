@@ -2,11 +2,13 @@ package com.gdsc.blended.post.entity;
 
 import com.gdsc.blended.BaseTime.BaseTimeEntity;
 import com.gdsc.blended.category.entity.CategoryEntity;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.locationtech.jts.geom.Point;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+
+
 
 @Getter
 @Setter
@@ -62,8 +64,7 @@ public class PostEntity extends BaseTimeEntity {
     //TODO .. maxRecruits를 0일떄 어떻게 해야할까?
     //TODO .. 지리정보 추가
 
-    //@ManyToOne
-    //private User userId;
+    // @ManyToOne//private User userId;
 
 
 }
