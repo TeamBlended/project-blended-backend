@@ -1,12 +1,13 @@
 package com.gdsc.blended.category.entity;
 
 import com.gdsc.blended.category.dto.CategoryDto;
+import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.*;
+
 
 @NoArgsConstructor
 @Entity

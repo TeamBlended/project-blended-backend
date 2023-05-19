@@ -1,15 +1,17 @@
 package com.gdsc.blended.user.entity;
 
 
+import jakarta.persistence.*;
 import lombok.*;
 
-import javax.persistence.*;
+
 
 
 @Getter
 @Setter
 @RequiredArgsConstructor
-@Entity@Table(name = "tb_user")
+@Entity
+@Table(name = "tb_user")
 public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

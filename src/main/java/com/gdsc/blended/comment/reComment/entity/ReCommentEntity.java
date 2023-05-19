@@ -3,11 +3,12 @@ package com.gdsc.blended.comment.reComment.entity;
 import com.gdsc.blended.BaseTime.BaseTimeEntity;
 import com.gdsc.blended.comment.entity.CommentEntity;
 import com.gdsc.blended.post.entity.PostEntity;
+import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+
 
 @NoArgsConstructor
 @Getter

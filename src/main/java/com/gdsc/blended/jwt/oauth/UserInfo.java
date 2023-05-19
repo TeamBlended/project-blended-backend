@@ -12,6 +12,7 @@ import org.springframework.util.Assert;
 import java.io.Serializable;
 import java.util.*;
 
+//Todo: userprofileimage 넣기
 
 public class UserInfo implements UserDetails, CredentialsContainer {
     private static final long serialVersionUID = SpringSecurityCoreVersion.SERIAL_VERSION_UID;
