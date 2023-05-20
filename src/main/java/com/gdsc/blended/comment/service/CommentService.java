@@ -88,6 +88,7 @@ public class CommentService {
                     .commentId(updatedComment.getId())
                     .content(updatedComment.getContent())
                     .modifiedDate(updatedComment.getModifiedDate())
+                    .user(user)
                     .build();
         }
     }
