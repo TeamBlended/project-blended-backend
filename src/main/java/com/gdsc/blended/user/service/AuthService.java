@@ -21,7 +21,7 @@ import java.util.Collections;
 @Service
 @RequiredArgsConstructor
 public class AuthService {
-    @Value("${google.client.id}")
+    @Value("${spring.security.oauth2.client.registration.google.client-id}")
     private String googleClientId;
 
     private final TokenProvider tokenProvider;
