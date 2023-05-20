@@ -40,7 +40,7 @@ public class PostResponseDto {
         this.createdAt = postEntity.getCreatedDate();
         this.updatedAt = postEntity.getModifiedDate();
         this.viewCount = postEntity.getViewCount();
-        this.scrapCount = postEntity.getScrapCount();
+        this.scrapCount = postEntity.getLikeCount();
         this.maxRecruits = postEntity.getMaxRecruits();
         this.recruited = postEntity.getRecruited();
         this.category = postEntity.getCategory().getId();

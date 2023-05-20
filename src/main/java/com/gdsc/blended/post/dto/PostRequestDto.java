@@ -28,7 +28,7 @@ public class PostRequestDto {
         postEntity.setLongitude(longitude);
         postEntity.setStatus(true);
         postEntity.setViewCount(0L);
-        postEntity.setScrapCount(0L);
+        postEntity.setLikeCount(0L);
         postEntity.setRecruited(0L);
         postEntity.setMaxRecruits(maxRecruit);
         postEntity.setCategory(category);
