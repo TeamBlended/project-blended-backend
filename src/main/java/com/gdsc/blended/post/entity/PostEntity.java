@@ -42,8 +42,8 @@ public class PostEntity extends BaseTimeEntity {
     @Column(name = "view_count")
     private Long viewCount;
 
-    @Column(name = "scrap_count")
-    private Long scrapCount;
+    @Column(name = "like_count")
+    private Long likeCount;
 
     @Column(name = "max_recruits")
     private Long maxRecruits;
@@ -58,6 +58,7 @@ public class PostEntity extends BaseTimeEntity {
     public void increaseViewCount() {
         this.viewCount++;
     }
+
 
     //TODO .. 사진 추가
     //TODO .. 로그인 이휴 유저정보 추가
