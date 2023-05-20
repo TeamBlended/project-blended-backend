@@ -1,4 +1,4 @@
-package com.gdsc.blended.comment.reComment.dto;
+package com.gdsc.blended.comment.replies.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ReCommentRequestDto {
+public class RepliesRequestDto {
     private String content;
 }
