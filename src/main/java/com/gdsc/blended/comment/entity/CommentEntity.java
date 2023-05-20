@@ -2,6 +2,7 @@ package com.gdsc.blended.comment.entity;
 
 import com.gdsc.blended.BaseTime.BaseTimeEntity;
 import com.gdsc.blended.post.entity.PostEntity;
+import com.gdsc.blended.user.entity.UserEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,15 +23,18 @@ public class CommentEntity extends BaseTimeEntity{
     @JoinColumn(name = "post_id")
     private PostEntity post;
 
+    @ManyToOne
+    private UserEntity user;
+
     public void setPost(PostEntity post) {
         this.post = post;
     }
 
-
     @Builder
-    public CommentEntity(String content, PostEntity post) {
+    public CommentEntity(String content, PostEntity post, UserEntity user) {
         this.content = content;
         this.post = post;
+        this.user = user;
     }
 
     public void updateContent(String content) {
