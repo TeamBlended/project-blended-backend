@@ -10,15 +10,15 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("post/{post_id}/like")
+@RequestMapping("api/post/{postId}/heart")
 public class HeartController {
 
     private final HeartService heartService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<?> likeBoard(@PathVariable Long post_id, @AuthenticationPrincipal User user) {
-        heartService.likeBoard(post_id, user.getUserId());
+    public ResponseEntity<?> likeBoard(@PathVariable Long postId, @AuthenticationPrincipal User user) {
+        heartService.likeBoard(postId, user.getUserId());
         return new ResponseEntity<>("ok", HttpStatus.OK);
     }
 }
