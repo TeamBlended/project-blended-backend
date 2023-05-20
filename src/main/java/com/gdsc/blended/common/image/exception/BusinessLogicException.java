@@ -1,4 +1,4 @@
-package com.gdsc.blended.exception;
+package com.gdsc.blended.common.image.exception;
 
 import lombok.Getter;
 

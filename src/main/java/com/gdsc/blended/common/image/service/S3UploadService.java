@@ -23,7 +23,7 @@ public class S3UploadService {
     @Value("${cloud.aws.s3.dir}")
     private String filePath;
 
-    private final AmazonS3Client amazonS3;
+    private final AmazonS3 amazonS3;
 
     public String upload(MultipartFile multipartFile) throws IOException{
         // 파일 이름이 중복되지 않게 하기 위해 UUID 로 랜덤값 생성하여 "-"로 파일 이름과 연결하여 파일 이름 생성

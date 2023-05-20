@@ -3,11 +3,12 @@ package com.gdsc.blended.category.service;
 import com.gdsc.blended.category.dto.CategoryDto;
 import com.gdsc.blended.category.entity.CategoryEntity;
 import com.gdsc.blended.category.repository.CategoryRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityNotFoundException;
+
 import java.util.List;
 import java.util.stream.Collectors;
 

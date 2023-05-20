@@ -2,11 +2,11 @@ package com.gdsc.blended.common.image.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.gdsc.blended.post.entity.PostEntity;
+import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
 
 @Entity(name = "IMAGE")
 @Getter
