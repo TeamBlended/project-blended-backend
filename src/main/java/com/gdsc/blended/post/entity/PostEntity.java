@@ -2,9 +2,12 @@ package com.gdsc.blended.post.entity;
 
 import com.gdsc.blended.BaseTime.BaseTimeEntity;
 import com.gdsc.blended.category.entity.CategoryEntity;
+import com.gdsc.blended.user.entity.UserEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.locationtech.jts.geom.Point;
 
 
@@ -16,7 +19,7 @@ import org.locationtech.jts.geom.Point;
 @AllArgsConstructor
 @Entity
 @Builder
-@Table(name = "POST")
+@Table(name = "tb_post")
 public class PostEntity extends BaseTimeEntity {
 
     @Id
@@ -51,14 +54,19 @@ public class PostEntity extends BaseTimeEntity {
     @Column(name = "recruited")
     private Long recruited;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action= OnDeleteAction.CASCADE)
     @JoinColumn(name = "category_id")
     private CategoryEntity category;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action= OnDeleteAction.CASCADE)
+    @JoinColumn(name = "user_id")
+    private UserEntity userId;
 
     public void increaseViewCount() {
         this.viewCount++;
     }
-
 
     //TODO .. 사진 추가
     //TODO .. 로그인 이휴 유저정보 추가

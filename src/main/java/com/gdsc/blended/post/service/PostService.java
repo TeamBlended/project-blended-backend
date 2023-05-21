@@ -6,6 +6,8 @@ import com.gdsc.blended.post.dto.PostRequestDto;
 import com.gdsc.blended.post.dto.PostResponseDto;
 import com.gdsc.blended.post.entity.PostEntity;
 import com.gdsc.blended.post.repository.PostRepository;
+import com.gdsc.blended.user.entity.UserEntity;
+import com.gdsc.blended.user.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +21,7 @@ import java.util.stream.Collectors;
 public class PostService {
     private final PostRepository postRepository;
     private final CategoryRepository categoryRepository;
+    private final UserRepository userRepository;
 
     public PostEntity findById(Long id) {
         return postRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid post id"));
@@ -33,18 +36,24 @@ public class PostService {
 
     //게시글 생성 (Post)
     @Transactional
-    public PostResponseDto createPost(PostRequestDto postRequestDto, Long categoryId ) {
+    public PostResponseDto createPost(PostRequestDto postRequestDto, Long categoryId , Long userId) {
         CategoryEntity category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid category id"));
-        PostEntity savedPost = postRepository.save(postRequestDto.toEntity(category));
+        UserEntity user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("유저가 없습니다."));
+        PostEntity savedPost = postRepository.save(postRequestDto.toEntity(category,user));
         return new PostResponseDto(savedPost);
     }
 
     // 게시글 삭제(delete)
     @Transactional
-    public void deletePost(Long postId) {
-        PostEntity postEntity = findById(postId);
-        postRepository.delete(postEntity);
+    public void deletePost(Long postId, Long userId) {
+        PostEntity postEntity = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("게시글이 없습니다."));
+        UserEntity user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("유저가 정보가 없습니다."));
+        if (!postEntity.getUserId().equals(user)) {
+            throw new IllegalArgumentException("해당 게시글을 작성한 유저가 아닙니다.");
+        } else {
+            postRepository.delete(postEntity);
+        }
     }
 
 
@@ -52,29 +61,42 @@ public class PostService {
 
     // 게시글 수정(Put)
     @Transactional
-    public PostResponseDto updatePost(Long postId, PostRequestDto postRequestDto) {
-        PostEntity postEntity = findById(postId);
+    public PostResponseDto updatePost(Long postId, PostRequestDto postRequestDto, Long userId) {
 
-        postEntity.setTitle(postRequestDto.getTitle());
-        postEntity.setContent(postRequestDto.getContent());
-        postEntity.setLocationName(postRequestDto.getLocationName());
-        postEntity.setLatitude(postRequestDto.getLatitude());
-        postEntity.setLongitude(postRequestDto.getLongitude());
-        postEntity.setMaxRecruits(postRequestDto.getMaxRecruit());
+        PostEntity postEntity = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("게시글이 없습니다."));
+        UserEntity user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("유저가 정보가 없습니다."));
 
-        PostEntity updatedPost = postRepository.save(postEntity);
+        if (!postEntity.getUserId().equals(user)) {
+            throw new IllegalArgumentException("해당 게시글을 작성한 유저가 아닙니다.");
+        }
+        else {
 
-        return new PostResponseDto(updatedPost);
+            postEntity.setTitle(postRequestDto.getTitle());
+            postEntity.setContent(postRequestDto.getContent());
+            postEntity.setLocationName(postRequestDto.getLocationName());
+            postEntity.setLatitude(postRequestDto.getLatitude());
+            postEntity.setLongitude(postRequestDto.getLongitude());
+            postEntity.setMaxRecruits(postRequestDto.getMaxRecruit());
+
+            PostEntity updatedPost = postRepository.save(postEntity);
+
+            return new PostResponseDto(updatedPost);
+        }
     }
 
     @Transactional
-    public PostResponseDto detailPost(Long postId) {
+    public PostResponseDto detailPost(Long postId, Long userId) {
         Optional<PostEntity> optionalPostEntity = postRepository.findById(postId);
+        UserEntity user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("유저가 정보가 없습니다."));
         if (optionalPostEntity.isEmpty()) {
             return null;
         }
         PostEntity postEntity = optionalPostEntity.get();
 
+        if(!postEntity.getUserId().equals(user)) {
+            postEntity.increaseViewCount(); // 조회수 증가
+            postRepository.save(postEntity);
+        }
         return new PostResponseDto(postEntity);
     }
 

@@ -1,6 +1,7 @@
-package com.gdsc.blended.comment.reComment.dto;
+package com.gdsc.blended.comment.replies.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.gdsc.blended.user.entity.UserEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,9 +13,10 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ReCommentResponseDto {
-    private Long reCommentId;
+public class RepliesResponseDto {
+    private Long repliesId;
     private String content;
+    private UserEntity user;
 
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", shape = JsonFormat.Shape.STRING)
     private LocalDateTime modifiedDate;

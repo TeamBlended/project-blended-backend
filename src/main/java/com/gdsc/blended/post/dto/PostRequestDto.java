@@ -2,11 +2,8 @@ package com.gdsc.blended.post.dto;
 
 import com.gdsc.blended.category.entity.CategoryEntity;
 import com.gdsc.blended.post.entity.PostEntity;
+import com.gdsc.blended.user.entity.UserEntity;
 import lombok.*;
-import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.GeometryFactory;
-import org.locationtech.jts.geom.Point;
-import org.locationtech.jts.geom.PrecisionModel;
 
 @NoArgsConstructor
 @Getter
@@ -19,7 +16,7 @@ public class PostRequestDto {
     private Double latitude; //위도
     private Double longitude; //경도
 
-    public PostEntity toEntity(CategoryEntity category) {
+    public PostEntity toEntity(CategoryEntity category, UserEntity user) {
         PostEntity postEntity = new PostEntity();
         postEntity.setTitle(title);
         postEntity.setContent(content);
@@ -32,6 +29,7 @@ public class PostRequestDto {
         postEntity.setRecruited(0L);
         postEntity.setMaxRecruits(maxRecruit);
         postEntity.setCategory(category);
+        postEntity.setUserId(user);
         return postEntity;
     }
 }

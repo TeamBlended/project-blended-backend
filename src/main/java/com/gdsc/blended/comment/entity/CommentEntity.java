@@ -2,6 +2,7 @@ package com.gdsc.blended.comment.entity;
 
 import com.gdsc.blended.BaseTime.BaseTimeEntity;
 import com.gdsc.blended.post.entity.PostEntity;
+import com.gdsc.blended.user.entity.UserEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -11,6 +12,7 @@ import lombok.*;
 @NoArgsConstructor
 @Getter
 @Entity
+@Table(name = "tb_comment")
 public class CommentEntity extends BaseTimeEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,19 +20,23 @@ public class CommentEntity extends BaseTimeEntity{
 
     private String content;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "post_id")
     private PostEntity post;
+
+    @ManyToOne(cascade = CascadeType.ALL  )
+    @JoinColumn(name = "user_id")
+    private UserEntity user;
 
     public void setPost(PostEntity post) {
         this.post = post;
     }
 
-
     @Builder
-    public CommentEntity(String content, PostEntity post) {
+    public CommentEntity(String content, PostEntity post, UserEntity user) {
         this.content = content;
         this.post = post;
+        this.user = user;
     }
 
     public void updateContent(String content) {
