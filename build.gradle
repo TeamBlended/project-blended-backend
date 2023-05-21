@@ -30,12 +30,10 @@ dependencies {
     //스웨거
     implementation 'org.springdoc:springdoc-openapi-ui:1.6.15'
 
-    // postgres
-    implementation 'org.postgresql:postgresql'
-
-    // hibernate-spatial 좌표를 위한거
+// mariaDB
+    implementation 'org.mariadb.jdbc:mariadb-java-client:2.7.4'
+// hibernate-spatial 좌표를 위한 라이브러리
     implementation 'org.hibernate:hibernate-spatial:6.1.7.Final'
-
     //oauth2.0
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client:3.0.4'
     implementation 'org.springframework.boot:spring-boot-starter-security:3.0.4'
@@ -57,7 +55,7 @@ dependencies {
 
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
-    runtimeOnly 'org.postgresql:postgresql'
+    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
