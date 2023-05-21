@@ -14,8 +14,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.google.api.client.json.gson.GsonFactory;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 @Service
@@ -28,14 +26,24 @@ public class AuthService {
     private final UserRepository userRepository;
 
     @Transactional
-    public TokenResponse googleLogin(String idToken) throws GeneralSecurityException, IOException {
+    public TokenResponse googleLogin(String idToken) throws Exception {
         GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), new GsonFactory())
                 .setAudience(Collections.singletonList(googleClientId))
                 .build();
 
-        GoogleIdToken googleIdToken = verifier.verify(idToken);
-        GoogleOAuth2UserInfo userInfo = new GoogleOAuth2UserInfo(googleIdToken.getPayload());
-        return sendGenerateJwtToken(userInfo.getEmail(), userInfo.getNickname());
+        try {
+            GoogleIdToken googleIdToken = verifier.verify(idToken);
+
+            if (googleIdToken == null) {
+                throw new Exception("INVALID_TOKEN");
+            }
+            else {
+                GoogleOAuth2UserInfo userInfo = new GoogleOAuth2UserInfo(googleIdToken.getPayload());
+                return sendGenerateJwtToken(userInfo.getEmail(), userInfo.getNickname());
+            }
+        } catch (Exception e) {
+            throw new Exception("INVALID_TOKEN");
+        }
     }
 
     @Transactional

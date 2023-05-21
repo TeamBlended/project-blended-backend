@@ -39,7 +39,7 @@ dependencies {
     //oauth2.0
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client:3.0.4'
     implementation 'org.springframework.boot:spring-boot-starter-security:3.0.4'
-    implementation group: 'com.google.api-client', name: 'google-api-client-jackson2', version: '1.20.0'
+    implementation group: 'com.google.api-client', name: 'google-api-client-jackson2', version: '2.2.0'
 
     //jwt
     compileOnly 'io.jsonwebtoken:jjwt-api:0.11.5'
