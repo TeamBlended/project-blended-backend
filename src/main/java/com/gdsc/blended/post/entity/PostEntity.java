@@ -17,7 +17,7 @@ import org.locationtech.jts.geom.Point;
 @AllArgsConstructor
 @Entity
 @Builder
-@Table(name = "POST")
+@Table(name = "tb_post")
 public class PostEntity extends BaseTimeEntity {
 
     @Id
@@ -52,11 +52,12 @@ public class PostEntity extends BaseTimeEntity {
     @Column(name = "recruited")
     private Long recruited;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSISTi, fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private CategoryEntity category;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
     private UserEntity userId;
 
     public void increaseViewCount() {

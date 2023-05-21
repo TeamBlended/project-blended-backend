@@ -6,36 +6,28 @@ import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 
 @RequiredArgsConstructor
 @Configuration
 public class SwaggerConfig {
-    public OpenAPI BlendedApi() {
-        Info info = new Info()
-                .title("Blended 프로젝트 API") // 타이틀
-                .version("v1") // 문서 버전
-                .description("블랜디드 백엔드 API 명세서");
-
-        // security 스키마 설정
-        SecurityScheme bearerAuth = new SecurityScheme()
-                .type(SecurityScheme.Type.HTTP)
-                .scheme("Blended")
-                .bearerFormat("JWT")
-                .in(SecurityScheme.In.HEADER)
-                .name(HttpHeaders.AUTHORIZATION);
-
-        // Security 요청 설정
-        SecurityRequirement addSecurityItem = new SecurityRequirement();
-        addSecurityItem.addList("JWT");
-
+    @Bean
+    public OpenAPI customOpenAPI() {
         return new OpenAPI()
-                // Security 인증 컴포넌트 설정
-                .components(new Components().addSecuritySchemes("JWT", bearerAuth))
-                // API 마다 Security 인증 컴포넌트 설정
-                .addSecurityItem(addSecurityItem)
-                .info(info);
+                .info(new Info()
+                        .title("Blended 프로젝트 API")
+                        .description("블랜디드 백엔드 API 명세서")
+                        .version("v1"))
+                .addSecurityItem(new SecurityRequirement().addList("JWT"))
+                .components(new Components()
+                        .addSecuritySchemes("JWT", new SecurityScheme()
+                                .type(SecurityScheme.Type.HTTP)
+                                .scheme("bearer")
+                                .bearerFormat("JWT")
+                                .in(SecurityScheme.In.HEADER)
+                                .name(HttpHeaders.AUTHORIZATION)));
     }
 
 }

@@ -3,6 +3,7 @@ package com.gdsc.blended.category.controller;
 import com.gdsc.blended.category.dto.CategoryDto;
 import com.gdsc.blended.category.entity.CategoryEntity;
 import com.gdsc.blended.category.service.CategoryService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
+@Tag(name = "카테고리")
 public class CategoryController {
     private final CategoryService categoryService;
 

@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 @Entity
+@Table(name = "tb_replies")
 public class RepliesEntity extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,6 +25,7 @@ public class RepliesEntity extends BaseTimeEntity {
     private CommentEntity comment;
 
     @ManyToOne
+    @JoinColumn(name = "user_id")
     private UserEntity user;
 
     public void setPost(CommentEntity comment) {
