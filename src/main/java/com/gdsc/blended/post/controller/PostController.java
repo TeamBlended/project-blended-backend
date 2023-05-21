@@ -3,9 +3,11 @@ package com.gdsc.blended.post.controller;
 import com.gdsc.blended.post.dto.PostRequestDto;
 import com.gdsc.blended.post.dto.PostResponseDto;
 import com.gdsc.blended.post.service.PostService;
+import com.gdsc.blended.user.entity.UserEntity;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,8 +20,8 @@ public class PostController {
 
     //개시글 쓰기
     @PostMapping("/posts/{categoryId}")
-    public ResponseEntity<PostResponseDto> createPost(@RequestBody PostRequestDto postRequestDto, @PathVariable Long categoryId) {
-        PostResponseDto createdPost = postService.createPost(postRequestDto, categoryId);
+    public ResponseEntity<PostResponseDto> createPost(@RequestBody PostRequestDto postRequestDto, @PathVariable Long categoryId, @AuthenticationPrincipal UserEntity user) {
+        PostResponseDto createdPost = postService.createPost(postRequestDto, categoryId, user.getId());
         return ResponseEntity.status(HttpStatus.CREATED).body(createdPost);
     }
 
@@ -32,22 +34,22 @@ public class PostController {
 
     //게시글 수정
     @PutMapping("/posts/{postId}")
-    public ResponseEntity<PostResponseDto> updatePost(@PathVariable Long postId, @RequestBody PostRequestDto postRequestDto) {
-        PostResponseDto updatedPost = postService.updatePost(postId, postRequestDto);
+    public ResponseEntity<PostResponseDto> updatePost(@PathVariable Long postId, @RequestBody PostRequestDto postRequestDto,@AuthenticationPrincipal UserEntity user) {
+        PostResponseDto updatedPost = postService.updatePost(postId, postRequestDto, user.getId());
         return ResponseEntity.status(HttpStatus.OK).body(updatedPost);
     }
 
     //게시긓 삭제
     @DeleteMapping("/posts/{postId}")
-    public ResponseEntity<Void> deletePost(@PathVariable Long postId) {
-        postService.deletePost(postId);
+    public ResponseEntity<Void> deletePost(@PathVariable Long postId, @AuthenticationPrincipal UserEntity  user) {
+        postService.deletePost(postId,user.getId());
         return ResponseEntity.noContent().build();
     }
     //게시글 상세 구현
     //조회수 구현
     @GetMapping("/posts/detail/{postId}")
-    public ResponseEntity<PostResponseDto> detailPost(@PathVariable Long postId ){
-        PostResponseDto postResponseDto = postService.detailPost(postId);
+    public ResponseEntity<PostResponseDto> detailPost(@PathVariable Long postId ,@AuthenticationPrincipal UserEntity user){
+        PostResponseDto postResponseDto = postService.detailPost(postId, user.getId());
         if (postResponseDto == null) {
             return ResponseEntity.notFound().build();
         }

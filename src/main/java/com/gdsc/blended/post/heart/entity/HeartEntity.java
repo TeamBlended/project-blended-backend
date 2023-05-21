@@ -1,15 +1,16 @@
 package com.gdsc.blended.post.heart.entity;
 
 import com.gdsc.blended.post.entity.PostEntity;
-import com.gdsc.blended.user.entity.User;
+import com.gdsc.blended.user.entity.UserEntity;
+import jakarta.persistence.*;
 import lombok.*;
 
-import javax.persistence.*;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
 @Entity
+@Table(name = "tb_heart")
 public class HeartEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,14 +23,14 @@ public class HeartEntity {
     private PostEntity post;
 
     @ManyToOne
-    @JoinColumn
+    @JoinColumn(name = "user_id")
     // 유저 아이디
-    private User user;
+    private UserEntity user;
 
     @Column(nullable = false)
     private boolean status; // true = 좋아요, false = 좋아요 취소
 
-    public HeartEntity(PostEntity post, User user) {
+    public HeartEntity(PostEntity post, UserEntity user) {
         this.post = post;
         this.user = user;
         this.status = true;
