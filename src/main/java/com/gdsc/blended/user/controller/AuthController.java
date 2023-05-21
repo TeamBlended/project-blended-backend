@@ -20,7 +20,7 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/auth/google")
-    public ResponseEntity<TokenResponse> googleLogin(@RequestBody SocialLoginRequest socialLoginRequest) throws GeneralSecurityException, IOException {
+    public ResponseEntity<TokenResponse> googleLogin(@RequestBody SocialLoginRequest socialLoginRequest) throws Exception {
         TokenResponse tokenResponse = authService.googleLogin(socialLoginRequest.token());
         return ResponseEntity.ok(tokenResponse);
     }
