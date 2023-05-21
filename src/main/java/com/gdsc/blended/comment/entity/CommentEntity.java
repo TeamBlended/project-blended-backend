@@ -12,6 +12,7 @@ import lombok.*;
 @NoArgsConstructor
 @Getter
 @Entity
+@Table(name = "tb_comment")
 public class CommentEntity extends BaseTimeEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,11 +20,12 @@ public class CommentEntity extends BaseTimeEntity{
 
     private String content;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "post_id")
     private PostEntity post;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL  )
+    @JoinColumn(name = "user_id")
     private UserEntity user;
 
     public void setPost(PostEntity post) {

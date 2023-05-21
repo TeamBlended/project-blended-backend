@@ -10,6 +10,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @Entity
+@Table(name = "tb_heart")
 public class HeartEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,7 +23,7 @@ public class HeartEntity {
     private PostEntity post;
 
     @ManyToOne
-    @JoinColumn
+    @JoinColumn(name = "user_id")
     // 유저 아이디
     private UserEntity user;
 

@@ -13,7 +13,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@Table(name = "POST_CATEGORY")
+@Table(name = "tb_category")
 public class CategoryEntity {
     @Id
     @Column(name = "category_id")
