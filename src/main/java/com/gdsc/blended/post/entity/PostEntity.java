@@ -6,6 +6,8 @@ import com.gdsc.blended.user.entity.UserEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.locationtech.jts.geom.Point;
 
 
@@ -52,11 +54,13 @@ public class PostEntity extends BaseTimeEntity {
     @Column(name = "recruited")
     private Long recruited;
 
-    @ManyToOne(cascade = CascadeType.PERSISTi, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action= OnDeleteAction.CASCADE)
     @JoinColumn(name = "category_id")
     private CategoryEntity category;
 
-    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action= OnDeleteAction.CASCADE)
     @JoinColumn(name = "user_id")
     private UserEntity userId;
 
