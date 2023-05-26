@@ -10,8 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
-import java.security.GeneralSecurityException;
 
 @RestController
 @RequiredArgsConstructor
@@ -31,9 +29,10 @@ public class AuthController {
         return ResponseEntity.ok(tokenResponse);
     }
 
+    /* 로그아웃
     @DeleteMapping("/user")
     public ResponseEntity<?> logout(@AuthenticationPrincipal UserInfo user, @RequestBody LogoutRequest logoutRequest) throws Exception {
         authService.logout(user.getEmail() , logoutRequest.refreshToken());
         return ResponseEntity.ok("LOGOUT_SUCCESS");
-    }
+    }*/
 }
