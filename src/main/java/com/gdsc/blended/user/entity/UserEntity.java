@@ -1,6 +1,7 @@
 package com.gdsc.blended.user.entity;
 
 
+import com.gdsc.blended.jwt.oauth.GoogleOAuth2UserInfo;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -24,7 +25,6 @@ public class UserEntity {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(name = "user_profile_image")
     private String profileImageUrl;
 
     @Enumerated(EnumType.STRING)
@@ -35,8 +35,18 @@ public class UserEntity {
     private RoleType roleType;
 
 
-    @Builder
+    /*@Builder
     public UserEntity(Long id, String nickname, String email, String profileImageUrl, SocialType socialType , RoleType roleType){
+        this.id = id;
+        this.nickname = nickname;
+        this.email = email;
+        this.profileImageUrl = profileImageUrl;
+        this.socialType = socialType;
+        this.roleType = roleType;
+    }*/
+
+
+    public UserEntity(GoogleOAuth2UserInfo userInfo){
         this.id = id;
         this.nickname = nickname;
         this.email = email;

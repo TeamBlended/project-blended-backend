@@ -4,6 +4,7 @@ import com.gdsc.blended.jwt.dto.TokenResponse;
 import com.gdsc.blended.jwt.oauth.GoogleOAuth2UserInfo;
 import com.gdsc.blended.jwt.token.TokenProvider;
 import com.gdsc.blended.user.entity.RoleType;
+import com.gdsc.blended.user.entity.UserEntity;
 import com.gdsc.blended.user.repository.UserRepository;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
@@ -39,6 +40,13 @@ public class AuthService {
             }
             else {
                 GoogleOAuth2UserInfo userInfo = new GoogleOAuth2UserInfo(googleIdToken.getPayload());
+
+                if (userRepository.findByEmail(userInfo.getEmail()).isPresent()){
+                    throw new RuntimeException("이미 가입되어 있는 유저입니다.");
+                }
+                UserEntity userEntity = new UserEntity(userInfo);
+                userRepository.save(userEntity);
+
                 return sendGenerateJwtToken(userInfo.getEmail(), userInfo.getNickname());
             }
         } catch (Exception e) {
@@ -46,11 +54,12 @@ public class AuthService {
         }
     }
 
+    /* 로그아웃
     @Transactional
     public void logout(String email, String refreshToken) throws Exception {
         validateRefreshToken(refreshToken);
         Claims claims = tokenProvider.parseClaims(refreshToken);
-    }
+    }*/
 
     @Transactional
     public TokenResponse reissue(String email, String nickname, String refreshToken) throws Exception {
