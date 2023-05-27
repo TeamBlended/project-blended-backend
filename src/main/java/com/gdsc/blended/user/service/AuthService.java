@@ -3,6 +3,7 @@ package com.gdsc.blended.user.service;
 import com.gdsc.blended.jwt.dto.TokenResponse;
 import com.gdsc.blended.jwt.oauth.GoogleOAuth2UserInfo;
 import com.gdsc.blended.jwt.token.TokenProvider;
+import com.gdsc.blended.user.dto.UserRequestDto;
 import com.gdsc.blended.user.entity.RoleType;
 import com.gdsc.blended.user.entity.UserEntity;
 import com.gdsc.blended.user.repository.UserRepository;
@@ -13,6 +14,7 @@ import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import com.google.api.client.json.gson.GsonFactory;
 import java.util.Collections;
@@ -26,7 +28,7 @@ public class AuthService {
     private final TokenProvider tokenProvider;
     private final UserRepository userRepository;
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public TokenResponse googleLogin(String idToken) throws Exception {
         GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), new GsonFactory())
                 .setAudience(Collections.singletonList(googleClientId))
@@ -41,12 +43,10 @@ public class AuthService {
             else {
                 GoogleOAuth2UserInfo userInfo = new GoogleOAuth2UserInfo(googleIdToken.getPayload());
 
-                if (userRepository.findByEmail(userInfo.getEmail()).isPresent()){
-                    throw new RuntimeException("이미 가입되어 있는 유저입니다.");
+                if(!userRepository.existsByEmail(userInfo.getEmail())){
+                    UserEntity userEntity = new UserEntity(userInfo);
+                    userRepository.save(userEntity);
                 }
-                UserEntity userEntity = new UserEntity(userInfo);
-                userRepository.save(userEntity);
-
                 return sendGenerateJwtToken(userInfo.getEmail(), userInfo.getNickname());
             }
         } catch (Exception e) {
