@@ -21,7 +21,7 @@ public class PostController {
     //개시글 쓰기
     @PostMapping("/posts/{categoryId}")
     public ResponseEntity<PostResponseDto> createPost(@RequestBody PostRequestDto postRequestDto, @PathVariable Long categoryId, @AuthenticationPrincipal UserEntity user) {
-        PostResponseDto createdPost = postService.createPost(postRequestDto, categoryId, user.getId());
+        PostResponseDto createdPost = postService.createPost(postRequestDto, categoryId, user.getEmail());
         return ResponseEntity.status(HttpStatus.CREATED).body(createdPost);
     }
 
