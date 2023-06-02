@@ -3,20 +3,18 @@ package com.gdsc.blended.user.service;
 import com.gdsc.blended.jwt.dto.TokenResponse;
 import com.gdsc.blended.jwt.oauth.GoogleOAuth2UserInfo;
 import com.gdsc.blended.jwt.token.TokenProvider;
-import com.gdsc.blended.user.dto.UserRequestDto;
 import com.gdsc.blended.user.entity.RoleType;
 import com.gdsc.blended.user.entity.UserEntity;
 import com.gdsc.blended.user.repository.UserRepository;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
-import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import com.google.api.client.json.gson.GsonFactory;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.Collections;
 
 @Service
@@ -28,7 +26,7 @@ public class AuthService {
     private final TokenProvider tokenProvider;
     private final UserRepository userRepository;
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional
     public TokenResponse googleLogin(String idToken) throws Exception {
         GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), new GsonFactory())
                 .setAudience(Collections.singletonList(googleClientId))
