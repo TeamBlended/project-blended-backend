@@ -36,12 +36,10 @@ public class UserEntity {
 
 
     public UserEntity(GoogleOAuth2UserInfo userInfo){
-        this.id = id;
-        this.nickname = nickname;
-        this.email = email;
-        this.profileImageUrl = profileImageUrl;
-        //this.socialType = socialType;
-        this.roleType = roleType;
+        this.nickname = userInfo.getNickname();
+        this.email = userInfo.getEmail();
+        this.profileImageUrl = userInfo.getProfileImageUrl();
+        this.roleType = RoleType.MEMBER;
     }
 
     public UserEntity(Long id){
