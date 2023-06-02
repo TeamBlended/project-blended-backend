@@ -15,6 +15,6 @@ public class GoogleOAuth2UserInfo extends OAuth2UserInfo {
         this.id = payload.getSubject();
         this.email = payload.getEmail();
         this.nickname = (String) payload.get("name");
-        this.profileImageUrl = (String) payload.get("image");
+        this.profileImageUrl = (String) payload.get("picture");
     }
 }
