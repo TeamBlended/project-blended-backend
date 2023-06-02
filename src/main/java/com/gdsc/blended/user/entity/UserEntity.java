@@ -1,12 +1,13 @@
 package com.gdsc.blended.user.entity;
 
 
+import com.gdsc.blended.jwt.oauth.GoogleOAuth2UserInfo;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.DynamicInsert;
 
 
-
-
+//@DynamicInsert
 @Getter
 @Setter
 @RequiredArgsConstructor
@@ -18,31 +19,27 @@ public class UserEntity {
     @Column(name = "user_id")
     private Long id;
 
-    @Column(name = "user_name", unique = true)
+    @Column(nullable = false, unique = true)
     private String nickname;
 
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(name = "user_profile_image")
     private String profileImageUrl;
 
-    @Enumerated(EnumType.STRING)
-    private SocialType socialType;
+    /*@Enumerated(EnumType.STRING)
+    private SocialType socialType;*/
 
     @Enumerated(EnumType.STRING)
     @Column(name = "user_type")
     private RoleType roleType;
 
 
-    @Builder
-    public UserEntity(Long id, String nickname, String email, String profileImageUrl, SocialType socialType , RoleType roleType){
-        this.id = id;
-        this.nickname = nickname;
-        this.email = email;
-        this.profileImageUrl = profileImageUrl;
-        this.socialType = socialType;
-        this.roleType = roleType;
+    public UserEntity(GoogleOAuth2UserInfo userInfo){
+        this.nickname = userInfo.getNickname();
+        this.email = userInfo.getEmail();
+        this.profileImageUrl = userInfo.getProfileImageUrl();
+        this.roleType = RoleType.MEMBER;
     }
 
     public UserEntity(Long id){

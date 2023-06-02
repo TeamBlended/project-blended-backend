@@ -36,10 +36,10 @@ public class PostService {
 
     //게시글 생성 (Post)
     @Transactional
-    public PostResponseDto createPost(PostRequestDto postRequestDto, Long categoryId , Long userId) {
+    public PostResponseDto createPost(PostRequestDto postRequestDto, Long categoryId , String email) {
         CategoryEntity category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid category id"));
-        UserEntity user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("유저가 없습니다."));
+        UserEntity user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("유저가 없습니다."));
         PostEntity savedPost = postRepository.save(postRequestDto.toEntity(category,user));
         return new PostResponseDto(savedPost);
     }
