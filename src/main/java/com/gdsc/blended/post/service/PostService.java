@@ -46,9 +46,9 @@ public class PostService {
 
     // 게시글 삭제(delete)
     @Transactional
-    public void deletePost(Long postId, Long userId) {
+    public void deletePost(Long postId, String email) {
         PostEntity postEntity = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("게시글이 없습니다."));
-        UserEntity user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("유저가 정보가 없습니다."));
+        UserEntity user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("유저가 정보가 없습니다."));
         if (!postEntity.getUserId().equals(user)) {
             throw new IllegalArgumentException("해당 게시글을 작성한 유저가 아닙니다.");
         } else {
@@ -61,10 +61,10 @@ public class PostService {
 
     // 게시글 수정(Put)
     @Transactional
-    public PostResponseDto updatePost(Long postId, PostRequestDto postRequestDto, Long userId) {
+    public PostResponseDto updatePost(Long postId, PostRequestDto postRequestDto, String email) {
 
         PostEntity postEntity = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("게시글이 없습니다."));
-        UserEntity user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("유저가 정보가 없습니다."));
+        UserEntity user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("유저가 정보가 없습니다."));
 
         if (!postEntity.getUserId().equals(user)) {
             throw new IllegalArgumentException("해당 게시글을 작성한 유저가 아닙니다.");
@@ -85,9 +85,9 @@ public class PostService {
     }
 
     @Transactional
-    public PostResponseDto detailPost(Long postId, Long userId) {
+    public PostResponseDto detailPost(Long postId, String email) {
         Optional<PostEntity> optionalPostEntity = postRepository.findById(postId);
-        UserEntity user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("유저가 정보가 없습니다."));
+        UserEntity user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("유저가 정보가 없습니다."));
         if (optionalPostEntity.isEmpty()) {
             return null;
         }
