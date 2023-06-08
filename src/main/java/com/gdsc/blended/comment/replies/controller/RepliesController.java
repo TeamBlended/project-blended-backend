@@ -4,6 +4,7 @@ import com.gdsc.blended.comment.dto.CommentRequestDto;
 import com.gdsc.blended.comment.replies.dto.RepliesRequestDto;
 import com.gdsc.blended.comment.replies.dto.RepliesResponseDto;
 import com.gdsc.blended.comment.replies.service.RepliesService;
+import com.gdsc.blended.jwt.oauth.UserInfo;
 import com.gdsc.blended.user.entity.UserEntity;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.ResponseEntity;
@@ -22,8 +23,8 @@ public class RepliesController {
     }
 
     @PostMapping()
-    public ResponseEntity<RepliesResponseDto> createReplies(@RequestBody RepliesRequestDto requestDto, @PathVariable Long commentId,@AuthenticationPrincipal UserEntity user) {
-        RepliesResponseDto responseDto = repliesService.createReplies(requestDto,commentId,user.getId());
+    public ResponseEntity<RepliesResponseDto> createReplies(@RequestBody RepliesRequestDto requestDto, @PathVariable Long commentId,@AuthenticationPrincipal UserInfo user) {
+        RepliesResponseDto responseDto = repliesService.createReplies(requestDto,commentId,user.getEmail());
         return ResponseEntity.ok(responseDto);
     }
     @Operation(summary = "대댓글조회(필요없을듯)")
@@ -40,22 +41,22 @@ public class RepliesController {
     }
 
     @PutMapping("/{repliesId}")
-    public ResponseEntity<RepliesResponseDto> updateReplies(@RequestBody CommentRequestDto requestDto, @PathVariable Long repliesId, @AuthenticationPrincipal UserEntity user) {
-        RepliesResponseDto updateComment = repliesService.updateReplies(requestDto, repliesId, user.getId());
+    public ResponseEntity<RepliesResponseDto> updateReplies(@RequestBody CommentRequestDto requestDto, @PathVariable Long repliesId, @AuthenticationPrincipal UserInfo user) {
+        RepliesResponseDto updateComment = repliesService.updateReplies(requestDto, repliesId, user.getEmail());
         return ResponseEntity.ok(updateComment);
     }
 
     //삭제하기(근데 내용만 안보이게)
     @Operation(summary = "대댓글 삭제하기", description = "실제로 삭제되진 않고 내용만 지워짐")
     @PutMapping("/{repliesId}/delete")
-    public ResponseEntity<RepliesResponseDto> deleteComment(@PathVariable Long repliesId, @AuthenticationPrincipal UserEntity user) {
-        RepliesResponseDto deleteComment = repliesService.deleteReplies(repliesId, user.getId());
+    public ResponseEntity<RepliesResponseDto> deleteComment(@PathVariable Long repliesId, @AuthenticationPrincipal UserInfo user) {
+        RepliesResponseDto deleteComment = repliesService.deleteReplies(repliesId, user.getEmail());
         return ResponseEntity.ok(deleteComment);
     }
 
     @DeleteMapping("/{repliesId}")
-    public ResponseEntity<Void> realDeleteComment(@PathVariable Long repliesId,@AuthenticationPrincipal UserEntity user){
-        repliesService.realDeleteReplies(repliesId,user.getId());
+    public ResponseEntity<Void> realDeleteComment(@PathVariable Long repliesId,@AuthenticationPrincipal UserInfo user){
+        repliesService.realDeleteReplies(repliesId,user.getEmail());
         return ResponseEntity.noContent().build();
     }
 
