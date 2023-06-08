@@ -4,10 +4,8 @@ package com.gdsc.blended.user.entity;
 import com.gdsc.blended.jwt.oauth.GoogleOAuth2UserInfo;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.DynamicInsert;
 
 
-//@DynamicInsert
 @Getter
 @Setter
 @RequiredArgsConstructor
