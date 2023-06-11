@@ -2,6 +2,7 @@ package com.gdsc.blended.post.service;
 
 import com.gdsc.blended.category.entity.CategoryEntity;
 import com.gdsc.blended.category.repository.CategoryRepository;
+import com.gdsc.blended.post.dto.GeoListResponseDto;
 import com.gdsc.blended.post.dto.PostRequestDto;
 import com.gdsc.blended.post.dto.PostResponseDto;
 import com.gdsc.blended.post.entity.PostEntity;
@@ -12,8 +13,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
@@ -100,4 +100,57 @@ public class PostService {
         return new PostResponseDto(postEntity);
     }
 
+
+    public List<GeoListResponseDto> getPostsByDistance(Double latitude, Double longitude, Double MAX_DISTANCE) {
+        List<PostEntity> postEntities = postRepository.findAll();
+
+        List<GeoListResponseDto> postsByDistance = new ArrayList<>();
+        for (PostEntity postEntity : postEntities) {
+            Double postLatitude = postEntity.getLatitude();
+            Double postLongitude = postEntity.getLongitude();
+
+            // 위도 경도 간의 거리 계산 로직을 적용하세요.
+            // 예시: Haversine formula
+            double distance = calculateDistance(latitude, longitude, postLatitude, postLongitude);
+
+            GeoListResponseDto postDto = new GeoListResponseDto();
+            postDto.setId(postEntity.getId());
+            postDto.setTitle(postEntity.getTitle());
+            postDto.setContent(postEntity.getContent());
+            postDto.setLatitude(postEntity.getLatitude());
+            postDto.setLongitude(postEntity.getLongitude());
+            postDto.setDistance(distance);
+
+            if (distance <= MAX_DISTANCE) { // 단위는 km
+                postsByDistance.add(postDto);
+            }
+        }
+        postsByDistance.sort(Comparator.comparingDouble(GeoListResponseDto::getDistance));
+
+        return postsByDistance;
+    }
+
+    private double calculateDistance(Double latitude1, Double longitude1, Double latitude2, Double longitude2) {
+        // 지구의 반지름 (단위: km)
+        double radius = 6371;
+
+        // 위도와 경도를 라디안 단위로 변환
+        double lat1Rad = Math.toRadians(latitude1);
+        double lon1Rad = Math.toRadians(longitude1);
+        double lat2Rad = Math.toRadians(latitude2);
+        double lon2Rad = Math.toRadians(longitude2);
+
+        // 두 지점의 위도 차이와 경도 차이 계산
+        double latDiff = lat2Rad - lat1Rad;
+        double lonDiff = lon2Rad - lon1Rad;
+
+        // Haversine formula를 사용하여 거리 계산
+        double a = Math.sin(latDiff / 2) * Math.sin(latDiff / 2)
+                + Math.cos(lat1Rad) * Math.cos(lat2Rad)
+                * Math.sin(lonDiff / 2) * Math.sin(lonDiff / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+        return radius * c;
+    }
 }
+//37.595075 127.059507
