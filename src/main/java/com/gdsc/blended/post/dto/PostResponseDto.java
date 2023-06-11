@@ -2,16 +2,17 @@ package com.gdsc.blended.post.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gdsc.blended.post.entity.PostEntity;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.xml.stream.Location;
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class PostResponseDto {
     @JsonProperty("post_id")
     private Long id;
@@ -45,4 +46,6 @@ public class PostResponseDto {
         this.recruited = postEntity.getRecruited();
         this.category = postEntity.getCategory().getId();
     }
+
+
 }

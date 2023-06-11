@@ -1,6 +1,7 @@
 package com.gdsc.blended.post.controller;
 
 import com.gdsc.blended.jwt.oauth.UserInfo;
+import com.gdsc.blended.post.dto.GeoListResponseDto;
 import com.gdsc.blended.post.dto.PostRequestDto;
 import com.gdsc.blended.post.dto.PostResponseDto;
 import com.gdsc.blended.post.service.PostService;
@@ -58,6 +59,16 @@ public class PostController {
 
     }
 
+
+    @GetMapping("/posts/distanceList")
+    public ResponseEntity<List<GeoListResponseDto>> getPostsByDistance(
+            @RequestParam("nowLatitude") Double latitude,
+            @RequestParam("nowLongitude") Double longitude,
+            @RequestParam("distance") Double distance
+    ) {
+        List<GeoListResponseDto> posts = postService.getPostsByDistance(latitude, longitude, distance);
+        return ResponseEntity.status(HttpStatus.OK).body(posts);
+    }
     //TODO .. 찜수 구현
 
     //TODO .. 게

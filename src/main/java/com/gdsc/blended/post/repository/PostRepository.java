@@ -9,4 +9,5 @@ import java.util.List;
 public interface PostRepository extends JpaRepository<PostEntity, Long> {
     @Query("SELECT p FROM PostEntity p ORDER BY p.id DESC")
     List<PostEntity> findAllDesc();
+
 }
