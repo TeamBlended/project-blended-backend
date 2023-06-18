@@ -39,6 +39,7 @@ public class PostEntity extends BaseTimeEntity {
     private String content;
 
     private Boolean status;
+    private Boolean liked;
 
     private String locationName;
     private Double latitude; //위도
@@ -69,11 +70,7 @@ public class PostEntity extends BaseTimeEntity {
     public void increaseViewCount() {
         this.viewCount++;
     }
-    @JsonProperty("shareDateTime") // JSON으로 변환 시 필드명을 "shareDate"로 설정
-    public String getFormattedShareDate() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-        return dateFormat.format(this.shareDateTime);
-    }
+
     //TODO .. 사진 추가
     //TODO .. 로그인 이휴 유저정보 추가
     //TODO .. maxRecruits를 0일떄 어떻게 해야할까?

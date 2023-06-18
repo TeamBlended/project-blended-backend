@@ -7,10 +7,7 @@ import org.locationtech.jts.geom.Point;
 @Getter
 @Setter
 public class LocationDto {
-    private Double longitude;
-    private Double latitude;
-    public LocationDto(Point entity){
-        this.longitude = entity.getX();
-        this.latitude = entity.getY();
-    }
+    private String name;
+    private Double lng;
+    private Double lat;
 }
