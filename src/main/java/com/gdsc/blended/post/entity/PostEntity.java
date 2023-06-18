@@ -1,5 +1,6 @@
 package com.gdsc.blended.post.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gdsc.blended.BaseTime.BaseTimeEntity;
 import com.gdsc.blended.category.entity.CategoryEntity;
 import com.gdsc.blended.user.entity.UserEntity;
@@ -10,7 +11,8 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.locationtech.jts.geom.Point;
 
-
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 
 @Getter
@@ -51,8 +53,8 @@ public class PostEntity extends BaseTimeEntity {
     @Column(name = "max_recruits")
     private Long maxRecruits;
 
-    @Column(name = "recruited")
-    private Long recruited;
+    @Column(name = "share_date_time")
+    private Date shareDateTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action= OnDeleteAction.CASCADE)
@@ -67,7 +69,11 @@ public class PostEntity extends BaseTimeEntity {
     public void increaseViewCount() {
         this.viewCount++;
     }
-
+    @JsonProperty("shareDateTime") // JSON으로 변환 시 필드명을 "shareDate"로 설정
+    public String getFormattedShareDate() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        return dateFormat.format(this.shareDateTime);
+    }
     //TODO .. 사진 추가
     //TODO .. 로그인 이휴 유저정보 추가
     //TODO .. maxRecruits를 0일떄 어떻게 해야할까?
