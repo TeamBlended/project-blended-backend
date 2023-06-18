@@ -10,6 +10,8 @@ import com.gdsc.blended.post.repository.PostRepository;
 import com.gdsc.blended.user.entity.UserEntity;
 import com.gdsc.blended.user.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,10 +30,9 @@ public class PostService {
     }
 
     //전체 출력(Get)
-    public List<PostResponseDto> getAllPost() {
-        return postRepository.findAllDesc().stream()
-                .map(PostResponseDto::new)
-                .collect(Collectors.toList());
+    public Page<PostResponseDto> getAllPost(Pageable pageable) {
+        Page<PostEntity> postPage = postRepository.findAll(pageable);
+        return postPage.map(PostResponseDto::new);
     }
 
     //게시글 생성 (Post)
@@ -93,7 +94,7 @@ public class PostService {
         }
         PostEntity postEntity = optionalPostEntity.get();
 
-        if(!postEntity.getUserId().equals(user)) {
+        if(!postEntity.getUserId().equals(user)){
             postEntity.increaseViewCount(); // 조회수 증가
             postRepository.save(postEntity);
         }

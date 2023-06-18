@@ -3,18 +3,20 @@ package com.gdsc.blended.post.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gdsc.blended.post.entity.PostEntity;
 import lombok.AllArgsConstructor;
+import com.gdsc.blended.user.dto.response.AuthorDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class PostResponseDto {
-    @JsonProperty("post_id")
     private Long id;
     private String title;
     private String content;
@@ -24,11 +26,12 @@ public class PostResponseDto {
     private Boolean status;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private Date shareDateTime;
     private Long viewCount;
     private Long scrapCount;
     private Long maxRecruits;
-    private Long recruited;
     private Long category;
+    private AuthorDto author;
 
     public PostResponseDto(PostEntity postEntity) {
         this.id = postEntity.getId();
@@ -43,9 +46,10 @@ public class PostResponseDto {
         this.viewCount = postEntity.getViewCount();
         this.scrapCount = postEntity.getLikeCount();
         this.maxRecruits = postEntity.getMaxRecruits();
-        this.recruited = postEntity.getRecruited();
+        this.shareDateTime = postEntity.getShareDateTime();
         this.category = postEntity.getCategory().getId();
+        author.setNickname(postEntity.getUserId().getNickname());
+        author.setEmail(postEntity.getUserId().getEmail());
+        author.setProfileImageUrl(postEntity.getUserId().getProfileImageUrl());
     }
-
-
 }
