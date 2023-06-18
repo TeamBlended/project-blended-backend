@@ -65,7 +65,7 @@ public class PostController {
     public ResponseEntity<List<GeoListResponseDto>> getPostsByDistance(
             @RequestParam("nowLatitude") Double latitude,
             @RequestParam("nowLongitude") Double longitude,
-            @RequestParam("distance") Double distance
+            @RequestParam("distanceRange") Double distance
     ) {
         List<GeoListResponseDto> posts = postService.getPostsByDistance(latitude, longitude, distance);
         return ResponseEntity.status(HttpStatus.OK).body(posts);

@@ -20,16 +20,19 @@ public class PostResponseDto {
     private Long id;
     private String title;
     private String content;
-    private String locationName;
-    private Double latitude;
-    private Double longitude;
-    private Boolean status;
+    private LocationDto shareLocation;
+    /*
+        private String locationName;
+        private Double latitude;
+        private Double longitude;
+    */
+    private Boolean liked;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private Date shareDateTime;
     private Long viewCount;
     private Long scrapCount;
-    private Long maxRecruits;
+    private Long maxParticipantsCount;
     private Long category;
     private AuthorDto author;
 
@@ -37,15 +40,15 @@ public class PostResponseDto {
         this.id = postEntity.getId();
         this.title = postEntity.getTitle();
         this.content = postEntity.getContent();
-        this.locationName = postEntity.getLocationName();
-        this.latitude = postEntity.getLatitude();
-        this.longitude = postEntity.getLongitude();
-        this.status = postEntity.getStatus();
+        shareLocation.setName(postEntity.getLocationName());
+        shareLocation.setLat(postEntity.getLatitude());
+        shareLocation.setLng(postEntity.getLongitude());
+        this.liked = postEntity.getLiked();
         this.createdAt = postEntity.getCreatedDate();
         this.updatedAt = postEntity.getModifiedDate();
         this.viewCount = postEntity.getViewCount();
         this.scrapCount = postEntity.getLikeCount();
-        this.maxRecruits = postEntity.getMaxRecruits();
+        this.maxParticipantsCount = postEntity.getMaxRecruits();
         this.shareDateTime = postEntity.getShareDateTime();
         this.category = postEntity.getCategory().getId();
         author.setNickname(postEntity.getUserId().getNickname());
