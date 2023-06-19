@@ -4,9 +4,14 @@ import com.gdsc.blended.jwt.oauth.UserInfo;
 import com.gdsc.blended.post.dto.GeoListResponseDto;
 import com.gdsc.blended.post.dto.PostRequestDto;
 import com.gdsc.blended.post.dto.PostResponseDto;
+import com.gdsc.blended.post.heart.dto.HeartListResponseDto;
 import com.gdsc.blended.post.service.PostService;
 import com.gdsc.blended.user.entity.UserEntity;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -59,7 +64,7 @@ public class PostController {
 
     }
 
-
+    @Operation(summary = "가까운 순으로 게시글 목록 가져오기")
     @GetMapping("/posts/distanceList")
     public ResponseEntity<List<GeoListResponseDto>> getPostsByDistance(
             @RequestParam("nowLatitude") Double latitude,
@@ -69,10 +74,14 @@ public class PostController {
         List<GeoListResponseDto> posts = postService.getPostsByDistance(latitude, longitude, distance);
         return ResponseEntity.status(HttpStatus.OK).body(posts);
     }
-    //TODO .. 찜수 구현
 
-    //TODO .. 게
-
-    //TODO .. 게시글 상세
+    @Operation(summary = "좋아요 많은 순으로 게시슬 가져오기")
+    @GetMapping("/posts/heartList")
+    public ResponseEntity<Page<PostResponseDto>> heartList(@RequestParam(defaultValue = "0") int page,
+                                                           @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<PostResponseDto> postPage = postService.getPostsSortedByHeart(pageable);
+        return ResponseEntity.status(HttpStatus.OK).body(postPage);
+    }
 
 }
