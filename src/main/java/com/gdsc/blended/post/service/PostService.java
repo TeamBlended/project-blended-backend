@@ -10,6 +10,9 @@ import com.gdsc.blended.post.repository.PostRepository;
 import com.gdsc.blended.user.entity.UserEntity;
 import com.gdsc.blended.user.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -151,6 +154,11 @@ public class PostService {
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
         return radius * c;
+    }
+
+    public Page<PostResponseDto> getPostsSortedByHeart(Pageable pageable) {
+        Page<PostEntity> postPage = postRepository.findAllByOrderByLikeCountDesc(pageable);
+        return postPage.map(PostResponseDto::new);
     }
 }
 //37.595075 127.059507
