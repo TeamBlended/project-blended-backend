@@ -7,6 +7,7 @@ import com.gdsc.blended.post.dto.PostResponseDto;
 import com.gdsc.blended.post.service.PostService;
 import com.gdsc.blended.user.entity.UserEntity;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -67,6 +68,15 @@ public class PostController {
             @RequestParam("distance") Double distance
     ) {
         List<GeoListResponseDto> posts = postService.getPostsByDistance(latitude, longitude, distance);
+        return ResponseEntity.status(HttpStatus.OK).body(posts);
+    }
+
+    @GetMapping("/posts/newestList")
+    public ResponseEntity<Page<PostResponseDto>> getNewestPosts(
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "10") Integer size
+    ) {
+        Page<PostResponseDto> posts = postService.getNewestPosts(page, size);
         return ResponseEntity.status(HttpStatus.OK).body(posts);
     }
     //TODO .. 찜수 구현
