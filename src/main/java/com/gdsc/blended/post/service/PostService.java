@@ -165,6 +165,8 @@ public class PostService {
         Pageable pageable = PageRequest.of(page, size, Sort.by("modifiedDate").descending());
         Page<PostEntity> postEntities = postRepository.findAll(pageable);
         return postEntities.map(PostResponseDto::new);
+    }
+
 
     public Page<PostResponseDto> getPostsSortedByHeart(Pageable pageable) {
         Page<PostEntity> postPage = postRepository.findAllByOrderByLikeCountDesc(pageable);

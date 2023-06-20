@@ -1,7 +1,6 @@
 package com.gdsc.blended.post.heart.service;
 
 import com.gdsc.blended.post.entity.PostEntity;
-import com.gdsc.blended.post.heart.dto.HeartListResponseDto;
 import com.gdsc.blended.post.heart.entity.HeartEntity;
 import com.gdsc.blended.post.heart.repository.HeartRepository;
 import com.gdsc.blended.post.repository.PostRepository;
@@ -11,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 
 @RequiredArgsConstructor
 @Service
