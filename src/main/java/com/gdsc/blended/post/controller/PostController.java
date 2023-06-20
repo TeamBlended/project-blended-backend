@@ -32,11 +32,10 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdPost);
     }
 
-    //모든 게시글 가져오기
     @GetMapping("/posts")
-    public ResponseEntity<List<PostResponseDto>> getAllPost(){
-        List<PostResponseDto> postList =postService.getAllPost();
-        return ResponseEntity.status(HttpStatus.OK).body(postList);
+    public ResponseEntity<Page<PostResponseDto>> getAllPost(Pageable pageable) {
+        Page<PostResponseDto> postPage = postService.getAllPost(pageable);
+        return ResponseEntity.status(HttpStatus.OK).body(postPage);
     }
 
     //게시글 수정
@@ -69,7 +68,7 @@ public class PostController {
     public ResponseEntity<List<GeoListResponseDto>> getPostsByDistance(
             @RequestParam("nowLatitude") Double latitude,
             @RequestParam("nowLongitude") Double longitude,
-            @RequestParam("distance") Double distance
+            @RequestParam("distanceRange") Double distance
     ) {
         List<GeoListResponseDto> posts = postService.getPostsByDistance(latitude, longitude, distance);
         return ResponseEntity.status(HttpStatus.OK).body(posts);

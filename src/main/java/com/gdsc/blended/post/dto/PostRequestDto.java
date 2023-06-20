@@ -1,9 +1,12 @@
 package com.gdsc.blended.post.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.gdsc.blended.category.entity.CategoryEntity;
 import com.gdsc.blended.post.entity.PostEntity;
 import com.gdsc.blended.user.entity.UserEntity;
 import lombok.*;
+
+import java.util.Date;
 
 @NoArgsConstructor
 @Getter
@@ -12,6 +15,8 @@ public class PostRequestDto {
     private String title;
     private String content;
     private Long maxRecruit;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    private Date shareDateTime;
     private String locationName;
     private Double latitude; //위도
     private Double longitude; //경도
@@ -23,10 +28,10 @@ public class PostRequestDto {
         postEntity.setLocationName(locationName);
         postEntity.setLatitude(latitude);
         postEntity.setLongitude(longitude);
-        postEntity.setStatus(true);
+        postEntity.setLiked(true);
         postEntity.setViewCount(0L);
         postEntity.setLikeCount(0L);
-        postEntity.setRecruited(0L);
+        postEntity.setShareDateTime(shareDateTime);
         postEntity.setMaxRecruits(maxRecruit);
         postEntity.setCategory(category);
         postEntity.setUserId(user);
