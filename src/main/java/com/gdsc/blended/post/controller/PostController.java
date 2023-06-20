@@ -74,6 +74,15 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.OK).body(posts);
     }
 
+    @GetMapping("/posts/newestList")
+    public ResponseEntity<Page<PostResponseDto>> getNewestPosts(
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "10") Integer size
+    ) {
+        Page<PostResponseDto> posts = postService.getNewestPosts(page, size);
+        return ResponseEntity.status(HttpStatus.OK).body(posts);
+    }
+
     @Operation(summary = "좋아요 많은 순으로 게시슬 가져오기")
     @GetMapping("/posts/heartList")
     public ResponseEntity<Page<PostResponseDto>> heartList(@RequestParam(defaultValue = "0") int page,

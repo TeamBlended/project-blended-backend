@@ -12,6 +12,9 @@ import com.gdsc.blended.user.entity.UserEntity;
 import com.gdsc.blended.user.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -157,6 +160,11 @@ public class PostService {
 
         return radius * c;
     }
+
+    public Page<PostResponseDto> getNewestPosts(Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("modifiedDate").descending());
+        Page<PostEntity> postEntities = postRepository.findAll(pageable);
+        return postEntities.map(PostResponseDto::new);
 
     public Page<PostResponseDto> getPostsSortedByHeart(Pageable pageable) {
         Page<PostEntity> postPage = postRepository.findAllByOrderByLikeCountDesc(pageable);
