@@ -99,7 +99,7 @@ public class PostService {
         }
         PostEntity postEntity = optionalPostEntity.get();
 
-        if(!postEntity.getUserId().equals(user)){
+        if(!postEntity.getUserId().getId().equals(user.getId())) {
             postEntity.increaseViewCount(); // 조회수 증가
             postRepository.save(postEntity);
         }
