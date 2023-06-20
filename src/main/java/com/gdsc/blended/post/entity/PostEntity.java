@@ -1,5 +1,6 @@
 package com.gdsc.blended.post.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gdsc.blended.BaseTime.BaseTimeEntity;
 import com.gdsc.blended.category.entity.CategoryEntity;
 import com.gdsc.blended.user.entity.UserEntity;
@@ -10,7 +11,8 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.locationtech.jts.geom.Point;
 
-
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 
 @Getter
@@ -37,6 +39,7 @@ public class PostEntity extends BaseTimeEntity {
     private String content;
 
     private Boolean status;
+    private Boolean liked;
 
     private String locationName;
     private Double latitude; //위도
@@ -51,8 +54,8 @@ public class PostEntity extends BaseTimeEntity {
     @Column(name = "max_recruits")
     private Long maxRecruits;
 
-    @Column(name = "recruited")
-    private Long recruited;
+    @Column(name = "share_date_time")
+    private Date shareDateTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action= OnDeleteAction.CASCADE)

@@ -3,6 +3,7 @@ package com.gdsc.blended.post.service;
 import com.gdsc.blended.category.entity.CategoryEntity;
 import com.gdsc.blended.category.repository.CategoryRepository;
 import com.gdsc.blended.post.dto.GeoListResponseDto;
+import com.gdsc.blended.post.dto.LocationDto;
 import com.gdsc.blended.post.dto.PostRequestDto;
 import com.gdsc.blended.post.dto.PostResponseDto;
 import com.gdsc.blended.post.entity.PostEntity;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,10 +34,9 @@ public class PostService {
     }
 
     //전체 출력(Get)
-    public List<PostResponseDto> getAllPost() {
-        return postRepository.findAllDesc().stream()
-                .map(PostResponseDto::new)
-                .collect(Collectors.toList());
+    public Page<PostResponseDto> getAllPost(Pageable pageable) {
+        Page<PostEntity> postPage = postRepository.findAll(pageable);
+        return postPage.map(PostResponseDto::new);
     }
 
     //게시글 생성 (Post)
@@ -97,7 +98,7 @@ public class PostService {
         }
         PostEntity postEntity = optionalPostEntity.get();
 
-        if(!postEntity.getUserId().equals(user)) {
+        if(!postEntity.getUserId().equals(user)){
             postEntity.increaseViewCount(); // 조회수 증가
             postRepository.save(postEntity);
         }
@@ -113,23 +114,25 @@ public class PostService {
             Double postLatitude = postEntity.getLatitude();
             Double postLongitude = postEntity.getLongitude();
 
-            // 위도 경도 간의 거리 계산 로직을 적용하세요.
-            // 예시: Haversine formula
+            // 위도 경도 간의 거리 계산 로직
             double distance = calculateDistance(latitude, longitude, postLatitude, postLongitude);
 
             GeoListResponseDto postDto = new GeoListResponseDto();
             postDto.setId(postEntity.getId());
             postDto.setTitle(postEntity.getTitle());
             postDto.setContent(postEntity.getContent());
-            postDto.setLatitude(postEntity.getLatitude());
-            postDto.setLongitude(postEntity.getLongitude());
-            postDto.setDistance(distance);
+            LocationDto locationDto = new LocationDto();
+            locationDto.setName(postEntity.getLocationName());
+            locationDto.setLng(postEntity.getLongitude());
+            locationDto.setLat(postEntity.getLatitude());
+            postDto.setShareLocation(locationDto);
+            postDto.setDistanceRange(distance);
 
             if (distance <= MAX_DISTANCE) { // 단위는 km
                 postsByDistance.add(postDto);
             }
         }
-        postsByDistance.sort(Comparator.comparingDouble(GeoListResponseDto::getDistance));
+        postsByDistance.sort(Comparator.comparingDouble(GeoListResponseDto::getDistanceRange));
 
         return postsByDistance;
     }
