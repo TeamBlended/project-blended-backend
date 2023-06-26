@@ -20,7 +20,7 @@ public class PostResponseDto {
     private String title;
     private String content;
     private LocationDto shareLocation;
-    private Boolean liked;
+    private Boolean status;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private Date shareDateTime;
@@ -34,10 +34,11 @@ public class PostResponseDto {
         this.id = postEntity.getId();
         this.title = postEntity.getTitle();
         this.content = postEntity.getContent();
-        shareLocation.setName(postEntity.getLocationName());
-        shareLocation.setLat(postEntity.getLatitude());
-        shareLocation.setLng(postEntity.getLongitude());
-        this.liked = postEntity.getLiked();
+        this.shareLocation = new LocationDto();
+        this.shareLocation.setName(postEntity.getLocationName());
+        this.shareLocation.setLat(postEntity.getLatitude());
+        this.shareLocation.setLng(postEntity.getLongitude());
+        this.status = postEntity.getStatus();
         this.createdAt = postEntity.getCreatedDate();
         this.updatedAt = postEntity.getModifiedDate();
         this.viewCount = postEntity.getViewCount();
@@ -45,8 +46,9 @@ public class PostResponseDto {
         this.maxParticipantsCount = postEntity.getMaxRecruits();
         this.shareDateTime = postEntity.getShareDateTime();
         this.category = postEntity.getCategory().getId();
-        author.setNickname(postEntity.getUserId().getNickname());
-        author.setEmail(postEntity.getUserId().getEmail());
-        author.setProfileImageUrl(postEntity.getUserId().getProfileImageUrl());
+        this.author = new AuthorDto();
+        this.author.setNickname(postEntity.getUserId().getNickname());
+        this.author.setEmail(postEntity.getUserId().getEmail());
+        this.author.setProfileImageUrl(postEntity.getUserId().getProfileImageUrl());
     }
 }
