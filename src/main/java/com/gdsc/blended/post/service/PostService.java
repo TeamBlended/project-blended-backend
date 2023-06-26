@@ -34,6 +34,7 @@ public class PostService {
         return postRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid post id"));
     }
 
+    @Transactional
     //전체 출력(Get)
     public Page<PostResponseDto> getAllPost(Pageable pageable) {
         Page<PostEntity> postPage = postRepository.findAll(pageable);
@@ -106,7 +107,7 @@ public class PostService {
         return new PostResponseDto(postEntity);
     }
 
-
+    @Transactional
     public List<GeoListResponseDto> getPostsByDistance(Double latitude, Double longitude, Double MAX_DISTANCE) {
         List<PostEntity> postEntities = postRepository.findAll();
 
@@ -161,13 +162,14 @@ public class PostService {
         return radius * c;
     }
 
+    @Transactional
     public Page<PostResponseDto> getNewestPosts(Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("modifiedDate").descending());
         Page<PostEntity> postEntities = postRepository.findAll(pageable);
         return postEntities.map(PostResponseDto::new);
     }
 
-
+    @Transactional
     public Page<PostResponseDto> getPostsSortedByHeart(Pageable pageable) {
         Page<PostEntity> postPage = postRepository.findAllByOrderByLikeCountDesc(pageable);
         return postPage.map(PostResponseDto::new);
