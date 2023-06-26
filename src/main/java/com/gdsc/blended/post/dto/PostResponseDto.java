@@ -2,11 +2,9 @@ package com.gdsc.blended.post.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gdsc.blended.post.entity.PostEntity;
-import lombok.AllArgsConstructor;
+import jdk.jshell.Snippet;
+import lombok.*;
 import com.gdsc.blended.user.dto.response.AuthorDto;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -16,16 +14,12 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class PostResponseDto {
     private Long id;
     private String title;
     private String content;
     private LocationDto shareLocation;
-    /*
-        private String locationName;
-        private Double latitude;
-        private Double longitude;
-    */
     private Boolean liked;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
