@@ -31,7 +31,9 @@ public class PostController {
     }
 
     @GetMapping("/posts")
-    public ResponseEntity<Page<PostResponseDto>> getAllPost(Pageable pageable) {
+    public ResponseEntity<Page<PostResponseDto>> getAllPost(@RequestParam(defaultValue = "0") int page,
+                                                            @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
         Page<PostResponseDto> postPage = postService.getAllPost(pageable);
         return ResponseEntity.status(HttpStatus.OK).body(postPage);
     }
