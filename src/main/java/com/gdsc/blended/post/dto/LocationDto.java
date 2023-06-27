@@ -1,11 +1,12 @@
 package com.gdsc.blended.post.dto;
 
-import lombok.Getter;
-import lombok.Setter;
-import org.locationtech.jts.geom.Point;
+import lombok.*;
 
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
+@Builder
 public class LocationDto {
     private String name;
     private Double lng;

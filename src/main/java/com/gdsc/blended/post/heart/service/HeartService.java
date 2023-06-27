@@ -1,13 +1,20 @@
 package com.gdsc.blended.post.heart.service;
 
+import com.gdsc.blended.post.dto.LocationDto;
+import com.gdsc.blended.post.dto.PostResponseDto;
 import com.gdsc.blended.post.entity.PostEntity;
 import com.gdsc.blended.post.heart.entity.HeartEntity;
 import com.gdsc.blended.post.heart.repository.HeartRepository;
 import com.gdsc.blended.post.repository.PostRepository;
+import com.gdsc.blended.user.dto.response.AuthorDto;
 import com.gdsc.blended.user.entity.UserEntity;
 import com.gdsc.blended.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 
@@ -42,4 +49,36 @@ public class HeartService {
         }
     }
 
+    public Page<PostResponseDto> getMyHeartList(int page, int size, String userEmail) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<PostEntity> postPage = heartRepository.findLikedPostsByUserEmail(pageable, userEmail);
+
+        return postPage.map(this::mapToPostResponseDto);
+    }
+
+    private PostResponseDto mapToPostResponseDto(PostEntity postEntity) {
+        return PostResponseDto.builder()
+                .id(postEntity.getId())
+                .title(postEntity.getTitle())
+                .content(postEntity.getContent())
+                .shareLocation(LocationDto.builder()
+                        .name(postEntity.getLocationName())
+                        .lat(postEntity.getLatitude())
+                        .lng(postEntity.getLongitude())
+                        .build())
+                .liked(postEntity.getLiked())
+                .createdAt(postEntity.getCreatedDate())
+                .updatedAt(postEntity.getModifiedDate())
+                .viewCount(postEntity.getViewCount())
+                .scrapCount(postEntity.getLikeCount())
+                .maxParticipantsCount(postEntity.getMaxRecruits())
+                .shareDateTime(postEntity.getShareDateTime())
+                .category(postEntity.getCategory().getId())
+                .author(AuthorDto.builder()
+                        .nickname(postEntity.getUserId().getNickname())
+                        .email(postEntity.getUserId().getEmail())
+                        .profileImageUrl(postEntity.getUserId().getProfileImageUrl())
+                        .build())
+                .build();
+    }
 }
