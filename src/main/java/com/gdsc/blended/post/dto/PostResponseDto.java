@@ -20,7 +20,7 @@ public class PostResponseDto {
     private String title;
     private String content;
     private LocationDto shareLocation;
-    private Boolean status;
+    private Boolean liked;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private Date shareDateTime;
@@ -38,7 +38,7 @@ public class PostResponseDto {
         this.shareLocation.setName(postEntity.getLocationName());
         this.shareLocation.setLat(postEntity.getLatitude());
         this.shareLocation.setLng(postEntity.getLongitude());
-        this.status = postEntity.getStatus();
+        this.liked = postEntity.getLiked();
         this.createdAt = postEntity.getCreatedDate();
         this.updatedAt = postEntity.getModifiedDate();
         this.viewCount = postEntity.getViewCount();
