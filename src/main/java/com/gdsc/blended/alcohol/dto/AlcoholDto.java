@@ -1,3 +1,4 @@
+/*
 package com.gdsc.blended.alcohol.dto;
 
 import com.gdsc.blended.alcohol.entity.AlcoholEntity;
@@ -29,3 +30,4 @@ public class AlcoholDto {
                 .build();
     }
 }
+*/

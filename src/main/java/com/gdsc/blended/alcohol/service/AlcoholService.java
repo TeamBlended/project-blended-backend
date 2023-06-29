@@ -1,3 +1,4 @@
+/*
 package com.gdsc.blended.alcohol.service;
 
 import com.gdsc.blended.alcohol.dto.AlcoholDto;
@@ -44,3 +45,4 @@ public class AlcoholService {
     }
 }
 
+*/
