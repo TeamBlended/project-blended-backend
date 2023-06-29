@@ -1,3 +1,4 @@
+/*
 package com.gdsc.blended.alcohol.controller;
 
 
@@ -22,3 +23,4 @@ public class AlcoholController {
         return ResponseEntity.ok(alcoholDtoList);
     }
 }
+*/

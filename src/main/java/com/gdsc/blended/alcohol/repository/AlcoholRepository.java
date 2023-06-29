@@ -1,3 +1,4 @@
+/*
 package com.gdsc.blended.alcohol.repository;
 
 import com.gdsc.blended.alcohol.entity.AlcoholEntity;
@@ -9,4 +10,4 @@ import java.util.List;
 
 public interface AlcoholRepository extends JpaRepository<AlcoholEntity, Long> {
     List<AlcoholEntity> findByWhiskyKoreanOrWhiskyEnglishContaining(String koreanKeyword, String englishKeyword);
-}
+}*/
