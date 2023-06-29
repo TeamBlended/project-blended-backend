@@ -20,6 +20,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -173,5 +175,31 @@ public class PostService {
     public Page<PostResponseDto> getPostsSortedByHeart(Pageable pageable) {
         Page<PostEntity> postPage = postRepository.findAllByOrderByLikeCountDesc(pageable);
         return postPage.map(PostResponseDto::new);
+    }
+
+    @Transactional
+    public List<PostResponseDto> searchPosts(String keyword){
+        /*try{
+            keyword = URLDecoder.decode(keyword, "UTF-8");
+        }catch (UnsupportedEncodingException e){
+            e.printStackTrace();
+            return new ArrayList<>();
+        }*/
+
+        List<PostEntity> findPosts = postRepository.findByTitleOrContentContaining(keyword, keyword);
+        List<PostResponseDto> postResponseDtoList = new ArrayList<>();
+
+        if(findPosts.isEmpty()) {
+            return postResponseDtoList;
+        }
+
+        for(PostEntity postEntity : findPosts){
+            PostResponseDto postResponseDto = PostResponseDto.builder()
+                    .title(postEntity.getTitle())
+                    .content(postEntity.getContent())
+                    .build();
+            postResponseDtoList.add(postResponseDto);
+        }
+        return postResponseDtoList;
     }
 }
