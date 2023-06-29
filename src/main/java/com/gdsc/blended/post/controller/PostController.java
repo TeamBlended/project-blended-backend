@@ -19,7 +19,7 @@ import java.util.List;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/v1")
 public class PostController {
     private PostService postService;
 
@@ -90,6 +90,13 @@ public class PostController {
         Pageable pageable = PageRequest.of(page, size);
         Page<PostResponseDto> postPage = postService.getPostsSortedByHeart(pageable);
         return ResponseEntity.status(HttpStatus.OK).body(postPage);
+    }
+
+    //검색
+    @GetMapping("/posts/{keyword}")
+    public ResponseEntity<List<PostResponseDto>> searchPosts(@RequestParam String keyword){
+        List<PostResponseDto> postResponseDtoList = postService.searchPosts(keyword);
+        return ResponseEntity.status(HttpStatus.OK).body(postResponseDtoList);
     }
 
 }
