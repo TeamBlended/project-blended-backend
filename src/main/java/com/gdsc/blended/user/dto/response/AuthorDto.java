@@ -9,7 +9,6 @@ import lombok.*;
 @Builder
 public class AuthorDto {
     private String nickname;
-    private String email;
     private String profileImageUrl;
 }
 
