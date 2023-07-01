@@ -29,6 +29,7 @@ public class PostRequestDto {
         postEntity.setLatitude(latitude);
         postEntity.setLongitude(longitude);
         postEntity.setLiked(true);
+        postEntity.setCompleted(false);
         postEntity.setViewCount(0L);
         postEntity.setLikeCount(0L);
         postEntity.setShareDateTime(shareDateTime);

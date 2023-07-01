@@ -14,15 +14,10 @@ public class GeoListResponseDto {
     private String title;
     private String content;
     private LocationDto shareLocation;
-    private Boolean liked;
-    private LocalDateTime createdAt;
+    private Boolean completed;
     private LocalDateTime updatedAt;
-    private Long viewCount;
-    private Long scrapCount;
     private Long maxParticipantsCount;
-    private Long recruited;
-    private Long category;
     private AuthorDto author;
-    private double distanceRange;
+    private Double distanceRange;
 
 }

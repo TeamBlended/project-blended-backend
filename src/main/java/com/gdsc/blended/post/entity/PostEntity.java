@@ -39,6 +39,7 @@ public class PostEntity extends BaseTimeEntity {
     private String content;
 
     private Boolean liked;
+    private Boolean completed;
 
     private String locationName;
     private Double latitude; //위도
