@@ -44,7 +44,6 @@ public class PostService {
     //전체 출력(Get)
     public Page<PostResponseDto> getAllPost(Pageable pageable) {
         Page<PostEntity> postPage = postRepository.findAll(pageable);
-        updateCompletedStatus(postPage.getContent());
         return postPage.map(PostResponseDto::new);
     }
 
@@ -230,8 +229,11 @@ public class PostService {
         }
     }
 
-    private void updateCompletedStatus(List<PostEntity> postEntities) {
+    @Transactional
+    public void updateCompletedStatus() {
         LocalDateTime currentDateTime = LocalDateTime.now();
+        List<PostEntity> postEntities = postRepository.findAll();
+
         for (PostEntity postEntity : postEntities) {
             Date shareDateTime = postEntity.getShareDateTime();
             LocalDateTime localShareDateTime = shareDateTime.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
