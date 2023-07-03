@@ -22,6 +22,7 @@ public class PostResponseDto {
     private String content;
     private LocationDto shareLocation;
     private Boolean liked;
+    private Boolean completed;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private Date shareDateTime;
@@ -41,6 +42,7 @@ public class PostResponseDto {
         this.shareLocation.setLat(postEntity.getLatitude());
         this.shareLocation.setLng(postEntity.getLongitude());
         this.liked = postEntity.getLiked();
+        this.completed = postEntity.getCompleted();
         this.createdAt = postEntity.getCreatedDate();
         this.updatedAt = postEntity.getModifiedDate();
         this.viewCount = postEntity.getViewCount();
@@ -50,7 +52,6 @@ public class PostResponseDto {
         this.category = postEntity.getCategory().getId();
         this.author = new AuthorDto();
         this.author.setNickname(postEntity.getUserId().getNickname());
-        this.author.setEmail(postEntity.getUserId().getEmail());
         this.author.setProfileImageUrl(postEntity.getUserId().getProfileImageUrl());
         this.image = image;
     }

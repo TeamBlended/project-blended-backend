@@ -12,6 +12,8 @@ import com.gdsc.blended.post.dto.PostRequestDto;
 import com.gdsc.blended.post.dto.PostResponseDto;
 import com.gdsc.blended.post.entity.PostEntity;
 import com.gdsc.blended.post.repository.PostRepository;
+import com.gdsc.blended.user.dto.response.AuthorDto;
+import com.gdsc.blended.user.dto.response.UserResponseDto;
 import com.gdsc.blended.user.entity.UserEntity;
 import com.gdsc.blended.user.repository.UserRepository;
 import lombok.AllArgsConstructor;
@@ -28,6 +30,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -72,6 +76,7 @@ public class PostService {
         ImageEntity image = imageService.createImage(imageUrl, savedPost);
 
         return new PostResponseDto(savedPost, image.getPath());
+
     }
 
     // 게시글 삭제(delete)
@@ -96,10 +101,9 @@ public class PostService {
         PostEntity postEntity = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("게시글이 없습니다."));
         UserEntity user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("유저가 정보가 없습니다."));
 
-        if (!postEntity.getUserId().equals(user)) {
+        if (!postEntity.getUserId().getId().equals(user.getId())) {
             throw new IllegalArgumentException("해당 게시글을 작성한 유저가 아닙니다.");
-        }
-        else {
+        } else {
 
             String imageUrl = imageService.findImageByPostId(postId);
             postEntity.setTitle(postRequestDto.getTitle());
@@ -125,6 +129,7 @@ public class PostService {
         //image 찾아오기
         String imageUrl = imageService.findImageByPostId(postId);
         if(!postEntity.getUserId().getId().equals(user.getId())) {
+
             postEntity.increaseViewCount(); // 조회수 증가
             postRepository.save(postEntity);
         }
@@ -133,7 +138,7 @@ public class PostService {
 
     @Transactional
     public List<GeoListResponseDto> getPostsByDistance(Double latitude, Double longitude, Double MAX_DISTANCE) {
-        List<PostEntity> postEntities = postRepository.findAll();
+        List<PostEntity> postEntities = postRepository.findByCompletedFalse();
 
         List<GeoListResponseDto> postsByDistance = new ArrayList<>();
         for (PostEntity postEntity : postEntities) {
@@ -153,6 +158,13 @@ public class PostService {
             locationDto.setLat(postEntity.getLatitude());
             postDto.setShareLocation(locationDto);
             postDto.setDistanceRange(distance);
+            postDto.setCompleted(postEntity.getCompleted());
+            postDto.setUpdatedAt(postEntity.getModifiedDate());
+            postDto.setMaxParticipantsCount(postEntity.getMaxRecruits());
+            AuthorDto authorDto = new AuthorDto();
+            authorDto.setNickname(postEntity.getUserId().getNickname());
+            authorDto.setProfileImageUrl(postEntity.getUserId().getProfileImageUrl());
+            postDto.setAuthor(authorDto);
 
             if (distance <= MAX_DISTANCE) { // 단위는 km
                 postsByDistance.add(postDto);
@@ -202,7 +214,7 @@ public class PostService {
     }
 
     @Transactional
-    public List<PostResponseDto> searchPosts(String keyword){
+    public List<PostResponseDto> searchPosts(String keyword) {
         /*try{
             keyword = URLDecoder.decode(keyword, "UTF-8");
         }catch (UnsupportedEncodingException e){
@@ -213,11 +225,11 @@ public class PostService {
         List<PostEntity> findPosts = postRepository.findByTitleOrContentContaining(keyword, keyword);
         List<PostResponseDto> postResponseDtoList = new ArrayList<>();
 
-        if(findPosts.isEmpty()) {
+        if (findPosts.isEmpty()) {
             return postResponseDtoList;
         }
 
-        for(PostEntity postEntity : findPosts){
+        for (PostEntity postEntity : findPosts) {
             PostResponseDto postResponseDto = PostResponseDto.builder()
                     .title(postEntity.getTitle())
                     .content(postEntity.getContent())
@@ -225,5 +237,36 @@ public class PostService {
             postResponseDtoList.add(postResponseDto);
         }
         return postResponseDtoList;
+    }
+
+    @Transactional
+    public PostResponseDto completePost(Long postId, String email) {
+        PostEntity postEntity = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("게시글이 없습니다."));
+        UserEntity user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("유저가 정보가 없습니다."));
+
+        if (!postEntity.getUserId().getId().equals(user.getId())) {
+            throw new IllegalArgumentException("해당 게시글을 작성한 유저가 아닙니다.");
+        } else {
+            postEntity.setCompleted(!postEntity.getCompleted());
+
+            PostEntity updatedPost = postRepository.save(postEntity);
+
+            return new PostResponseDto(updatedPost);
+        }
+    }
+
+    @Transactional
+    public void updateCompletedStatus() {
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        List<PostEntity> postEntities = postRepository.findAll();
+
+        for (PostEntity postEntity : postEntities) {
+            Date shareDateTime = postEntity.getShareDateTime();
+            LocalDateTime localShareDateTime = shareDateTime.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+
+            if (localShareDateTime.isBefore(currentDateTime)) {
+                postEntity.setCompleted(true);
+            }
+        }
     }
 }
