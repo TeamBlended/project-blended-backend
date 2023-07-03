@@ -34,6 +34,7 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdPost);
     }
 
+    @Operation(summary = "마감 시간이 되면 자동으로 마감 처리")
     @GetMapping("/posts")
     public ResponseEntity<Page<PostResponseDto>> getAllPost(@RequestParam(defaultValue = "0") int page,
                                                             @RequestParam(defaultValue = "10") int size) {
@@ -64,36 +65,12 @@ public class PostController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(postResponseDto);
-
     }
-
-    @Operation(summary = "가까운 순으로 게시글 목록 가져오기")
-    @GetMapping("/posts/distanceList")
-    public ResponseEntity<List<GeoListResponseDto>> getPostsByDistance(
-            @RequestParam("nowLatitude") Double latitude,
-            @RequestParam("nowLongitude") Double longitude,
-            @RequestParam("distanceRange") Double distance
-    ) {
-        List<GeoListResponseDto> posts = postService.getPostsByDistance(latitude, longitude, distance);
-        return ResponseEntity.status(HttpStatus.OK).body(posts);
-    }
-
-    @GetMapping("/posts/newestList")
-    public ResponseEntity<Page<PostResponseDto>> getNewestPosts(
-            @RequestParam(defaultValue = "0") Integer page,
-            @RequestParam(defaultValue = "10") Integer size
-    ) {
-        Page<PostResponseDto> posts = postService.getNewestPosts(page, size);
-        return ResponseEntity.status(HttpStatus.OK).body(posts);
-    }
-
-    @Operation(summary = "좋아요 많은 순으로 게시슬 가져오기")
-    @GetMapping("/posts/heartList")
-    public ResponseEntity<Page<PostResponseDto>> heartList(@RequestParam(defaultValue = "0") int page,
-                                                           @RequestParam(defaultValue = "10") int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<PostResponseDto> postPage = postService.getPostsSortedByHeart(pageable);
-        return ResponseEntity.status(HttpStatus.OK).body(postPage);
+    @Operation(summary = "게시글 모집 마감 on/off 버튼")
+    @PutMapping("/posts/{postId}/complete")
+    public ResponseEntity<PostResponseDto> completePost(@PathVariable Long postId, @AuthenticationPrincipal UserInfo user) {
+        PostResponseDto completedPost = postService.completePost(postId, user.getEmail());
+        return ResponseEntity.status(HttpStatus.OK).body(completedPost);
     }
 
     //검색
