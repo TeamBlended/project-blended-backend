@@ -76,7 +76,6 @@ public class HeartService {
                 .category(postEntity.getCategory().getId())
                 .author(AuthorDto.builder()
                         .nickname(postEntity.getUserId().getNickname())
-                        .email(postEntity.getUserId().getEmail())
                         .profileImageUrl(postEntity.getUserId().getProfileImageUrl())
                         .build())
                 .build();
