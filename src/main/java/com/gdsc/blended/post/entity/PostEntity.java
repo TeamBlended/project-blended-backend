@@ -3,6 +3,7 @@ package com.gdsc.blended.post.entity;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gdsc.blended.BaseTime.BaseTimeEntity;
 import com.gdsc.blended.category.entity.CategoryEntity;
+import com.gdsc.blended.common.image.entity.ImageEntity;
 import com.gdsc.blended.user.entity.UserEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -65,6 +66,10 @@ public class PostEntity extends BaseTimeEntity {
     @OnDelete(action= OnDeleteAction.CASCADE)
     @JoinColumn(name = "user_id")
     private UserEntity userId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "image_id")
+    private ImageEntity image;
 
     public void increaseViewCount() {
         this.viewCount++;

@@ -1,6 +1,7 @@
 package com.gdsc.blended.common.image.dto;
 
-import com.gdsc.blended.common.image.entity.Image;
+
+import com.gdsc.blended.common.image.entity.ImageEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,9 +13,9 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 public class ImageDto {
     //@Length(max = 500)
-    private String image;
+    private String path;
 
-    public ImageDto(Image image) {
-        this.image = image.getPath();
+    public ImageDto(ImageEntity image) {
+        this.path = image.getPath();
     }
 }

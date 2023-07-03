@@ -2,6 +2,9 @@ package com.gdsc.blended.post.service;
 
 import com.gdsc.blended.category.entity.CategoryEntity;
 import com.gdsc.blended.category.repository.CategoryRepository;
+import com.gdsc.blended.common.image.entity.ImageEntity;
+import com.gdsc.blended.common.image.repository.ImageRepository;
+import com.gdsc.blended.common.image.service.ImageService;
 import com.gdsc.blended.post.dto.GeoListResponseDto;
 import com.gdsc.blended.post.dto.LocationDto;
 import com.gdsc.blended.post.dto.PostRequestDto;
@@ -31,6 +34,7 @@ public class PostService {
     private final PostRepository postRepository;
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
+    private final ImageService imageService;
 
     public PostEntity findById(Long id) {
         return postRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid post id"));
@@ -45,11 +49,19 @@ public class PostService {
 
     //게시글 생성 (Post)
     @Transactional
-    public PostResponseDto createPost(PostRequestDto postRequestDto, Long categoryId , String email) {
+    public PostResponseDto createPost(PostRequestDto postRequestDto, Long categoryId, ResponseEntity path, String email) {
         CategoryEntity category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid category id"));
         UserEntity user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("유저가 없습니다."));
-        PostEntity savedPost = postRepository.save(postRequestDto.toEntity(category,user));
+
+        String imageUrl = path.getBody().toString();
+
+        ImageEntity image = new ImageEntity();
+        image.setPath(imageUrl);
+        image = imageService.createImage(image);
+
+        PostEntity postEntity = postRequestDto.toEntity(category, user, image);
+        PostEntity savedPost = postRepository.save(postEntity);
         return new PostResponseDto(savedPost);
     }
 
