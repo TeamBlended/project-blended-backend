@@ -6,28 +6,29 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 
-@Entity(name = "IMAGE")
+@Entity
 @Getter
+@Setter
 @NoArgsConstructor
-public class Image {
+public class ImageEntity {
     @Id
-    @Column(name = "Image_id")
+    @Column(name = "image_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long imageId;
 
     @ManyToOne
-    @JoinColumn(name = "Post_id")
+    @JoinColumn(name = "post_id")
     @JsonBackReference
     private PostEntity post;
 
-    @Column(name = "Path", length = 500)
+    @Column(name = "path", length = 500)
     private String path;
 
     @Builder
-    public Image(Long imageId, PostEntity post, String path){
-        this.imageId = imageId;
+    public ImageEntity(PostEntity post,String path){
         this.post = post;
         this.path = path;
     }
