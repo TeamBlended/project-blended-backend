@@ -1,5 +1,6 @@
 package com.gdsc.blended.post.controller;
 
+import com.gdsc.blended.common.image.controller.ImageUploadController;
 import com.gdsc.blended.jwt.oauth.UserInfo;
 import com.gdsc.blended.post.dto.GeoListResponseDto;
 import com.gdsc.blended.post.dto.PostRequestDto;
@@ -14,19 +15,25 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @AllArgsConstructor
 @RestController
 @RequestMapping("/api/v1")
 public class PostController {
-    private PostService postService;
+    private final PostService postService;
+    private final ImageUploadController imageUploadController;
+
 
     //개시글 쓰기
     @PostMapping("/posts/{categoryId}")
-    public ResponseEntity<PostResponseDto> createPost(@RequestBody PostRequestDto postRequestDto, @PathVariable Long categoryId, @AuthenticationPrincipal UserInfo user) {
-        PostResponseDto createdPost = postService.createPost(postRequestDto, categoryId, user.getEmail());
+    public ResponseEntity<PostResponseDto> createPost(@RequestParam("multipartFile") MultipartFile multipartFile, @RequestBody PostRequestDto postRequestDto, @PathVariable Long categoryId, @AuthenticationPrincipal UserInfo user) throws IOException {
+        ResponseEntity path = imageUploadController.uploadImage(multipartFile);
+
+        PostResponseDto createdPost = postService.createPost(postRequestDto, categoryId, path, user.getEmail());
         return ResponseEntity.status(HttpStatus.CREATED).body(createdPost);
     }
 

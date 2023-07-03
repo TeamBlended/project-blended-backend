@@ -22,6 +22,7 @@ public class ImageUploadController {
         return new ResponseEntity<>(s3UploadService.upload(multipartFile), HttpStatus.CREATED);
     }
 
+
     /* 이미지 삭제
     @DeleteMapping("/delete")
     public ResponseEntity deleteFile(@RequestBody ImageDto imageDto) {
