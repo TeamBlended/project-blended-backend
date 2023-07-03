@@ -28,8 +28,7 @@ public class ImageEntity {
     private String path;
 
     @Builder
-    public ImageEntity(Long imageId, PostEntity post, String path){
-        this.imageId = imageId;
+    public ImageEntity(PostEntity post,String path){
         this.post = post;
         this.path = path;
     }

@@ -3,6 +3,9 @@ package com.gdsc.blended.common.image.service;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.gdsc.blended.common.image.dto.ImageDto;
+import com.gdsc.blended.common.image.entity.ImageEntity;
+import com.gdsc.blended.common.image.repository.ImageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -15,6 +18,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Service
 public class S3UploadService {
+    private final ImageRepository imageRepository;
     private static final int CAPACITY_LIMIT_BYTE = 1024 * 1024 * 10;
 
     @Value("${cloud.aws.s3.bucket}")

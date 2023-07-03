@@ -1,6 +1,5 @@
 package com.gdsc.blended.post.controller;
 
-import com.gdsc.blended.common.image.controller.ImageUploadController;
 import com.gdsc.blended.jwt.oauth.UserInfo;
 import com.gdsc.blended.post.dto.GeoListResponseDto;
 import com.gdsc.blended.post.dto.PostRequestDto;
@@ -12,10 +11,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
@@ -25,15 +24,13 @@ import java.util.List;
 @RequestMapping("/api/v1")
 public class PostController {
     private final PostService postService;
-    private final ImageUploadController imageUploadController;
 
 
     //개시글 쓰기
-    @PostMapping("/posts/{categoryId}")
-    public ResponseEntity<PostResponseDto> createPost(@RequestParam("multipartFile") MultipartFile multipartFile, @RequestBody PostRequestDto postRequestDto, @PathVariable Long categoryId, @AuthenticationPrincipal UserInfo user) throws IOException {
-        ResponseEntity path = imageUploadController.uploadImage(multipartFile);
+    @PostMapping(value = "/posts/{categoryId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<PostResponseDto> createPost(@ModelAttribute PostRequestDto postRequestDto, @PathVariable Long categoryId, @AuthenticationPrincipal UserInfo user) throws IOException {
 
-        PostResponseDto createdPost = postService.createPost(postRequestDto, categoryId, path, user.getEmail());
+        PostResponseDto createdPost = postService.createPost(postRequestDto, categoryId, postRequestDto.getMultipartFile(), user.getEmail());
         return ResponseEntity.status(HttpStatus.CREATED).body(createdPost);
     }
 

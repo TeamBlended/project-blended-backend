@@ -67,9 +67,6 @@ public class PostEntity extends BaseTimeEntity {
     @JoinColumn(name = "user_id")
     private UserEntity userId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "image_id")
-    private ImageEntity image;
 
     public void increaseViewCount() {
         this.viewCount++;
