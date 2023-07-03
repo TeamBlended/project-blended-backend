@@ -2,6 +2,10 @@ package com.gdsc.blended.post.service;
 
 import com.gdsc.blended.category.entity.CategoryEntity;
 import com.gdsc.blended.category.repository.CategoryRepository;
+import com.gdsc.blended.common.image.dto.ImageDto;
+import com.gdsc.blended.common.image.entity.ImageEntity;
+import com.gdsc.blended.common.image.service.S3UploadService;
+import com.gdsc.blended.common.image.service.ImageService;
 import com.gdsc.blended.post.dto.GeoListResponseDto;
 import com.gdsc.blended.post.dto.LocationDto;
 import com.gdsc.blended.post.dto.PostRequestDto;
@@ -21,7 +25,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.time.LocalDateTime;
@@ -35,6 +41,8 @@ public class PostService {
     private final PostRepository postRepository;
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
+    private final ImageService imageService;
+    private final S3UploadService s3UploadService;
 
     public PostEntity findById(Long id) {
         return postRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid post id"));
@@ -43,18 +51,32 @@ public class PostService {
     @Transactional
     //전체 출력(Get)
     public Page<PostResponseDto> getAllPost(Pageable pageable) {
-        Page<PostEntity> postPage = postRepository.findAll(pageable);
-        return postPage.map(PostResponseDto::new);
+        return postRepository.findAll(pageable).map(postDto ->
+                new PostResponseDto(postDto, imageService.findImageByPostId(postDto.getId()))
+        );
     }
 
     //게시글 생성 (Post)
     @Transactional
-    public PostResponseDto createPost(PostRequestDto postRequestDto, Long categoryId, String email) {
+    public PostResponseDto createPost(PostRequestDto postRequestDto, Long categoryId, MultipartFile multipartFile, String email) {
         CategoryEntity category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid category id"));
         UserEntity user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("유저가 없습니다."));
-        PostEntity savedPost = postRepository.save(postRequestDto.toEntity(category, user));
-        return new PostResponseDto(savedPost);
+
+
+        String imageUrl = null;
+        try {
+            imageUrl = s3UploadService.upload(multipartFile);
+        } catch (IOException e) {
+            throw new IllegalArgumentException("사진 S3 업로드 실패");
+        }
+
+        PostEntity postEntity = postRequestDto.toEntity(category, user);
+        PostEntity savedPost = postRepository.save(postEntity);
+        ImageEntity image = imageService.createImage(imageUrl, savedPost);
+
+        return new PostResponseDto(savedPost, image.getPath());
+
     }
 
     // 게시글 삭제(delete)
@@ -83,16 +105,16 @@ public class PostService {
             throw new IllegalArgumentException("해당 게시글을 작성한 유저가 아닙니다.");
         } else {
 
+            String imageUrl = imageService.findImageByPostId(postId);
             postEntity.setTitle(postRequestDto.getTitle());
             postEntity.setContent(postRequestDto.getContent());
             postEntity.setLocationName(postRequestDto.getLocationName());
             postEntity.setLatitude(postRequestDto.getLatitude());
             postEntity.setLongitude(postRequestDto.getLongitude());
             postEntity.setMaxRecruits(postRequestDto.getMaxRecruit());
-
             PostEntity updatedPost = postRepository.save(postEntity);
 
-            return new PostResponseDto(updatedPost);
+            return new PostResponseDto(updatedPost, imageUrl);
         }
     }
 
@@ -104,12 +126,14 @@ public class PostService {
             return null;
         }
         PostEntity postEntity = optionalPostEntity.get();
+        //image 찾아오기
+        String imageUrl = imageService.findImageByPostId(postId);
+        if(!postEntity.getUserId().getId().equals(user.getId())) {
 
-        if (!postEntity.getUserId().getId().equals(user.getId())) {
             postEntity.increaseViewCount(); // 조회수 증가
             postRepository.save(postEntity);
         }
-        return new PostResponseDto(postEntity);
+        return new PostResponseDto(postEntity,imageUrl);
     }
 
     @Transactional
@@ -177,14 +201,16 @@ public class PostService {
     @Transactional
     public Page<PostResponseDto> getNewestPosts(Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("modifiedDate").descending());
-        Page<PostEntity> postEntities = postRepository.findAll(pageable);
-        return postEntities.map(PostResponseDto::new);
+        return postRepository.findAll(pageable).map(post ->
+            new PostResponseDto(post, imageService.findImageByPostId(post.getId()))
+        );
     }
 
     @Transactional
     public Page<PostResponseDto> getPostsSortedByHeart(Pageable pageable) {
-        Page<PostEntity> postPage = postRepository.findAllByOrderByLikeCountDesc(pageable);
-        return postPage.map(PostResponseDto::new);
+        return postRepository.findAllByOrderByLikeCountDesc(pageable).map(post ->
+                new PostResponseDto(post, imageService.findImageByPostId(post.getId()))
+        );
     }
 
     @Transactional

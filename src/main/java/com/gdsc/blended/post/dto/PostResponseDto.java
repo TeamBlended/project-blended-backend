@@ -1,6 +1,7 @@
 package com.gdsc.blended.post.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gdsc.blended.common.image.dto.ImageDto;
 import com.gdsc.blended.post.entity.PostEntity;
 import jdk.jshell.Snippet;
 import lombok.*;
@@ -30,8 +31,9 @@ public class PostResponseDto {
     private Long maxParticipantsCount;
     private Long category;
     private AuthorDto author;
+    private String image;
 
-    public PostResponseDto(PostEntity postEntity) {
+    public PostResponseDto(PostEntity postEntity, String image) {
         this.id = postEntity.getId();
         this.title = postEntity.getTitle();
         this.content = postEntity.getContent();
@@ -51,5 +53,7 @@ public class PostResponseDto {
         this.author = new AuthorDto();
         this.author.setNickname(postEntity.getUserId().getNickname());
         this.author.setProfileImageUrl(postEntity.getUserId().getProfileImageUrl());
+        this.image = image;
     }
+
 }
