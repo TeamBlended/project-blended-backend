@@ -53,6 +53,9 @@ dependencies {
     //aws sdk
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 
+    //csv
+    implementation('com.opencsv:opencsv:5.5.2')
+
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
     compileOnly 'org.projectlombok:lombok'

@@ -1,4 +1,3 @@
-/*
 package com.gdsc.blended.alcohol.controller;
 
 
@@ -16,6 +15,12 @@ import java.util.List;
 public class AlcoholController {
     private final AlcoholService alcoholService;
 
+    @GetMapping
+    public String getAlcohols(){
+        alcoholService.uploadAlcoholsUrlInCsv();
+        return "Hello World!";
+    }
+
 
     @GetMapping("/{keyword}")
     public ResponseEntity<List<AlcoholDto>> searchAlcohols(@RequestParam("keyword") String keyword){
@@ -23,4 +28,4 @@ public class AlcoholController {
         return ResponseEntity.ok(alcoholDtoList);
     }
 }
-*/
+
