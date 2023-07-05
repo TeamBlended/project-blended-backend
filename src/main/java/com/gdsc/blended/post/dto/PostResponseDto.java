@@ -56,4 +56,6 @@ public class PostResponseDto {
         this.image = image;
     }
 
+    public PostResponseDto(PostEntity updatedPost) {
+    }
 }

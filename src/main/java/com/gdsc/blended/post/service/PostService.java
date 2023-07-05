@@ -4,6 +4,7 @@ import com.gdsc.blended.category.entity.CategoryEntity;
 import com.gdsc.blended.category.repository.CategoryRepository;
 import com.gdsc.blended.common.image.dto.ImageDto;
 import com.gdsc.blended.common.image.entity.ImageEntity;
+import com.gdsc.blended.common.image.repository.ImageRepository;
 import com.gdsc.blended.common.image.service.S3UploadService;
 import com.gdsc.blended.common.image.service.ImageService;
 import com.gdsc.blended.post.dto.GeoListResponseDto;
@@ -41,6 +42,7 @@ public class PostService {
     private final PostRepository postRepository;
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
+    private final ImageRepository imageRepository;
     private final ImageService imageService;
     private final S3UploadService s3UploadService;
 
@@ -63,7 +65,6 @@ public class PostService {
                 .orElseThrow(() -> new IllegalArgumentException("Invalid category id"));
         UserEntity user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("유저가 없습니다."));
 
-
         String imageUrl = null;
         try {
             imageUrl = s3UploadService.upload(multipartFile);
@@ -76,19 +77,26 @@ public class PostService {
         ImageEntity image = imageService.createImage(imageUrl, savedPost);
 
         return new PostResponseDto(savedPost, image.getPath());
-
     }
 
     // 게시글 삭제(delete)
     @Transactional
-    public void deletePost(Long postId, String email) {
+    public void deletePost(Long postId, MultipartFile multipartFile, String email) {
         PostEntity postEntity = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("게시글이 없습니다."));
         UserEntity user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("유저가 정보가 없습니다."));
+
         if (!postEntity.getUserId().equals(user)) {
             throw new IllegalArgumentException("해당 게시글을 작성한 유저가 아닙니다.");
-        } else {
-            postRepository.delete(postEntity);
         }
+
+        ImageEntity image = imageService.findImageByPostId(postId);
+        if (image != null) {
+            s3UploadService.delete(image.getPath()); // S3이미지 삭제
+            imageRepository.delete(image); // DB에서 이미지 삭제
+        }
+
+        // 게시물 삭제
+        postRepository.delete(postEntity);
     }
 
 
