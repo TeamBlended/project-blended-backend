@@ -1,14 +1,13 @@
 package com.gdsc.blended.config;
 
-import com.amazonaws.auth.AWSCredentials;
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import software.amazon.awssdk.auth.credentials.AwsCredentials;
+import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
+import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.s3.S3Client;
 
 @Configuration
 public class S3Config {
@@ -22,14 +21,47 @@ public class S3Config {
     private String region;
 
     @Bean
-    public AmazonS3 amazonS3() {
+    public AwsCredentialsProvider customAwsCredentialsProvider() {
+        return () -> new AwsCredentials() {
+            @Override
+            public String accessKeyId() {
+                return accessKey;
+            }
+
+            @Override
+            public String secretAccessKey() {
+                return secretKey;
+            }
+        };
+    }
+
+    @Bean
+    public S3Client s3Client() {
+        return S3Client.builder()
+                .credentialsProvider(customAwsCredentialsProvider())
+                .region(Region.of(region))
+                .build();
+    }
+
+
+
+
+
+    /*public AmazonS3 amazonS3() {
         AWSCredentials awsCredentials = new BasicAWSCredentials(accessKey, secretKey);
         return AmazonS3ClientBuilder.standard()
                 .withRegion(region)
                 .withCredentials(new AWSStaticCredentialsProvider(awsCredentials))
                 .build();
-    }
+    }*/
 
+    /*S3Client s3Client(){
+        AWSCredentials awsCredentials = new BasicAWSCredentials(accessKey, secretKey);
+        return AmazonS3ClientBuilder.standard()
+                .withRegion(region)
+                .withCredentials(new AWSStaticCredentialsProvider(awsCredentials))
+                .build();
+    }*/
 }
 
 /*
