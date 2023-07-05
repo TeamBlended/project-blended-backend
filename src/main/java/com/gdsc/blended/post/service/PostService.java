@@ -2,7 +2,6 @@ package com.gdsc.blended.post.service;
 
 import com.gdsc.blended.category.entity.CategoryEntity;
 import com.gdsc.blended.category.repository.CategoryRepository;
-import com.gdsc.blended.common.image.dto.ImageDto;
 import com.gdsc.blended.common.image.entity.ImageEntity;
 import com.gdsc.blended.common.image.repository.ImageRepository;
 import com.gdsc.blended.common.image.service.S3UploadService;
@@ -14,7 +13,6 @@ import com.gdsc.blended.post.dto.PostResponseDto;
 import com.gdsc.blended.post.entity.PostEntity;
 import com.gdsc.blended.post.repository.PostRepository;
 import com.gdsc.blended.user.dto.response.AuthorDto;
-import com.gdsc.blended.user.dto.response.UserResponseDto;
 import com.gdsc.blended.user.entity.UserEntity;
 import com.gdsc.blended.user.repository.UserRepository;
 import lombok.AllArgsConstructor;
@@ -22,19 +20,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
@@ -54,7 +47,7 @@ public class PostService {
     //전체 출력(Get)
     public Page<PostResponseDto> getAllPost(Pageable pageable) {
         return postRepository.findAll(pageable).map(postDto ->
-                new PostResponseDto(postDto, imageService.findImageByPostId(postDto.getId()))
+                new PostResponseDto(postDto, imageService.findImagePathByPostId(postDto.getId()))
         );
     }
 
@@ -113,7 +106,7 @@ public class PostService {
             throw new IllegalArgumentException("해당 게시글을 작성한 유저가 아닙니다.");
         } else {
 
-            String imageUrl = imageService.findImageByPostId(postId);
+            String imageUrl = imageService.findImagePathByPostId(postId);
             postEntity.setTitle(postRequestDto.getTitle());
             postEntity.setContent(postRequestDto.getContent());
             postEntity.setLocationName(postRequestDto.getLocationName());
@@ -135,7 +128,7 @@ public class PostService {
         }
         PostEntity postEntity = optionalPostEntity.get();
         //image 찾아오기
-        String imageUrl = imageService.findImageByPostId(postId);
+        String imageUrl = imageService.findImagePathByPostId(postId);
         if(!postEntity.getUserId().getId().equals(user.getId())) {
 
             postEntity.increaseViewCount(); // 조회수 증가
@@ -210,14 +203,14 @@ public class PostService {
     public Page<PostResponseDto> getNewestPosts(Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("modifiedDate").descending());
         return postRepository.findAll(pageable).map(post ->
-            new PostResponseDto(post, imageService.findImageByPostId(post.getId()))
+            new PostResponseDto(post, imageService.findImagePathByPostId(post.getId()))
         );
     }
 
     @Transactional
     public Page<PostResponseDto> getPostsSortedByHeart(Pageable pageable) {
         return postRepository.findAllByOrderByLikeCountDesc(pageable).map(post ->
-                new PostResponseDto(post, imageService.findImageByPostId(post.getId()))
+                new PostResponseDto(post, imageService.findImagePathByPostId(post.getId()))
         );
     }
 
