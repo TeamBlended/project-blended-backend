@@ -34,8 +34,12 @@ public class S3UploadService {
     private final S3Client s3Client;
 
     public String upload(MultipartFile multipartFile) throws IOException{
-        // 파일 이름이 중복되지 않게 하기 위해 UUID 로 랜덤값 생성하여 "-"로 파일 이름과 연결하여 파일 이름 생성
-        String s3FileName = filePath + UUID.randomUUID() + "-" + multipartFile.getOriginalFilename();
+        // 파일 이름이 중복되지 않게 하기 위해 UUID 로 랜덤 값으로 파일 이름 생성
+        String originName = multipartFile.getOriginalFilename();
+        //확장자 추출
+        String ext = originName.substring(originName.lastIndexOf(".") + 1);
+        //중복 방지를 위해 파일명에 UUID 추가
+        String s3FileName = UUID.randomUUID() + "." + ext;
 
         // 파일의 크기가 용량제한을 넘을 시 예외를 던진다.
         if (multipartFile.getSize() > CAPACITY_LIMIT_BYTE) {

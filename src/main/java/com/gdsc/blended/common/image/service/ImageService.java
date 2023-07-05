@@ -29,10 +29,8 @@ public class ImageService {
         return imageRepository.save(image);
     }
 
-    public String findImageByPostId(Long postId) {
-        ImageEntity entity = imageRepository.findByPostId(postId)
-                .orElseThrow(() -> new BusinessLogicException(ExceptionCode.IMAGE_NOT_FOUND));
-        return entity.getPath();
+    public String findImagePathByPostId(Long postId) {
+        return findImageByPostId(postId).getPath();
     }
 
     public ImageEntity findImageByPostId(Long postId) {
