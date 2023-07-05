@@ -51,7 +51,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
 
     //aws sdk
-    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+    //implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+    implementation 'io.awspring.cloud:spring-cloud-aws-starter-s3:3.0.1'
 
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
 

@@ -50,12 +50,13 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.OK).body(updatedPost);
     }
 
-    //게시긓 삭제
+    //게시글 삭제
     @DeleteMapping("/posts/{postId}")
-    public ResponseEntity<Void> deletePost(@PathVariable Long postId, @AuthenticationPrincipal UserInfo user) {
-        postService.deletePost(postId,user.getEmail());
+    public ResponseEntity<Void> deletePost(@ModelAttribute PostRequestDto postRequestDto, @PathVariable Long postId, @AuthenticationPrincipal UserInfo user) {
+        postService.deletePost(postId, postRequestDto.getMultipartFile(), user.getEmail());
         return ResponseEntity.noContent().build();
     }
+
     //게시글 상세 구현
     //조회수 구현
     @GetMapping("/posts/detail/{postId}")
