@@ -40,6 +40,8 @@ public class S3UploadService {
         String ext = originName.substring(originName.lastIndexOf(".") + 1);
         //중복 방지를 위해 파일명에 UUID 추가
         String s3FileName = UUID.randomUUID() + "." + ext;
+        //키 생성
+        String key = filePath + s3FileName;
 
         // 파일의 크기가 용량제한을 넘을 시 예외를 던진다.
         if (multipartFile.getSize() > CAPACITY_LIMIT_BYTE) {
@@ -48,14 +50,14 @@ public class S3UploadService {
 
         PutObjectRequest putRequest = PutObjectRequest.builder()
                 .bucket(bucket)
-                .key(filePath + s3FileName)
+                .key(key)
                 .build();
 
         s3Client.putObject(putRequest, RequestBody.fromInputStream(multipartFile.getInputStream(), multipartFile.getSize()));
 
         GetUrlRequest urlRequest = GetUrlRequest.builder()
                 .bucket(bucket)
-                .key(s3FileName)
+                .key(key)
                 .build();
 
         return s3Client.utilities().getUrl(urlRequest).toExternalForm();
