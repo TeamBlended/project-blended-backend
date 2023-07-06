@@ -16,6 +16,8 @@ import software.amazon.awssdk.services.s3.model.S3Exception;
 
 import java.io.IOException;
 import java.net.URLDecoder;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -27,13 +29,11 @@ public class S3UploadService {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    @Value("${cloud.aws.s3.dir}")
-    private String filePath;
 
     //private final AmazonS3 amazonS3;
     private final S3Client s3Client;
 
-    public String upload(MultipartFile multipartFile) throws IOException{
+    public String upload(MultipartFile multipartFile, String filePath) throws IOException{
         // 파일 이름이 중복되지 않게 하기 위해 UUID 로 랜덤 값으로 파일 이름 생성
         String originName = multipartFile.getOriginalFilename();
         //확장자 추출
@@ -41,7 +41,7 @@ public class S3UploadService {
         //중복 방지를 위해 파일명에 UUID 추가
         String s3FileName = UUID.randomUUID() + "." + ext;
         //키 생성
-        String key = filePath + s3FileName;
+        String key = filePath +"/"+ s3FileName;
 
         // 파일의 크기가 용량제한을 넘을 시 예외를 던진다.
         if (multipartFile.getSize() > CAPACITY_LIMIT_BYTE) {
@@ -51,6 +51,7 @@ public class S3UploadService {
         PutObjectRequest putRequest = PutObjectRequest.builder()
                 .bucket(bucket)
                 .key(key)
+                .contentType(multipartFile.getContentType())
                 .build();
 
         s3Client.putObject(putRequest, RequestBody.fromInputStream(multipartFile.getInputStream(), multipartFile.getSize()));
@@ -81,6 +82,50 @@ public class S3UploadService {
         }
 
     }
+
+    public String getImgUrl(String bucketName, String folderName, String imageName) {
+        String key = folderName + "/" + imageName;
+        GetUrlRequest urlRequest = GetUrlRequest.builder()
+                .bucket(bucketName)
+                .key(key)
+                .build();
+        return s3Client.utilities().getUrl(urlRequest).toExternalForm();
+    }
+
+    /*
+    public List<String> uploadMulti(MultipartFile[] multipartFiles, String filePath) throws IOException {
+        List<String> imageUrls = new ArrayList<>();
+
+        for (MultipartFile multipartFile : multipartFiles) {
+            String originName = multipartFile.getOriginalFilename();
+            String ext = originName.substring(originName.lastIndexOf(".") + 1);
+            String s3FileName = UUID.randomUUID() + "." + ext;
+            String key = filePath + s3FileName;
+
+            if (multipartFile.getSize() > CAPACITY_LIMIT_BYTE) {
+                throw new RuntimeException("이미지가 10M 제한을 넘어갑니다.");
+            }
+
+            PutObjectRequest putRequest = PutObjectRequest.builder()
+                    .bucket(bucket)
+                    .key(key)
+                    .contentType(multipartFile.getContentType())
+                    .build();
+
+            s3Client.putObject(putRequest, RequestBody.fromInputStream(multipartFile.getInputStream(), multipartFile.getSize()));
+
+            GetUrlRequest urlRequest = GetUrlRequest.builder()
+                    .bucket(bucket)
+                    .key(key)
+                    .build();
+
+            String imageUrl = s3Client.utilities().getUrl(urlRequest).toExternalForm();
+            imageUrls.add(imageUrl);
+        }
+
+        return imageUrls;
+    }
+    */
 }
 
 /*//jwt

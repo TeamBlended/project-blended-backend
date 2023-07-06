@@ -38,12 +38,6 @@ public class ImageService {
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.IMAGE_NOT_FOUND));
     }
 
-    public void deleteImage(ImageEntity image) {
-        String path = image.getPath();
-
-        s3UploadService.delete(path);
-        imageRepository.delete(image);
-    }
 }
 
     /*public void removeImage(Long imageId) {
