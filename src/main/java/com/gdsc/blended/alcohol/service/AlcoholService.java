@@ -62,10 +62,6 @@ public class AlcoholService {
                 String bucketName = "blended-post";
                 String FolderName = folderName + "/";
                 String imageName = columns[0]; // 가져올 이미지 파일 이름
-                log.info(String.valueOf(realAlcoholName.length()));
-                log.info(String.valueOf(imageName.length()));
-                String te = "글렌고인 15년";
-                log.info(String.valueOf(te.length()));
 
                 if (realAlcoholName.equals(imageName)) {
                     line += imageURL;
