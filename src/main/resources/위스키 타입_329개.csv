@@ -1,8 +1,9 @@
-Whisky_korean,whiskey_english,ABV%,Country,Type,alcohol_image_url
-1792,1792,46.85,usa,Bourbon,""
+Column1,Column2,Column3,Column4,Column5,Column6
+Whisky_korean,whiskey_english,ABV%,Country,Type,ID
+1792,1792,46.85,usa,Bourbon,
 글렌고인 10년,Glengoyne 10-year-old,40,scotland,Single Malt,
 글렌고인 12년,Glengoyne 12-year-old,43,scotland,Single Malt,
-글렌고인 15년,Glengoyne 15-year-old,43,scotland,Single Malt,
+글렌고인 15년,Glengoyne 15-year-old,43,scotland,Single Malt,https://blended-post.s3.ap-northeast-2.amazonaws.com/alcohol/6de5dbd3-6050-4827-a299-4d2f59946081.png
 글렌고인 18년,Glengoyne 18-year-old,43,scotland,Single Malt,
 글렌고인 21년,Glengoyne 21-year-old,43,scotland,Single Malt,
 글렌고인 25년,Glengoyne 25-year-old,48,scotland,Single Malt,
@@ -11,7 +12,7 @@ Whisky_korean,whiskey_english,ABV%,Country,Type,alcohol_image_url
 글렌그란트 12년,Glengrant 12-year-old,43,scotland,Single Malt,
 글렌그란트 15년,Glengrant 15-year-old,43,scotland,Single Malt,
 글렌그란트 18년,Glengrant 18-year-old,43,scotland,Single Malt,
-글렌그란트 아보랄리스,Glengrant arboralis,40,scotland,Single Malt,
+글렌그란트 아보랄리스,Glengrant arboralis,40,scotland,Single Malt,8
 글렌드로낙 12년,Glendronach 12-year-old,46,scotland,Single Malt,
 글렌드로낙 14년 마르살라,Glendronach marsala 14-year-old,46,scotland,Single Malt,
 글렌드로낙 14년 버진오크,Glendronach virgin oak 14-year-old,46,scotland,Single Malt,
@@ -28,14 +29,14 @@ Whisky_korean,whiskey_english,ABV%,Country,Type,alcohol_image_url
 글렌로티스 25년,Glenrothes 25-year-old,43,scotland,Single Malt,
 글렌로티스 50년,Glenrothes 50-year-old,47.5,scotland,Single Malt,
 글렌로티스 메이커스컷,Glenrothes Maker's Cut,48.8,scotland,Single Malt,
-글렌리벳 12년,Glenlivet 12-year-old,40,scotland,Single Malt,
+글렌리벳 12년,Glenlivet 12-year-old,40,scotland,Single Malt,12
 글렌리벳 14년,Glenlivet 14-year-old,40,scotland,Single Malt,
-글렌리벳 15년,Glenlivet 15-year-old,40,scotland,Single Malt,
+글렌리벳 15년,Glenlivet 15-year-old,40,scotland,Single Malt,13
 글렌리벳 18년,Glenlivet 18-year-old,43,scotland,Single Malt,
 글렌리벳 21년,Glenlivet 21-year-old,43,scotland,Single Malt,
 글렌리벳 25년,Glenlivet 25-year-old,43,scotland,Single Malt,
 글렌리벳 나두라,Glenlivet Nadurra Oloroso Finish,48,scotland,Single Malt,
-글렌모렌지 10년,Glenmorangie Original 10 Years Old,40,scotland,Single Malt,
+글렌모렌지 10년,Glenmorangie Original 10 Years Old,40,scotland,Single Malt,14
 글렌모렌지 18년,Glenmorangie 18 Years Old,43,scotland,Single Malt,
 글렌모렌지 19년,Glenmorangie 19 Years Old,43,scotland,Single Malt,
 글렌모렌지 25년,Glenmorangie 25 Years Old,43,scotland,Single Malt,
@@ -63,10 +64,10 @@ Whisky_korean,whiskey_english,ABV%,Country,Type,alcohol_image_url
 글렌파클라스 21년,Glenfarclas 21 Years Old,43,scotland,Single Malt,
 글렌파클라스 25년,Glenfarclas 25 Years Old,43,scotland,Single Malt,
 글렌파클라스 30년,Glenfarclas 30 Years Old,43,scotland,Single Malt,
-글렌피딕 12년,Glenfiddich 12 Years Old,40,scotland,Single Malt,
+글렌피딕 12년,Glenfiddich 12 Years Old,40,scotland,Single Malt,9
 글렌피딕 14년,Glenfiddich 14 Years Old,43,scotland,Single Malt,
-글렌피딕 15년,Glenfiddich 15 Years Old,40,scotland,Single Malt,
-글렌피딕 18년,Glenfiddich 18 Years Old,40,scotland,Single Malt,
+글렌피딕 15년,Glenfiddich 15 Years Old,40,scotland,Single Malt,10
+글렌피딕 18년,Glenfiddich 18 Years Old,40,scotland,Single Malt,11
 글렌피딕 21년,Glenfiddich 21 Years Old,43,scotland,Single Malt,
 글렌피딕 30년,Glenfiddich 30 Years Old,43,scotland,Single Malt,
 글렌피딕 40년,Glenfiddich 40 Years Old,45.8,scotland,Single Malt,
@@ -95,7 +96,7 @@ Whisky_korean,whiskey_english,ABV%,Country,Type,alcohol_image_url
 라가불린 12년,Lagavulin 12 Years Old,43~58,scotland,Single Malt,
 라가불린 16년,Lagavulin 16 Years Old,43,scotland,Single Malt,
 라가불린 8년,Lagavulin 8 Years Old,48,scotland,Single Malt,
-라프로익 10년,Laphroaig 10 Years Old,40,scotland,Single Malt,
+라프로익 10년,Laphroaig 10 Years Old,40,scotland,Single Malt,23
 라프로익 15년,Laphroaig 15 Years Old,"40, 43",scotland,Single Malt,
 라프로익 18년,Laphroaig 18 Years Old,"40, 43",scotland,Single Malt,
 라프로익 25년,Laphroaig 25 Years Old,48,scotland,Single Malt,
@@ -108,7 +109,7 @@ Whisky_korean,whiskey_english,ABV%,Country,Type,alcohol_image_url
 러셀 싱글배럴,Russell's Reserve Single Barrel,55,usa,Bourbon,
 레미마르틴 vsop,Remy Martin vsop,40,france,Cognac,
 레미마르틴 xo,Remy Martin xo,40,france,Cognac,
-로얄살루트 21년,Royal Salute 21 Year Old,40,scotland,Blended,
+로얄살루트 21년,Royal Salute 21 Year Old,40,scotland,Blended,26
 로얄살루트 32년,Royal Salute 32 Year Old,40,scotland,Blended,
 로얄살루트 38년,Royal Salute 38 Year Old,40,scotland,Blended,
 로얄살루트 52년,Royal Salute 52 Year Old,52,scotland,Blended,
@@ -117,8 +118,8 @@ Whisky_korean,whiskey_english,ABV%,Country,Type,alcohol_image_url
 마르텔 vs,Martell vs,40,france,Cognac,
 마르텔 vsop,Martell vsop,40,france,Cognac,
 마르텔 xo,Martell xo ,40,france,Cognac,
-맥캘란 12년 더블오크,Macallan 12 Year Old Double Oak,40,scotland,Single Malt,
-맥캘란 12년 쉐리캐스크,Macallan 12 Year Old Sherry Cask,40,scotland,Single Malt,
+맥캘란 12년 더블오크,Macallan 12 Year Old Double Oak,40,scotland,Single Malt,24
+맥캘란 12년 쉐리캐스크,Macallan 12 Year Old Sherry Cask,40,scotland,Single Malt,25
 맥캘란 12년 트리플오크,Macallan 12 Year Old Triple Oak,40,scotland,Single Malt,
 맥캘란 15년 더블오크,Macallan 15 Year Old Double Oak,43,scotland,Single Malt,
 맥캘란 15년 트리플캐스크,Macallan 15 Year Old Triple Cask,43,scotland,Single Malt,
@@ -134,19 +135,19 @@ Whisky_korean,whiskey_english,ABV%,Country,Type,alcohol_image_url
 믹터스 배럴 스트랭스 켄터키 스트레이트 라이,Michter's Barrel Strength Kentucky Straight Rye,55,usa,Bourbon,
 믹터스 스몰배치 오리지널 사워 매시,Mixturs Small Batch Original Sour Mash,43,usa,Bourbon,
 믹터스 싱글 배럴 켄터키 스트레이트 라이,Michter's Single Barrel Kentucky Straight Rye,45,usa,Bourbon,
-발렌타인 12년,Ballantine's 12 Year Old,40,scotland,Blended,
-발렌타인 17년,Ballantine's 17 Year Old,40,scotland,Blended,
+발렌타인 12년,Ballantine's 12 Year Old,40,scotland,Blended,29
+발렌타인 17년,Ballantine's 17 Year Old,40,scotland,Blended,30
 발렌타인 21년,Ballantine's 21 Year Old,40,scotland,Blended,
 발렌타인 23년,Ballantine's 23 Year Old,40,scotland,Blended,
 발렌타인 30년,Ballantine's 30 Year Old,40,scotland,Blended,
 발렌타인 마스터즈,Ballantine's Masters,40,scotland,Blended,
 발렌타인 파이니스트,Ballantine's Finest,40,scotland,Blended,
-발베니 12년 더블우드,Balvenie 12 Year Old DoubleWood,43,scotland,Single Malt,
+발베니 12년 더블우드,Balvenie 12 Year Old DoubleWood,43,scotland,Single Malt,2
 발베니 12년 싱글배럴,Balvenie 12 Year Old Single Barrel,47.8,scotland,Single Malt,
 발베니 12년 트리플 캐스크,Balvenie 12 Year Old Triple Cask,40,scotland,Single Malt,
 발베니 14년 골든캐스크,Balvenie 14 Year Old Golden Cask,47.5,scotland,Single Malt,
 발베니 14년 위크오브피트,Balvenie 14 Year Old Week of Peat,48,scotland,Single Malt,
-발베니 14년 캐러비안캐스크,Balvenie 14 Year Old Caribbean Cask,43,scotland,Single Malt,
+발베니 14년 캐러비안캐스크,Balvenie 14 Year Old Caribbean Cask,43,scotland,Single Malt,3
 발베니 15년 버번캐스크,Balvenie 15 Year Old Bourbon Cask,47.8,scotland,Single Malt,
 발베니 15년 쉐리캐스크,Balvenie 15 Year Old Sherry Cask,47.8,scotland,Single Malt,
 발베니 17년 더블우드,Balvenie 17 Year Old DoubleWood,43,scotland,Single Malt,
@@ -163,8 +164,8 @@ Whisky_korean,whiskey_english,ABV%,Country,Type,alcohol_image_url
 벤로막 10년,Benromach 10 year old,43,scotland,Single Malt,
 벤리악 12년,Benriach 12 Year Old,46,scotland,Single Malt,
 벤리악 하트오브스페이사이드,Benriach The Heart of Speyside,40,scotland,Single Malt,
-벨즈,Bell's Whisky,40,scotland,Blended,
-보모어 12년,Bowmore 12 Year Old,40,scotland,Single Malt,
+벨즈,Bell's Whisky,40,scotland,Blended,4
+보모어 12년,Bowmore 12 Year Old,40,scotland,Single Malt,5
 보모어 15년,Bowmore 15 Year Old,43,scotland,Single Malt,
 보모어 18년,Bowmore 18 Year Old,43,scotland,Single Malt,
 보모어 25년,Bowmore 25 Year Old,43,scotland,Single Malt,
@@ -176,7 +177,7 @@ Whisky_korean,whiskey_english,ABV%,Country,Type,alcohol_image_url
 불릿 버번,Bulleit Bourbon,46.5,usa,Bourbon,
 블랙보틀,Black Bottle,40,scotland,Blended,
 블랙보틀 10년,Black Bottle 10 Year Old,40,scotland,Blended,
-산토리 가쿠빈,Suntory Kakubin,40,japan,Blended,
+산토리 가쿠빈,Suntory Kakubin,40,japan,Blended,27
 스미노프 골드,Smirnoff Gold,37.5,russia,Vodka,
 스미노프 그린애플,Smirnoff Green Apple,35,russia,Vodka,
 스미노프 라임,Smirnoff Lime,37.5,russia,Vodka,
@@ -201,8 +202,8 @@ Whisky_korean,whiskey_english,ABV%,Country,Type,alcohol_image_url
 스프링뱅크 18년,Springbank 18 Years Old,46,scotland,Single Malt,
 스프링뱅크 21년,Springbank 21 Years Old,46,scotland,Single Malt,
 스프링뱅크 25년,Springbank 25 Years Old,46,scotland,Single Malt,
-시바스리갈 12년,Chivas Regal 12 Years Old,40,scotland,Blended,
-시바스리갈 15년,Chivas Regal 15 Years Old,40,scotland,Blended,
+시바스리갈 12년,Chivas Regal 12 Years Old,40,scotland,Blended,6
+시바스리갈 15년,Chivas Regal 15 Years Old,40,scotland,Blended,7
 시바스리갈 18년,Chivas Regal 18 Years Old,40,scotland,Blended,
 시바스리갈 25년,Chivas Regal 25 Years Old,40,scotland,Blended,
 싱글톤 12년,Singleton 12 Years Old,40,scotland,Single Malt,
@@ -225,11 +226,11 @@ Whisky_korean,whiskey_english,ABV%,Country,Type,alcohol_image_url
 아란 쉐리캐스크,Arran Sherry Cask,55.8,scotland,Single Malt,
 아란 아마로네캐스크,Arran Amarone Cask,50,scotland,Single Malt,
 아란 쿼터캐스크,Arran Quarter Cask,56.2,scotland,Single Malt,
-아벨라워 12년,Aberlour 12 Years Old,40,scotland,Single Malt,
+아벨라워 12년,Aberlour 12 Years Old,40,scotland,Single Malt,0
 아벨라워 14년,Aberlour 14 Years Old,40,scotland,Single Malt,
 아벨라워 16년,Aberlour 16 Years Old,40,scotland,Single Malt,
 아벨라워 18년,Aberlour 18 Years Old,40,scotland,Single Malt,
-아벨라워 아부나흐,Aberlour A'bunadh,58~62,scotland,Single Malt,
+아벨라워 아부나흐,Aberlour A'bunadh,58~62,scotland,Single Malt,1
 야마자키 12년,Yamazaki 12 Year Old,43,japan,Single Malt,
 야마자키 18년,Yamazaki 18 Year Old,43,japan,Single Malt,
 야마자키 nas,Yamazaki NAS,43,japan,Single Malt,
@@ -251,7 +252,7 @@ Whisky_korean,whiskey_english,ABV%,Country,Type,alcohol_image_url
 올드파 18년,Old Parr 18 Year Old,40,scotland,Blended,
 올트모어 12년,Aultmore 12 year old,46,scotland,Single Malt,
 올트모어 18년,Aultmore 18 year old,46,scotland,Single Malt,
-와일드터키 101프루프,Wild Turkey 101 Proof,50.5,usa,Bourbon,
+와일드터키 101프루프,Wild Turkey 101 Proof,50.5,usa,Bourbon,28
 와일드터키 101프루프 라이,Wild Turkey 101 Proof Rye,50.5,usa,Bourbon,
 와일드터키 12년,Wild Turkey 12 Year Old,50.5,usa,Bourbon,
 와일드터키 13년,Wild Turkey 13 Year Old,45.5,usa,Bourbon,
@@ -269,16 +270,16 @@ Whisky_korean,whiskey_english,ABV%,Country,Type,alcohol_image_url
 잭다니엘 라이,Jack Daniel's Tennessee Rye,45,usa,Bourbon,
 잭다니엘 싱글배럴 100프루프,Jack Daniel's Single Barrel 100 Proof,45,usa,Bourbon,
 잭다니엘 애플,Jack Daniel's Tennessee Apple,35,usa,Bourbon,
-잭다니엘 오리지널,Jack Daniel's No. 7,35,usa,Bourbon,
+잭다니엘 오리지널,Jack Daniel's No. 7,35,usa,Bourbon,15
 잭다니엘 젠틀맨잭,Jack Daniel's Gentleman Jack,40,usa,Bourbon,
-잭다니엘 허니,Jack Daniel's Tennessee Honey,35,usa,Bourbon,
-제임슨 스탠다드,Jameson Standard,40,ireland,Blended,
+잭다니엘 허니,Jack Daniel's Tennessee Honey,35,usa,Bourbon,16
+제임슨 스탠다드,Jameson Standard,40,ireland,Blended,17
 조니워커 18년,Johnny Walker 18 Year Old,40,scotland,Blended,
 조니워커 골든리저브,Johnny Walker Gold Label Reserve,40,scotland,Blended,
 조니워커 그린,Johnny Walker Green Label 15 Year Old,43,scotland,Blended,
 조니워커 더블블랙,Johnny Walker Double Black,40,scotland,Blended,
-조니워커 레드,Johnny Walker Red Label,40,scotland,Blended,
-조니워커 블랙,Johnny Walker Black Label,40,scotland,Blended,
+조니워커 레드,Johnny Walker Red Label,40,scotland,Blended,20
+조니워커 블랙,Johnny Walker Black Label,40,scotland,Blended,19
 조니워커 블루,Johnny Walker Blue Label,40,scotland,Blended,
 조니워커 쉐리,Johnnie Walker Sherry Finish,40,scotland,Blended,
 주라 10년,Jura 10 Year Old,40,scotland,Single Malt,
@@ -287,7 +288,7 @@ Whisky_korean,whiskey_english,ABV%,Country,Type,alcohol_image_url
 주라 21년,Jura 21 Year Old,44,scotland,Single Malt,
 주라 더베이,Jura The Bay,44,scotland,Single Malt,
 주라 더팹스,Jura The Paps,45.6,scotland,Single Malt,
-짐빔,Jim Beam,40,usa,Bourbon,
+짐빔,Jim Beam,40,usa,Bourbon,18
 치타,The Chita,43,japan,Single Malt,
 카발란 디스틸러리 셀렉트,Kavalan Distillery Select,40,taiwan,Single Malt,
 카발란 버번오크,Kavalan Bourbon Oak,46,taiwan,Single Malt,
@@ -297,8 +298,8 @@ Whisky_korean,whiskey_english,ABV%,Country,Type,alcohol_image_url
 카발란 올롤로소 쉐리캐스크,Kavalan Oloroso Sherry Cask,46,taiwan,Single Malt,
 카발란 클래식,Kavalan Classic,40,taiwan,Single Malt,
 카발란 포디움,Kavalan Podium,46,taiwan,Single Malt,
-커클랜드,Kirkland Scotch Whisky,40,scotland,Blended,
-커클랜드 12년,Kirkland Scotch Whisky 12 year old,40,scotland,Blended,
+커클랜드,Kirkland Scotch Whisky,40,scotland,Blended,21
+커클랜드 12년,Kirkland Scotch Whisky 12 year old,40,scotland,Blended,22
 쿨일라 12년,Caol Ila 12 Year Old,43,scotland,Single Malt,
 쿨일라 18년,Caol Ila 18 Year Old,59.8,scotland,Single Malt,
 쿨일라 25년,Caol Ila 25 Year Old,43,scotland,Single Malt,

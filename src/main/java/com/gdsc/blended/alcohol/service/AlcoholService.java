@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -44,6 +45,8 @@ public class AlcoholService {
     @Transactional
     public void uploadAlcoholsUrlInCsv(String folderName,String alcoholName ,String imageURL) throws IOException {
         String csvFilePath = "src/main/resources/위스키 타입_329개.csv";
+        System.out.println(alcoholName);
+        String realAlcoholName = alcoholName.split("\\.")[0];
         try {
             // Read the CSV file
             Path path = Path.of(csvFilePath);
@@ -59,7 +62,12 @@ public class AlcoholService {
                 String bucketName = "blended-post";
                 String FolderName = folderName + "/";
                 String imageName = columns[0]; // 가져올 이미지 파일 이름
-                if (Objects.equals(imageName, alcoholName)) {
+                log.info(String.valueOf(realAlcoholName.length()));
+                log.info(String.valueOf(imageName.length()));
+                String te = "글렌고인 15년";
+                log.info(String.valueOf(te.length()));
+
+                if (realAlcoholName.equals(imageName)) {
                     line += imageURL;
                     modifiedLines.set(i, line);
                     //db에 저장

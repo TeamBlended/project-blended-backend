@@ -5,6 +5,7 @@ import com.gdsc.blended.alcohol.dto.AlcoholDto;
 import com.gdsc.blended.alcohol.service.AlcoholService;
 import com.gdsc.blended.common.image.service.S3UploadService;
 import lombok.RequiredArgsConstructor;
+import org.apache.juli.logging.Log;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +13,9 @@ import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.services.s3.endpoints.internal.Value;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.text.Normalizer;
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -33,12 +37,13 @@ public class AlcoholController {
     public String uploadAlcohols(@RequestParam("file") MultipartFile multipartFile){
         String s3Path = "alcohol";
         String imageUrl = null;
-        String alcoholName = multipartFile.getOriginalFilename();
-        String realAlcoholName = alcoholName.substring(0, alcoholName.indexOf("."));
-        System.out.println(realAlcoholName);
+
+        String alcoholName = Normalizer.normalize(multipartFile.getOriginalFilename(), Normalizer.Form.NFC);
+//        String alcoholName = new String(multipartFile.getOriginalFilename().getBytes(StandardCharsets.UTF_8));
+
         try {
             imageUrl = s3UploadService.upload(multipartFile, s3Path);
-            alcoholService.uploadAlcoholsUrlInCsv(s3Path,realAlcoholName,imageUrl);
+            alcoholService.uploadAlcoholsUrlInCsv(s3Path,alcoholName,imageUrl);
         } catch (IOException e) {
             throw new IllegalArgumentException("사진 S3 업로드 실패");
         }
