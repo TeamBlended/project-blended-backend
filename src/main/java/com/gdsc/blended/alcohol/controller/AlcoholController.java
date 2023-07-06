@@ -39,7 +39,6 @@ public class AlcoholController {
         String imageUrl = null;
 
         String alcoholName = Normalizer.normalize(multipartFile.getOriginalFilename(), Normalizer.Form.NFC);
-//        String alcoholName = new String(multipartFile.getOriginalFilename().getBytes(StandardCharsets.UTF_8));
 
         try {
             imageUrl = s3UploadService.upload(multipartFile, s3Path);
