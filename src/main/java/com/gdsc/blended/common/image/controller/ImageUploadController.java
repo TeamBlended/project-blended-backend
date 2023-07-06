@@ -16,11 +16,13 @@ import java.io.IOException;
 public class ImageUploadController {
     private final S3UploadService s3UploadService;
 
+    /*
     //이미지 업로드
     @PostMapping("/upload")
     public ResponseEntity uploadImage(MultipartFile multipartFile) throws IOException {
         return new ResponseEntity<>(s3UploadService.upload(multipartFile), HttpStatus.CREATED);
     }
+    */
 
 
     /* 이미지 삭제
