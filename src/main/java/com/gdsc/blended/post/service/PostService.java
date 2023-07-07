@@ -16,10 +16,7 @@ import com.gdsc.blended.user.dto.response.AuthorDto;
 import com.gdsc.blended.user.entity.UserEntity;
 import com.gdsc.blended.user.repository.UserRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -139,7 +136,7 @@ public class PostService {
     }
 
     @Transactional
-    public List<GeoListResponseDto> getPostsByDistance(Double latitude, Double longitude, Double MAX_DISTANCE) {
+    public Page<GeoListResponseDto> getPostsByDistance(Double latitude, Double longitude, Double MAX_DISTANCE) {
         List<PostEntity> postEntities = postRepository.findByCompletedFalse();
 
         List<GeoListResponseDto> postsByDistance = new ArrayList<>();
@@ -174,7 +171,7 @@ public class PostService {
         }
         postsByDistance.sort(Comparator.comparingDouble(GeoListResponseDto::getDistanceRange));
 
-        return postsByDistance;
+        return new PageImpl<>(postsByDistance);
     }
 
     private double calculateDistance(Double latitude1, Double longitude1, Double latitude2, Double longitude2) {

@@ -3,6 +3,8 @@ package com.gdsc.blended.post.controller;
 import com.gdsc.blended.post.dto.GeoListResponseDto;
 import com.gdsc.blended.post.dto.PostResponseDto;
 import com.gdsc.blended.post.service.PostService;
+import com.gdsc.blended.utils.PagingResponse;
+import com.gdsc.blended.utils.PagingUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -25,31 +27,34 @@ public class PostListController {
 
     @Operation(summary = "가까운 순으로 게시글 목록 가져오기")
     @GetMapping("/posts/distanceList")
-    public ResponseEntity<List<GeoListResponseDto>> getPostsByDistance(
+    public ResponseEntity<PagingResponse<GeoListResponseDto>> getPostsByDistance(
             @RequestParam("nowLatitude") Double latitude,
             @RequestParam("nowLongitude") Double longitude,
             @RequestParam("distanceRange") Double distance
     ) {
-        List<GeoListResponseDto> posts = postService.getPostsByDistance(latitude, longitude, distance);
-        return ResponseEntity.status(HttpStatus.OK).body(posts);
+        Page<GeoListResponseDto> posts = postService.getPostsByDistance(latitude, longitude, distance);
+        PagingResponse<GeoListResponseDto>response = PagingUtil.toResponse(posts);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @Operation(summary = "최신 순으로 게시글 가져오기")
     @GetMapping("/posts/newestList")
-    public ResponseEntity<Page<PostResponseDto>> getNewestPosts(
+    public ResponseEntity<PagingResponse<PostResponseDto>> getNewestPosts(
             @RequestParam(defaultValue = "0") Integer page,
             @RequestParam(defaultValue = "10") Integer size
     ) {
         Page<PostResponseDto> posts = postService.getNewestPosts(page, size);
-        return ResponseEntity.status(HttpStatus.OK).body(posts);
+        PagingResponse<PostResponseDto> response = PagingUtil.toResponse(posts);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @Operation(summary = "좋아요 많은 순으로 게시글 가져오기")
     @GetMapping("/posts/heartList")
-    public ResponseEntity<Page<PostResponseDto>> heartList(@RequestParam(defaultValue = "0") int page,
+    public ResponseEntity<PagingResponse<PostResponseDto>> heartList(@RequestParam(defaultValue = "0") int page,
                                                            @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<PostResponseDto> postPage = postService.getPostsSortedByHeart(pageable);
-        return ResponseEntity.status(HttpStatus.OK).body(postPage);
+        PagingResponse<PostResponseDto> response = PagingUtil.toResponse(postPage);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }
