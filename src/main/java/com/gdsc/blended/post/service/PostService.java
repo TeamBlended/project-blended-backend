@@ -59,8 +59,9 @@ public class PostService {
         UserEntity user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("유저가 없습니다."));
 
         String imageUrl = null;
+        String filePath = "/post";
         try {
-            imageUrl = s3UploadService.upload(multipartFile);
+            imageUrl = s3UploadService.upload(multipartFile , filePath);
         } catch (IOException e) {
             throw new IllegalArgumentException("사진 S3 업로드 실패");
         }
