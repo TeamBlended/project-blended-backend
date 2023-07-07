@@ -217,14 +217,7 @@ public class PostService {
 
     @Transactional
     public List<PostResponseDto> searchPosts(String keyword) {
-        /*try{
-            keyword = URLDecoder.decode(keyword, "UTF-8");
-        }catch (UnsupportedEncodingException e){
-            e.printStackTrace();
-            return new ArrayList<>();
-        }*/
-
-        List<PostEntity> findPosts = postRepository.findByTitleOrContentContaining(keyword, keyword);
+        List<PostEntity> findPosts = postRepository.findByTitleContainingOrContentContaining(keyword, keyword);
         List<PostResponseDto> postResponseDtoList = new ArrayList<>();
 
         if (findPosts.isEmpty()) {
@@ -235,6 +228,11 @@ public class PostService {
             PostResponseDto postResponseDto = PostResponseDto.builder()
                     .title(postEntity.getTitle())
                     .content(postEntity.getContent())
+                    .shareLocation(new LocationDto(postEntity.getLocationName(), null, null))
+                    .author(new AuthorDto(postEntity.getUserId().getNickname(), null))
+                    .shareDateTime(postEntity.getShareDateTime())
+                    .maxParticipantsCount(postEntity.getMaxRecruits())
+                    //이미지
                     .build();
             postResponseDtoList.add(postResponseDto);
         }
