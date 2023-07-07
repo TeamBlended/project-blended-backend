@@ -6,7 +6,12 @@ import com.gdsc.blended.comment.replies.dto.RepliesResponseDto;
 import com.gdsc.blended.comment.replies.service.RepliesService;
 import com.gdsc.blended.jwt.oauth.UserInfo;
 import com.gdsc.blended.user.entity.UserEntity;
+import com.gdsc.blended.utils.PagingResponse;
+import com.gdsc.blended.utils.PagingUtil;
 import io.swagger.v3.oas.annotations.Operation;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -35,9 +40,11 @@ public class RepliesController {
     }
     @Operation(summary = "해당뎃글에 속한 대댓글 리스트")
     @GetMapping()
-    public ResponseEntity<List<RepliesResponseDto>> getRepliesListByPost(@PathVariable Long commentId) {
-        List<RepliesResponseDto> replies = repliesService.getRepliesListByPost(commentId);
-        return ResponseEntity.ok(replies);
+    public ResponseEntity<PagingResponse<RepliesResponseDto>> getRepliesListByPost(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size,@PathVariable Long commentId) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<RepliesResponseDto> replies = repliesService.getRepliesListByPost(commentId,pageable);
+        PagingResponse<RepliesResponseDto> response = PagingUtil.toResponse(replies);
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{repliesId}")

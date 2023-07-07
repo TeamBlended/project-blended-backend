@@ -5,6 +5,8 @@ import com.gdsc.blended.post.dto.GeoListResponseDto;
 import com.gdsc.blended.post.dto.PostRequestDto;
 import com.gdsc.blended.post.dto.PostResponseDto;
 import com.gdsc.blended.post.service.PostService;
+import com.gdsc.blended.utils.PagingResponse;
+import com.gdsc.blended.utils.PagingUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -36,11 +38,12 @@ public class PostController {
 
     @Operation(summary = "마감 시간이 되면 자동으로 마감 처리")
     @GetMapping("/posts")
-    public ResponseEntity<Page<PostResponseDto>> getAllPost(@RequestParam(defaultValue = "0") int page,
-                                                            @RequestParam(defaultValue = "10") int size) {
+    public ResponseEntity<PagingResponse<PostResponseDto>> getAllPost(@RequestParam(defaultValue = "0") int page,
+                                                                      @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<PostResponseDto> postPage = postService.getAllPost(pageable);
-        return ResponseEntity.status(HttpStatus.OK).body(postPage);
+        PagingResponse<PostResponseDto> response = PagingUtil.toResponse(postPage);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     //게시글 수정
