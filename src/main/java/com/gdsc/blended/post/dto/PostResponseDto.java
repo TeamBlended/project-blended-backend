@@ -57,5 +57,24 @@ public class PostResponseDto {
     }
 
     public PostResponseDto(PostEntity updatedPost) {
+        this.id = updatedPost.getId();
+        this.title = updatedPost.getTitle();
+        this.content = updatedPost.getContent();
+        this.shareLocation = new LocationDto();
+        this.shareLocation.setName(updatedPost.getLocationName());
+        this.shareLocation.setLat(updatedPost.getLatitude());
+        this.shareLocation.setLng(updatedPost.getLongitude());
+        this.liked = updatedPost.getLiked();
+        this.completed = updatedPost.getCompleted();
+        this.createdAt = updatedPost.getCreatedDate();
+        this.updatedAt = updatedPost.getModifiedDate();
+        this.viewCount = updatedPost.getViewCount();
+        this.scrapCount = updatedPost.getLikeCount();
+        this.maxParticipantsCount = updatedPost.getMaxRecruits();
+        this.shareDateTime = updatedPost.getShareDateTime();
+        this.category = updatedPost.getCategory().getId();
+        this.author = new AuthorDto();
+        this.author.setNickname(updatedPost.getUserId().getNickname());
+        this.author.setProfileImageUrl(updatedPost.getUserId().getProfileImageUrl());
     }
 }
