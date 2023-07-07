@@ -79,9 +79,10 @@ public class PostController {
 
     //검색
     @GetMapping("/posts/{keyword}")
-    public ResponseEntity<List<PostResponseDto>> searchPosts(@PathVariable String keyword){
-        List<PostResponseDto> postResponseDtoList = postService.searchPosts(keyword);
-        return ResponseEntity.status(HttpStatus.OK).body(postResponseDtoList);
+    public ResponseEntity<PagingResponse<PostResponseDto>> searchPosts(@PathVariable String keyword){
+        Page<PostResponseDto> postResponseDtoList = postService.searchPosts(keyword);
+        PagingResponse<PostResponseDto>response = PagingUtil.toResponse(postResponseDtoList);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
 }
