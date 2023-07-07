@@ -136,7 +136,9 @@ public class PostService {
     }
 
     @Transactional
-    public Page<GeoListResponseDto> getPostsByDistance(Double latitude, Double longitude, Double MAX_DISTANCE) {
+
+    public Page<GeoListResponseDto> getPostsByDistance(Double latitude, Double longitude) {
+
         List<PostEntity> postEntities = postRepository.findByCompletedFalse();
 
         List<GeoListResponseDto> postsByDistance = new ArrayList<>();
@@ -165,7 +167,7 @@ public class PostService {
             authorDto.setProfileImageUrl(postEntity.getUserId().getProfileImageUrl());
             postDto.setAuthor(authorDto);
 
-            if (distance <= MAX_DISTANCE) { // 단위는 km
+            if (distance <= 6) { // 단위는 km
                 postsByDistance.add(postDto);
             }
         }
