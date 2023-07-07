@@ -215,13 +215,9 @@ public class PostService {
     }
 
     @Transactional
-    public List<PostResponseDto> searchPosts(String keyword) {
+    public Page<PostResponseDto> searchPosts(String keyword) {
         List<PostEntity> findPosts = postRepository.findByTitleContainingOrContentContaining(keyword, keyword);
         List<PostResponseDto> postResponseDtoList = new ArrayList<>();
-
-        if (findPosts.isEmpty()) {
-            return postResponseDtoList;
-        }
 
         for (PostEntity postEntity : findPosts) {
             PostResponseDto postResponseDto = PostResponseDto.builder()
@@ -235,7 +231,7 @@ public class PostService {
                     .build();
             postResponseDtoList.add(postResponseDto);
         }
-        return postResponseDtoList;
+        return new PageImpl<>(postResponseDtoList);
     }
 
     @Transactional
