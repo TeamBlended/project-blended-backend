@@ -113,7 +113,7 @@ public class PostService {
             postEntity.setLocationName(postRequestDto.getLocationName());
             postEntity.setLatitude(postRequestDto.getLatitude());
             postEntity.setLongitude(postRequestDto.getLongitude());
-            postEntity.setMaxRecruits(postRequestDto.getMaxRecruit());
+            postEntity.setMaxRecruits(postRequestDto.getMaxParticipantsCount());
             PostEntity updatedPost = postRepository.save(postEntity);
 
             return new PostResponseDto(updatedPost, imageUrl);
