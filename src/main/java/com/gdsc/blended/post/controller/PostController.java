@@ -79,7 +79,7 @@ public class PostController {
 
     //검색
     @GetMapping("/posts/{keyword}")
-    public ResponseEntity<List<PostResponseDto>> searchPosts(@RequestParam String keyword){
+    public ResponseEntity<List<PostResponseDto>> searchPosts(@PathVariable String keyword){
         List<PostResponseDto> postResponseDtoList = postService.searchPosts(keyword);
         return ResponseEntity.status(HttpStatus.OK).body(postResponseDtoList);
     }
