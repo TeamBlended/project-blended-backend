@@ -1,4 +1,4 @@
-package com.gdsc.blended.BaseTime;
+package com.gdsc.blended.baseTime;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.EntityListeners;
