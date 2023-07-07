@@ -6,10 +6,7 @@ import com.gdsc.blended.common.image.entity.ImageEntity;
 import com.gdsc.blended.common.image.repository.ImageRepository;
 import com.gdsc.blended.common.image.service.S3UploadService;
 import com.gdsc.blended.common.image.service.ImageService;
-import com.gdsc.blended.post.dto.GeoListResponseDto;
-import com.gdsc.blended.post.dto.LocationDto;
-import com.gdsc.blended.post.dto.PostRequestDto;
-import com.gdsc.blended.post.dto.PostResponseDto;
+import com.gdsc.blended.post.dto.*;
 import com.gdsc.blended.post.entity.PostEntity;
 import com.gdsc.blended.post.repository.PostRepository;
 import com.gdsc.blended.user.dto.response.AuthorDto;
@@ -95,7 +92,7 @@ public class PostService {
 
     // 게시글 수정(Put)
     @Transactional
-    public PostResponseDto updatePost(Long postId, PostRequestDto postRequestDto, String email) {
+    public PostResponseDto updatePost(Long postId, PostUpdateRequestDto postRequestDto, String email) {
 
         PostEntity postEntity = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("게시글이 없습니다."));
         UserEntity user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("유저가 정보가 없습니다."));
@@ -113,7 +110,7 @@ public class PostService {
             postEntity.setMaxRecruits(postRequestDto.getMaxParticipantsCount());
             PostEntity updatedPost = postRepository.save(postEntity);
 
-            return new PostResponseDto(updatedPost, imageUrl);
+            return new PostResponseDto(updatedPost, imageService.findImagePathByPostId(updatedPost.getId()));
         }
     }
 
