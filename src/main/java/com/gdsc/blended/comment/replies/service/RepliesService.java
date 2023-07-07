@@ -7,10 +7,15 @@ import com.gdsc.blended.comment.replies.dto.RepliesResponseDto;
 import com.gdsc.blended.comment.replies.entity.RepliesEntity;
 import com.gdsc.blended.comment.replies.repository.RepliesRepository;
 import com.gdsc.blended.comment.repository.CommentRepository;
+import com.gdsc.blended.user.dto.response.AuthorDto;
 import com.gdsc.blended.user.entity.UserEntity;
 import com.gdsc.blended.user.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +32,7 @@ public class RepliesService {
         return repliesRepository.findById(id).orElseThrow(()-> new IllegalArgumentException("Invalid Comment ID"));
     }
 
+    @Transactional
     public RepliesResponseDto createReplies(RepliesRequestDto requestDto, Long commentId, String email){
         CommentEntity comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 댓글을 찾을 수 없습니다."));
@@ -40,15 +46,20 @@ public class RepliesService {
         RepliesEntity savedReplies = repliesRepository.save(replies);
 
         // Comment 엔티티 저장 로직
+        AuthorDto authorDto = AuthorDto.builder()
+                .nickname(user.getNickname())
+                .profileImageUrl(user.getProfileImageUrl())
+                .build();
 
         return RepliesResponseDto.builder()
                 .repliesId(savedReplies.getId())
                 .content(savedReplies.getContent())
-                .user(savedReplies.getUser())
+                .user(authorDto)
                 .modifiedDate(savedReplies.getModifiedDate())
                 .build();
     }
 
+    @Transactional
     public RepliesResponseDto getReplies(Long reCommentId) {
         RepliesEntity comment = repliesRepository.findById(reCommentId)
                 .orElseThrow(() -> new NoSuchElementException("Comment not found with id: " + reCommentId));
@@ -60,7 +71,8 @@ public class RepliesService {
                 .build();
     }
 
-    public List<RepliesResponseDto> getRepliesListByPost(Long postId) {
+    @Transactional
+    public Page<RepliesResponseDto> getRepliesListByPost(Long postId, Pageable pageable) {
         List<RepliesEntity> comments = repliesRepository.findByCommentId(postId);
         List<RepliesResponseDto> repliesResponseDtos = new ArrayList<>();
 
@@ -68,14 +80,19 @@ public class RepliesService {
             RepliesResponseDto repliesResponseDto = RepliesResponseDto.builder()
                     .repliesId(comment.getId())
                     .content(comment.getContent())
+                    .user(AuthorDto.builder()
+                            .nickname(comment.getUser().getNickname())
+                            .profileImageUrl(comment.getUser().getProfileImageUrl())
+                            .build())
                     .modifiedDate(comment.getModifiedDate())
                     .build();
             repliesResponseDtos.add(repliesResponseDto);
         }
 
-        return repliesResponseDtos;
+        return new PageImpl<>(repliesResponseDtos);
     }
 
+    @Transactional
     public RepliesResponseDto updateReplies(CommentRequestDto requestDto, Long reCommentId, String email) {
         RepliesEntity replies = repliesRepository.findById(reCommentId)
                 .orElseThrow(() -> new NoSuchElementException("Comment not found with id: " + reCommentId));
@@ -88,15 +105,21 @@ public class RepliesService {
 
             RepliesEntity updateReplies= repliesRepository.save(replies);
 
+            AuthorDto authorDto = AuthorDto.builder()
+                    .nickname(user.getNickname())
+                    .profileImageUrl(user.getProfileImageUrl())
+                    .build();
+
             return RepliesResponseDto.builder()
                     .repliesId(updateReplies.getId())
                     .content(updateReplies.getContent())
+                    .user(authorDto)
                     .modifiedDate(updateReplies.getModifiedDate())
-                    .user(user)
                     .build();
         }
     }
 
+    @Transactional
     public RepliesResponseDto deleteReplies(Long repliesId, String email) {
         RepliesEntity replies = repliesRepository.findById(repliesId)
                 .orElseThrow(() -> new NoSuchElementException("Comment not found with id: " +repliesId));
@@ -117,6 +140,7 @@ public class RepliesService {
         }
     }
 
+    @Transactional
     public void realDeleteReplies(Long repliesId, String email) {
         RepliesEntity replies = repliesRepository.findById(repliesId)
                 .orElseThrow(() -> new IllegalArgumentException("Incalid ReComment id"));

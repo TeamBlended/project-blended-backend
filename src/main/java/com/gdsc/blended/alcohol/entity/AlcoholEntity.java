@@ -31,7 +31,8 @@ public class AlcoholEntity {
 
     private String type;
 
-    @Column(name = "alcohol_image_url",length = 1000)
+    @Lob
+    @Column(name = "alcohol_image_url")
     private String imgUrl;
 
 
