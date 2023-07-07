@@ -1,18 +1,14 @@
 package com.gdsc.blended.post.entity;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gdsc.blended.BaseTime.BaseTimeEntity;
+import com.gdsc.blended.baseTime.BaseTimeEntity;
 import com.gdsc.blended.category.entity.CategoryEntity;
-import com.gdsc.blended.common.image.entity.ImageEntity;
 import com.gdsc.blended.user.entity.UserEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-import org.locationtech.jts.geom.Point;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
