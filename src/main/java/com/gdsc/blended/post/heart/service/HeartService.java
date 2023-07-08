@@ -1,5 +1,8 @@
 package com.gdsc.blended.post.heart.service;
 
+import com.gdsc.blended.common.image.entity.ImageEntity;
+import com.gdsc.blended.common.image.repository.ImageRepository;
+import com.gdsc.blended.common.image.service.ImageService;
 import com.gdsc.blended.post.dto.LocationDto;
 import com.gdsc.blended.post.dto.PostResponseDto;
 import com.gdsc.blended.post.entity.PostEntity;
@@ -17,6 +20,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 
 @RequiredArgsConstructor
 @Service
@@ -25,6 +30,7 @@ public class HeartService {
     private final HeartRepository heartRepository;
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final ImageService imageService;
 
 
     public String likeBoard(Long id,String userEmail) {
@@ -52,11 +58,11 @@ public class HeartService {
     public Page<PostResponseDto> getMyHeartList(int page, int size, String userEmail) {
         Pageable pageable = PageRequest.of(page, size);
         Page<PostEntity> postPage = heartRepository.findLikedPostsByUserEmail(pageable, userEmail);
-
         return postPage.map(this::mapToPostResponseDto);
     }
 
     private PostResponseDto mapToPostResponseDto(PostEntity postEntity) {
+        String image = imageService.findImagePathByPostId(postEntity.getId());
         return PostResponseDto.builder()
                 .id(postEntity.getId())
                 .title(postEntity.getTitle())
@@ -78,6 +84,7 @@ public class HeartService {
                         .nickname(postEntity.getUserId().getNickname())
                         .profileImageUrl(postEntity.getUserId().getProfileImageUrl())
                         .build())
+                .image(image)
                 .build();
     }
 }
