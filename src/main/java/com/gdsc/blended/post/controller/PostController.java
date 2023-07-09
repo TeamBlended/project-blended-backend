@@ -4,6 +4,7 @@ import com.gdsc.blended.jwt.oauth.UserInfo;
 import com.gdsc.blended.post.dto.GeoListResponseDto;
 import com.gdsc.blended.post.dto.PostRequestDto;
 import com.gdsc.blended.post.dto.PostResponseDto;
+import com.gdsc.blended.post.dto.PostUpdateRequestDto;
 import com.gdsc.blended.post.service.PostService;
 import com.gdsc.blended.utils.PagingResponse;
 import com.gdsc.blended.utils.PagingUtil;
@@ -48,8 +49,8 @@ public class PostController {
 
     //게시글 수정
     @PutMapping("/posts/{postId}")
-    public ResponseEntity<PostResponseDto> updatePost(@PathVariable Long postId, @RequestBody PostRequestDto postRequestDto,@AuthenticationPrincipal UserInfo user) {
-        PostResponseDto updatedPost = postService.updatePost(postId, postRequestDto, user.getEmail());
+    public ResponseEntity<PostResponseDto> updatePost(@PathVariable Long postId, @RequestBody PostUpdateRequestDto postUpdateRequestDto, @AuthenticationPrincipal UserInfo user) {
+        PostResponseDto updatedPost = postService.updatePost(postId,postUpdateRequestDto , user.getEmail());
         return ResponseEntity.status(HttpStatus.OK).body(updatedPost);
     }
 

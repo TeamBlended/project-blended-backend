@@ -14,13 +14,14 @@ import com.gdsc.blended.user.entity.UserEntity;
 import com.gdsc.blended.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @RequiredArgsConstructor
@@ -59,6 +60,7 @@ public class HeartService {
         Pageable pageable = PageRequest.of(page, size);
         Page<PostEntity> postPage = heartRepository.findLikedPostsByUserEmail(pageable, userEmail);
         return postPage.map(this::mapToPostResponseDto);
+
     }
 
     private PostResponseDto mapToPostResponseDto(PostEntity postEntity) {
@@ -73,6 +75,7 @@ public class HeartService {
                         .lng(postEntity.getLongitude())
                         .build())
                 .liked(postEntity.getLiked())
+                .completed(postEntity.getCompleted())
                 .createdAt(postEntity.getCreatedDate())
                 .updatedAt(postEntity.getModifiedDate())
                 .viewCount(postEntity.getViewCount())
