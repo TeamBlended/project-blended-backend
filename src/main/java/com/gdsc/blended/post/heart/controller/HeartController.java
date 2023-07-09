@@ -3,8 +3,11 @@ package com.gdsc.blended.post.heart.controller;
 import com.gdsc.blended.jwt.oauth.UserInfo;
 import com.gdsc.blended.post.dto.PostResponseDto;
 import com.gdsc.blended.post.heart.service.HeartService;
+import com.gdsc.blended.utils.PagingResponse;
+import com.gdsc.blended.utils.PagingUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -29,12 +32,13 @@ public class HeartController {
 
     @Transactional
     @GetMapping("/myPage/heartList")
-    public ResponseEntity<Page<PostResponseDto>> myHeartList(
+    public ResponseEntity<PagingResponse<PostResponseDto>> myHeartList(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @AuthenticationPrincipal UserInfo user
     ) {
         Page<PostResponseDto> postPage = heartService.getMyHeartList(page, size, user.getEmail());
-        return ResponseEntity.status(HttpStatus.OK).body(postPage);
+        PagingResponse<PostResponseDto> response = PagingUtil.toResponse(postPage);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }
