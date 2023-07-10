@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
@@ -264,5 +265,15 @@ public class PostService {
                 postEntity.setCompleted(true);
             }
         }
+    }
+
+    @Transactional
+    public Page<PostResponseDto> getMyPostList(String email) {
+        UserEntity user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("유저가 정보가 없습니다."));
+        List<PostEntity> postEntities = postRepository.findByUserId(user);
+
+        return new PageImpl<>(postEntities.stream().map(postEntity ->
+                new PostResponseDto(postEntity, imageService.findImagePathByPostId(postEntity.getId()))
+        ).collect(Collectors.toList()));
     }
 }
