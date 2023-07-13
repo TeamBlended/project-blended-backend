@@ -8,5 +8,5 @@ import java.util.List;
 
 
 public interface AlcoholRepository extends JpaRepository<AlcoholEntity, Long> {
-    List<AlcoholEntity> findByWhiskyKoreanOrWhiskyEnglishContaining(String koreanKeyword, String englishKeyword);
+    List<AlcoholEntity> findByWhiskyKoreanContainingOrWhiskyEnglishContaining(String koreanKeyword, String englishKeyword);
 }
