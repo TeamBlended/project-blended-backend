@@ -8,6 +8,7 @@ import lombok.*;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@Getter
 @Builder
 @Entity
 @Table(name = "tb_heart")
@@ -28,7 +29,7 @@ public class HeartEntity {
     private UserEntity user;
 
     @Column(nullable = false)
-    private boolean status; // true = 좋아요, false = 좋아요 취소
+    private Boolean status; // true = 좋아요, false = 좋아요 취소
 
     public HeartEntity(PostEntity post, UserEntity user) {
         this.post = post;
@@ -39,4 +40,5 @@ public class HeartEntity {
         this.status = false;
         post.setLikeCount(post.getLikeCount() - 1);
     }
+
 }
