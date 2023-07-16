@@ -3,9 +3,11 @@ package com.gdsc.blended.post.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gdsc.blended.common.image.dto.ImageDto;
 import com.gdsc.blended.post.entity.PostEntity;
+import com.gdsc.blended.post.heart.entity.HeartEntity;
 import jdk.jshell.Snippet;
 import lombok.*;
 import com.gdsc.blended.user.dto.response.AuthorDto;
+import software.amazon.awssdk.services.s3.endpoints.internal.Value;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -41,7 +43,6 @@ public class PostResponseDto {
         this.shareLocation.setName(postEntity.getLocationName());
         this.shareLocation.setLat(postEntity.getLatitude());
         this.shareLocation.setLng(postEntity.getLongitude());
-        this.liked = postEntity.getLiked();
         this.completed = postEntity.getCompleted();
         this.createdAt = postEntity.getCreatedDate();
         this.updatedAt = postEntity.getModifiedDate();
@@ -64,7 +65,6 @@ public class PostResponseDto {
         this.shareLocation.setName(updatedPost.getLocationName());
         this.shareLocation.setLat(updatedPost.getLatitude());
         this.shareLocation.setLng(updatedPost.getLongitude());
-        this.liked = updatedPost.getLiked();
         this.completed = updatedPost.getCompleted();
         this.createdAt = updatedPost.getCreatedDate();
         this.updatedAt = updatedPost.getModifiedDate();
@@ -76,5 +76,28 @@ public class PostResponseDto {
         this.author = new AuthorDto();
         this.author.setNickname(updatedPost.getUserId().getNickname());
         this.author.setProfileImageUrl(updatedPost.getUserId().getProfileImageUrl());
+    }
+
+    public PostResponseDto(PostEntity postEntity, Boolean heartcheck, String imageUrl) {
+        this.id = postEntity.getId();
+        this.title = postEntity.getTitle();
+        this.content = postEntity.getContent();
+        this.shareLocation = new LocationDto();
+        this.shareLocation.setName(postEntity.getLocationName());
+        this.shareLocation.setLat(postEntity.getLatitude());
+        this.shareLocation.setLng(postEntity.getLongitude());
+        this.liked = heartcheck;
+        this.completed = postEntity.getCompleted();
+        this.createdAt = postEntity.getCreatedDate();
+        this.updatedAt = postEntity.getModifiedDate();
+        this.viewCount = postEntity.getViewCount();
+        this.scrapCount = postEntity.getLikeCount();
+        this.maxParticipantsCount = postEntity.getMaxRecruits();
+        this.shareDateTime = postEntity.getShareDateTime();
+        this.category = postEntity.getCategory().getId();
+        this.author = new AuthorDto();
+        this.author.setNickname(postEntity.getUserId().getNickname());
+        this.author.setProfileImageUrl(postEntity.getUserId().getProfileImageUrl());
+        this.image = imageUrl;
     }
 }
