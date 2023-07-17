@@ -25,14 +25,14 @@ public class AlcoholController {
     private final AlcoholService alcoholService;
     private final S3UploadService s3UploadService;
 
-    /*
-    @PostMapping("/upload")
-    public List<String> getAlcohols(@RequestParam("files") MultipartFile[] multipartFiles) throws IOException {
-        String s3Path = "/alcohol";
-        List<String> imageUrls = s3UploadService.uploadMulti(multipartFiles, s3Path);
-        return imageUrls;
+
+    @GetMapping("/{keyword}")
+    public ResponseEntity<List<AlcoholDto>> searchAlcohols(@RequestParam("keyword") String keyword){
+        List<AlcoholDto> alcoholDtoList = alcoholService.searchAlcohols(keyword);
+        return ResponseEntity.ok(alcoholDtoList);
     }
-    */
+
+
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public String uploadAlcohols(@RequestParam("file") MultipartFile multipartFile){
         String s3Path = "alcohol";
@@ -49,11 +49,13 @@ public class AlcoholController {
         return "Hello World!";
     }
 
-
-    @GetMapping("/{keyword}")
-    public ResponseEntity<List<AlcoholDto>> searchAlcohols(@RequestParam("keyword") String keyword){
-        List<AlcoholDto> alcoholDtoList = alcoholService.searchAlcohols(keyword);
-        return ResponseEntity.ok(alcoholDtoList);
-    }
 }
 
+/*
+    @PostMapping("/upload")
+    public List<String> getAlcohols(@RequestParam("files") MultipartFile[] multipartFiles) throws IOException {
+        String s3Path = "/alcohol";
+        List<String> imageUrls = s3UploadService.uploadMulti(multipartFiles, s3Path);
+        return imageUrls;
+    }
+    */

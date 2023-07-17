@@ -31,7 +31,7 @@ public class AlcoholService {
 
     @Transactional
     public List<AlcoholDto> searchAlcohols(String keyword) {
-        List<AlcoholEntity> findAlcohols = alcoholRepository.findByWhiskyKoreanOrWhiskyEnglishContaining(keyword, keyword);
+        List<AlcoholEntity> findAlcohols = alcoholRepository.findByWhiskyKoreanContainingOrWhiskyEnglishContaining(keyword, keyword);
         List<AlcoholDto> alcoholDtoList = new ArrayList<>();
 
         if (findAlcohols.isEmpty()) return alcoholDtoList;
