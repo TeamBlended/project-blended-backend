@@ -8,6 +8,9 @@ import com.gdsc.blended.common.image.service.S3UploadService;
 import com.gdsc.blended.common.image.service.ImageService;
 import com.gdsc.blended.post.dto.*;
 import com.gdsc.blended.post.entity.PostEntity;
+import com.gdsc.blended.post.heart.entity.HeartEntity;
+import com.gdsc.blended.post.heart.repository.HeartRepository;
+import com.gdsc.blended.post.heart.service.HeartService;
 import com.gdsc.blended.post.repository.PostRepository;
 import com.gdsc.blended.user.dto.response.AuthorDto;
 import com.gdsc.blended.user.entity.UserEntity;
@@ -30,6 +33,8 @@ public class PostService {
     private final PostRepository postRepository;
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
+    private final HeartRepository heartRepository;
+    private final HeartService heartService;
     private final ImageRepository imageRepository;
     private final ImageService imageService;
     private final S3UploadService s3UploadService;
@@ -125,12 +130,21 @@ public class PostService {
         PostEntity postEntity = optionalPostEntity.get();
         //image 찾아오기
         String imageUrl = imageService.findImagePathByPostId(postId);
+
+        HeartEntity heartEntity =heartRepository.findByPostAndUser(postEntity, user);
+        Boolean heartCheck;
+        if (heartEntity != null) {
+            heartCheck = heartEntity.getStatus();
+        } else {
+            heartCheck = false;
+        }
+
         if(!postEntity.getUserId().getId().equals(user.getId())) {
 
             postEntity.increaseViewCount(); // 조회수 증가
             postRepository.save(postEntity);
         }
-        return new PostResponseDto(postEntity,imageUrl);
+        return new PostResponseDto(postEntity,heartCheck,imageUrl);
     }
 
     @Transactional
