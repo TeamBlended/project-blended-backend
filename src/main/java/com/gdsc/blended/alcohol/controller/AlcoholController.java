@@ -27,7 +27,7 @@ public class AlcoholController {
 
 
     @GetMapping("/{keyword}")
-    public ResponseEntity<List<AlcoholDto>> searchAlcohols(@RequestParam("keyword") String keyword){
+    public ResponseEntity<List<AlcoholDto>> searchAlcohols(@PathVariable String keyword){
         List<AlcoholDto> alcoholDtoList = alcoholService.searchAlcohols(keyword);
         return ResponseEntity.ok(alcoholDtoList);
     }
