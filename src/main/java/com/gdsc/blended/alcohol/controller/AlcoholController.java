@@ -4,7 +4,9 @@ package com.gdsc.blended.alcohol.controller;
 import com.gdsc.blended.alcohol.dto.AlcoholDto;
 import com.gdsc.blended.alcohol.service.AlcoholService;
 import com.gdsc.blended.common.image.service.S3UploadService;
+import com.gdsc.blended.utils.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.apache.catalina.core.ApplicationPushBuilder;
 import org.apache.juli.logging.Log;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -27,28 +29,29 @@ public class AlcoholController {
 
 
     @GetMapping("/{keyword}")
-    public ResponseEntity<List<AlcoholDto>> searchAlcohols(@PathVariable String keyword){
+    public ResponseEntity<ApiResponse<List<AlcoholDto>>> searchAlcohols(@PathVariable String keyword){
         List<AlcoholDto> alcoholDtoList = alcoholService.searchAlcohols(keyword);
-        return ResponseEntity.ok(alcoholDtoList);
+        ApiResponse<List<AlcoholDto>> response = ApiResponse.success(alcoholDtoList);
+        return ResponseEntity.ok(response);
     }
 
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public String uploadAlcohols(@RequestParam("file") MultipartFile multipartFile){
+    public ResponseEntity<ApiResponse<String>> uploadAlcohols(@RequestParam("file") MultipartFile multipartFile){
         String s3Path = "alcohol";
         String imageUrl = null;
-
         String alcoholName = Normalizer.normalize(multipartFile.getOriginalFilename(), Normalizer.Form.NFC);
 
         try {
             imageUrl = s3UploadService.upload(multipartFile, s3Path);
             alcoholService.uploadAlcoholsUrlInCsv(s3Path,alcoholName,imageUrl);
+            ApiResponse<String> apiResponse = new ApiResponse<>(imageUrl, 200, "SUCCESS");
+            return ResponseEntity.ok(apiResponse);
         } catch (IOException e) {
-            throw new IllegalArgumentException("사진 S3 업로드 실패");
+            ApiResponse<String> apiResponse = new ApiResponse<>(null, 500, "사진 S3 업로드 실패");
+            return ResponseEntity.status(500).body(apiResponse);
         }
-        return "Hello World!";
     }
-
 }
 
 /*
