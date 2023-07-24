@@ -53,29 +53,25 @@ public class PostService {
 
     //게시글 생성 (Post)
     @Transactional
-    public PostResponseDto createPost(PostRequestDto postRequestDto, Long categoryId, MultipartFile multipartFile, String email) {
+    public PostResponseDto createPost(PostRequestDto postRequestDto, Long categoryId, String email) {
         CategoryEntity category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid category id"));
         UserEntity user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("유저가 없습니다."));
-
-        String imageUrl = null;
-        String filePath = "/post";
-        try {
-            imageUrl = s3UploadService.upload(multipartFile , filePath);
-        } catch (IOException e) {
-            throw new IllegalArgumentException("사진 S3 업로드 실패");
-        }
+        ImageEntity image = imageRepository.findByPath(postRequestDto.getImagePath()).orElse(null);
 
         PostEntity postEntity = postRequestDto.toEntity(category, user);
         PostEntity savedPost = postRepository.save(postEntity);
-        ImageEntity image = imageService.createImage(imageUrl, savedPost);
+
+        if (image != null) {
+            image.setPost(postEntity);
+        }
 
         return new PostResponseDto(savedPost, image.getPath());
     }
 
     // 게시글 삭제(delete)
     @Transactional
-    public void deletePost(Long postId, MultipartFile multipartFile, String email) {
+    public void deletePost(Long postId,  String email) {
         PostEntity postEntity = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("게시글이 없습니다."));
         UserEntity user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("유저가 정보가 없습니다."));
 
