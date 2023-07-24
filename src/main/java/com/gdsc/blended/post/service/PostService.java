@@ -232,6 +232,7 @@ public class PostService {
         List<PostResponseDto> postResponseDtoList = new ArrayList<>();
 
         for (PostEntity postEntity : findPosts) {
+            String image = imageService.findImagePathByPostId(postEntity.getId());
             PostResponseDto postResponseDto = PostResponseDto.builder()
                     .title(postEntity.getTitle())
                     .content(postEntity.getContent())
@@ -239,7 +240,7 @@ public class PostService {
                     .author(new AuthorDto(postEntity.getUserId().getNickname(), null))
                     .shareDateTime(postEntity.getShareDateTime())
                     .maxParticipantsCount(postEntity.getMaxRecruits())
-                    //이미지
+                    .image(image)
                     .build();
             postResponseDtoList.add(postResponseDto);
         }
