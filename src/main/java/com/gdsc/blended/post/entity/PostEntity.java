@@ -69,12 +69,8 @@ public class PostEntity extends BaseTimeEntity {
         this.viewCount++;
     }
 
-    //TODO .. 사진 추가
-    //TODO .. 로그인 이휴 유저정보 추가
     //TODO .. maxRecruits를 0일떄 어떻게 해야할까?
-    //TODO .. 지리정보 추가
 
-    // @ManyToOne//private User userId;
 
 
 }
