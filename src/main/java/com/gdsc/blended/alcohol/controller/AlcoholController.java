@@ -28,8 +28,9 @@ public class AlcoholController {
     private final S3UploadService s3UploadService;
 
 
-    @GetMapping("/{keyword}")
-    public ResponseEntity<ApiResponse<List<AlcoholDto>>> searchAlcohols(@PathVariable String keyword){
+    @GetMapping("/search")
+    public ResponseEntity<ApiResponse<List<AlcoholDto>>> searchAlcohols(@RequestParam("keyword") String keyword){
+
         List<AlcoholDto> alcoholDtoList = alcoholService.searchAlcohols(keyword);
         ApiResponse<List<AlcoholDto>> response = ApiResponse.success(alcoholDtoList);
         return ResponseEntity.ok(response);
