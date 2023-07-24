@@ -42,7 +42,6 @@ public class PostController {
         ApiResponse<PostResponseDto> response = ApiResponse.success(createdPost);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
-리
     // 이미지 업로드
     @PostMapping(value = "/uploadImage", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse<ImageDto>> uploadImage(@RequestParam("file") MultipartFile multipartFile) throws IOException {
