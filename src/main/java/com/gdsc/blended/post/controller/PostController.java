@@ -1,5 +1,8 @@
 package com.gdsc.blended.post.controller;
 
+import com.gdsc.blended.common.image.dto.ImageDto;
+import com.gdsc.blended.common.image.service.ImageService;
+import com.gdsc.blended.common.image.service.S3UploadService;
 import com.gdsc.blended.jwt.oauth.UserInfo;
 import com.gdsc.blended.post.dto.GeoListResponseDto;
 import com.gdsc.blended.post.dto.PostRequestDto;
@@ -11,6 +14,7 @@ import com.gdsc.blended.utils.PagingResponse;
 import com.gdsc.blended.utils.PagingUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
+import org.locationtech.jts.operation.overlay.ConsistentPolygonRingChecker;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +23,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
@@ -27,15 +32,25 @@ import java.io.IOException;
 @RequestMapping("/api/v1")
 public class PostController {
     private final PostService postService;
+    private final S3UploadService s3UploadService;
 
 
     //개시글 쓰기
     @PostMapping(value = "/posts/{categoryId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse<PostResponseDto>> createPost(@ModelAttribute PostRequestDto postRequestDto, @PathVariable Long categoryId, @AuthenticationPrincipal UserInfo user) throws IOException {
-
-        PostResponseDto createdPost = postService.createPost(postRequestDto, categoryId, postRequestDto.getMultipartFile(), user.getEmail());
+        PostResponseDto createdPost = postService.createPost(postRequestDto, categoryId, user.getEmail());
         ApiResponse<PostResponseDto> response = ApiResponse.success(createdPost);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+    // 이미지 업로드
+    @PostMapping(value = "/uploadImage", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ApiResponse<ImageDto>> uploadImage(@RequestParam("file") MultipartFile multipartFile) throws IOException {
+            // ImageService를 이용하여 이미지 업로드 처리
+            String imageName = s3UploadService.upload(multipartFile, "/post");
+            ImageDto imageDto = new ImageDto();
+            imageDto.setPath(imageName);
+            ApiResponse<ImageDto> response = ApiResponse.success(imageDto);
+            return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "마감 시간이 되면 자동으로 마감 처리")
@@ -61,7 +76,7 @@ public class PostController {
     // TODO: 2023/07/22 삭제 방식 바꿔야됨
     @DeleteMapping("/posts/{postId}")
     public ResponseEntity<Void> deletePost(@ModelAttribute PostRequestDto postRequestDto, @PathVariable Long postId, @AuthenticationPrincipal UserInfo user) {
-        postService.deletePost(postId, postRequestDto.getMultipartFile(), user.getEmail());
+        postService.deletePost(postId, user.getEmail());
         return ResponseEntity.noContent().build();
     }
 

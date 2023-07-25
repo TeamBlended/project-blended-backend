@@ -22,7 +22,7 @@ public class PostRequestDto {
     private String locationName;
     private Double latitude; //위도
     private Double longitude; //경도
-    private MultipartFile multipartFile;
+    private String imagePath;
 
     public PostEntity toEntity(CategoryEntity category, UserEntity user) {
         PostEntity postEntity = new PostEntity();
@@ -31,7 +31,7 @@ public class PostRequestDto {
         postEntity.setLocationName(locationName);
         postEntity.setLatitude(latitude);
         postEntity.setLongitude(longitude);
-        postEntity.setLiked(true);
+        postEntity.setLiked(false);
         postEntity.setCompleted(false);
         postEntity.setViewCount(0L);
         postEntity.setLikeCount(0L);
