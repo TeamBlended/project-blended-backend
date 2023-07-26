@@ -46,7 +46,7 @@ public class PostController {
     @PostMapping(value = "/uploadImage", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse<ImageDto>> uploadImage(@RequestParam("file") MultipartFile multipartFile) throws IOException {
             // ImageService를 이용하여 이미지 업로드 처리
-            String imageName = s3UploadService.upload(multipartFile, "/post");
+            String imageName = s3UploadService.upload(multipartFile, "post");
             ImageDto imageDto = new ImageDto();
             imageDto.setPath(imageName);
             ApiResponse<ImageDto> response = ApiResponse.success(imageDto);
