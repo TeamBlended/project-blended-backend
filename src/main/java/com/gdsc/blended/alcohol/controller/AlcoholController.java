@@ -5,6 +5,7 @@ import com.gdsc.blended.alcohol.dto.AlcoholDto;
 import com.gdsc.blended.alcohol.service.AlcoholService;
 import com.gdsc.blended.common.image.service.S3UploadService;
 import com.gdsc.blended.common.apiResponse.ApiResponse;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -24,6 +25,7 @@ public class AlcoholController {
     private final S3UploadService s3UploadService;
 
 
+    @Operation(summary = "개발자용")
     @GetMapping("/search")
     public ResponseEntity<ApiResponse<List<AlcoholDto>>> searchAlcohols(@RequestParam("keyword") String keyword){
 

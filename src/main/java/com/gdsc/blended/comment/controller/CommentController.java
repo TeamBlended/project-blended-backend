@@ -35,8 +35,8 @@ public class CommentController {
 
     @Operation(summary = "댓글조회(필요없을듯)")
     @GetMapping("/{commentId}")
-    public ResponseEntity<ApiResponse<CommentResponseDto>> getcomment(@PathVariable Long commentId){
-        CommentResponseDto comment = commentService.getComments(commentId);
+    public ResponseEntity<ApiResponse<CommentResponseDto>> getcomment(@PathVariable Long commentId, @AuthenticationPrincipal UserInfo user){
+        CommentResponseDto comment = commentService.getComments(commentId, user.getEmail());
         ApiResponse<CommentResponseDto> response = ApiResponse.success(comment);
         return ResponseEntity.ok(response);
     }

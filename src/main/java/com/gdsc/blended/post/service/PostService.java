@@ -184,7 +184,7 @@ public class PostService {
 
     @Transactional
     public Page<PostResponseDto> getNewestPosts(Integer page, Integer size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("modifiedDate").descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createDate").descending());
         Page<PostEntity> postPage = postRepository.findAll(pageable);
 
         if (postPage.isEmpty()) {
@@ -293,7 +293,7 @@ public class PostService {
         PostEntity postEntity = findPostByPostId(postId);
         UserEntity user = findUserByEmail(email);
         if (!postEntity.getUserId().equals(user)) {
-            throw new ApiException(PostResponseMessage.POST_NOT_MATCH);
+            throw new ApiException(UserResponseMessage.USER_NOT_MATCH);
         }
         return postEntity;
     }

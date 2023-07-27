@@ -51,7 +51,7 @@ public class PostController {
             return ResponseEntity.ok(response);
     }
 
-    @Operation(summary = "마감 시간이 되면 자동으로 마감 처리")
+    @Operation(summary = "게시글 목록 전체 조회")
     @GetMapping("/posts")
     public ResponseEntity<ApiResponse<PagingResponse<PostResponseDto>>> getAllPost(@RequestParam(defaultValue = "0") int page,
                                                                       @RequestParam(defaultValue = "10") int size) {
@@ -90,7 +90,7 @@ public class PostController {
         ApiResponse<PostResponseDto> response = ApiResponse.success(postResponseDto);
         return ResponseEntity.ok(response);
     }
-    @Operation(summary = "게시글 모집 마감 on/off 버튼")
+    @Operation(summary = "게시글 모집 마감 on/off 버튼(사용 x)")
     @PutMapping("/posts/{postId}/complete")
     public ResponseEntity<ApiResponse<PostResponseDto>> completePost(@PathVariable Long postId, @AuthenticationPrincipal UserInfo user) {
         PostResponseDto completedPost = postService.completePost(postId, user.getEmail());

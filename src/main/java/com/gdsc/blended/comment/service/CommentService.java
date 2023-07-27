@@ -56,19 +56,32 @@ public class CommentService {
     }
 
     @Transactional
-    public CommentResponseDto getComments(Long commentId) {
+    public CommentResponseDto getComments(Long commentId, String email) {
         CommentEntity comment = findCommentByCommentId(commentId);
+        UserEntity user = findUserByEmail(email);
+
+        AuthorDto authorDto = AuthorDto.builder()
+                .nickname(user.getNickname())
+                .profileImageUrl(user.getProfileImageUrl())
+                .build();
 
         return CommentResponseDto.builder()
                 .commentId(comment.getId())
                 .content(comment.getContent())
+                .user(authorDto)
                 .modifiedDate(comment.getModifiedDate())
                 .build();
     }
 
     @Transactional
     public Page<CommentResponseDto> getCommentListByPost(Long postId, Pageable pageable) {
-        List<CommentEntity> comments = commentRepository.findByPostId(postId);
+        List<CommentEntity> comments;
+        try {
+            comments = commentRepository.findByPostId(postId);
+        }catch (Exception e){
+            throw new ApiException(PostResponseMessage.POST_NOT_FOUND);
+        }
+
         List<CommentResponseDto> commentResponseDtos = new ArrayList<>();
 
         if (comments.isEmpty())
@@ -149,7 +162,7 @@ public class CommentService {
         CommentEntity commentEntity = findCommentByCommentId(commentId);
         UserEntity user = findUserByEmail(email);
         if (!commentEntity.getUser().equals(user)) {
-            throw new ApiException(CommentResponseMessage.COMMENT_NOT_FOUND);
+            throw new ApiException(UserResponseMessage.USER_NOT_MATCH);
         }
         return commentEntity;
     }

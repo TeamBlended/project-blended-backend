@@ -1,10 +1,13 @@
 package com.gdsc.blended.common.image.service;
 
 
+import com.gdsc.blended.common.apiResponse.PostResponseMessage;
+import com.gdsc.blended.common.exception.ApiException;
 import com.gdsc.blended.common.image.repository.ImageRepository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.sync.RequestBody;
@@ -33,7 +36,7 @@ public class S3UploadService {
     //private final AmazonS3 amazonS3;
     private final S3Client s3Client;
 
-    public String upload(MultipartFile multipartFile, String filePath) throws IOException{
+    public String upload(MultipartFile multipartFile, String filePath) throws IOException {
         // 파일 이름이 중복되지 않게 하기 위해 UUID 로 랜덤 값으로 파일 이름 생성
         String originName = multipartFile.getOriginalFilename();
         //확장자 추출
@@ -41,11 +44,11 @@ public class S3UploadService {
         //중복 방지를 위해 파일명에 UUID 추가
         String s3FileName = UUID.randomUUID() + "." + ext;
         //키 생성
-        String key = filePath +"/"+ s3FileName;
+        String key = filePath + "/" + s3FileName;
 
         // 파일의 크기가 용량제한을 넘을 시 예외를 던진다.
         if (multipartFile.getSize() > CAPACITY_LIMIT_BYTE) {
-            throw new RuntimeException("이미지가 10M 제한을 넘어갑니다.");
+            throw new ApiException(PostResponseMessage.IMAGE_TOO_LARGE);
         }
 
         PutObjectRequest putRequest = PutObjectRequest.builder()
@@ -91,89 +94,4 @@ public class S3UploadService {
                 .build();
         return s3Client.utilities().getUrl(urlRequest).toExternalForm();
     }
-
-    /*
-    public List<String> uploadMulti(MultipartFile[] multipartFiles, String filePath) throws IOException {
-        List<String> imageUrls = new ArrayList<>();
-
-        for (MultipartFile multipartFile : multipartFiles) {
-            String originName = multipartFile.getOriginalFilename();
-            String ext = originName.substring(originName.lastIndexOf(".") + 1);
-            String s3FileName = UUID.randomUUID() + "." + ext;
-            String key = filePath + s3FileName;
-
-            if (multipartFile.getSize() > CAPACITY_LIMIT_BYTE) {
-                throw new RuntimeException("이미지가 10M 제한을 넘어갑니다.");
-            }
-
-            PutObjectRequest putRequest = PutObjectRequest.builder()
-                    .bucket(bucket)
-                    .key(key)
-                    .contentType(multipartFile.getContentType())
-                    .build();
-
-            s3Client.putObject(putRequest, RequestBody.fromInputStream(multipartFile.getInputStream(), multipartFile.getSize()));
-
-            GetUrlRequest urlRequest = GetUrlRequest.builder()
-                    .bucket(bucket)
-                    .key(key)
-                    .build();
-
-            String imageUrl = s3Client.utilities().getUrl(urlRequest).toExternalForm();
-            imageUrls.add(imageUrl);
-        }
-
-        return imageUrls;
-    }
-    */
 }
-
-/*//jwt
-    public void delete(String path) {
-        DeleteObjectRequest request = getDeleteObjectRequest(path);
-        s3Client.deleteObject(request);
-//      String key = URLDecoder.decode(path.replace("s3://blended-post/post/", ""));
-//      amazonS3.deleteObject(bucket, key);
-    }
-
-    private DeleteObjectRequest getDeleteObjectRequest(String path) {
-        return DeleteObjectRequest.builder()
-                .bucket(bucket)
-                .key(path.substring(path.lastIndexOf("com/") + 4))
-                .build();
-    }*/
-
-
-/*public String upload(MultipartFile multipartFile) throws IOException{
-        // 파일 이름이 중복되지 않게 하기 위해 UUID 로 랜덤값 생성하여 "-"로 파일 이름과 연결하여 파일 이름 생성
-        String s3FileName = filePath + UUID.randomUUID() + "-" + multipartFile.getOriginalFilename();
-
-        // 파일의 크기가 용량제한을 넘을 시 예외를 던진다.
-        if (multipartFile.getSize() > CAPACITY_LIMIT_BYTE) {
-            throw new RuntimeException("이미지가 10M 제한을 넘어갑니다.");
-        }
-        // S3에 알려줄 파일 메타 데이터 정보에 파일 크기를 담는다.
-        ObjectMetadata objMeta = new ObjectMetadata();
-        objMeta.setContentLength(multipartFile.getInputStream().available());
-
-        s3Client.putObject(bucket, s3FileName, multipartFile.getInputStream(), objMeta);
-
-        return s3Client.getUrl(bucket, s3FileName).toString();
-    }*/
-
-//delete
-    /*public void delete(String path) {
-        String key = extractKeyFromPath(path);
-        DeleteObjectRequest deleteRequest = new DeleteObjectRequest(bucket, key);
-        s3Client.deleteObject(deleteRequest);
-    }
-
-    private String extractKeyFromPath(String path) {
-        if (path.startsWith("https://")) {
-            int startIndex = path.indexOf("com/*", 5);
-            if (startIndex != -1) {
-                return path.substring(startIndex + 1);
-            }
-        }
-        throw new IllegalArgumentException("Invalid S3 path: " + path);
-    }*/

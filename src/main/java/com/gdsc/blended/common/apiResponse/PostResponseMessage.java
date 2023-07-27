@@ -3,6 +3,8 @@ package com.gdsc.blended.common.apiResponse;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
+import java.awt.*;
+
 @Getter
 public enum PostResponseMessage implements ResponseMessage {
     POST_CREATED("게시글 작성 성공", HttpStatus.OK),
@@ -22,7 +24,9 @@ public enum PostResponseMessage implements ResponseMessage {
 
     IMAGE_NOT_FOUND("이미지를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
     IMAGE_DELETE_FAILED("이미지 삭제 실패", HttpStatus.INTERNAL_SERVER_ERROR),
-    IMAGE_UPLOAD_FAILED("이미지 업로드 실패", HttpStatus.INTERNAL_SERVER_ERROR);
+    IMAGE_UPLOAD_FAILED("이미지 업로드 실패", HttpStatus.INTERNAL_SERVER_ERROR),
+    IMAGE_TOO_LARGE("이미지 용량이 너무 큽니다.", HttpStatus.BAD_REQUEST),
+    ;
 
     private final String message;
     private final HttpStatus statusCode;

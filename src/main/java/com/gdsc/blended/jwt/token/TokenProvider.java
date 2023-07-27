@@ -92,10 +92,13 @@ public class TokenProvider {
             return true;
         } catch (SecurityException | MalformedJwtException e) {
             logger.warn("잘못된 JWT 서명입니다.");
+            //throw new ApiException(AuthMessage.INVALID_JWT);
         } catch (ExpiredJwtException e) {
             logger.warn("만료된 JWT 토큰입니다.");
+            //throw  new ApiException(AuthMessage.EXPIRED_TOKEN);
         } catch (UnsupportedJwtException e) {
             logger.warn("지원되지 않는 JWT 토큰입니다.");
+            //throw new ApiException(AuthMessage.UNSUPPORTED_JWT);
         } catch (IllegalArgumentException e) {
             logger.warn("JWT 토큰이 잘못되었습니다.");
         }

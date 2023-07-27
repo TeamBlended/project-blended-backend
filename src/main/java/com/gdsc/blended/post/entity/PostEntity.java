@@ -5,6 +5,7 @@ import com.gdsc.blended.category.entity.CategoryEntity;
 import com.gdsc.blended.user.entity.UserEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -33,6 +34,7 @@ public class PostEntity extends BaseTimeEntity {
     // varchar를 넘어서는 큰 데이터를 넣을 때 @Lob 사용
     //@Lob
     @NotNull
+    @Size(max = 3000)
     private String content;
 
     private Boolean liked;

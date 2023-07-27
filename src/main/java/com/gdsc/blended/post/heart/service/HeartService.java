@@ -1,5 +1,8 @@
 package com.gdsc.blended.post.heart.service;
 
+import com.gdsc.blended.common.apiResponse.PostResponseMessage;
+import com.gdsc.blended.common.apiResponse.UserResponseMessage;
+import com.gdsc.blended.common.exception.ApiException;
 import com.gdsc.blended.common.image.entity.ImageEntity;
 import com.gdsc.blended.common.image.repository.ImageRepository;
 import com.gdsc.blended.common.image.service.ImageService;
@@ -35,8 +38,8 @@ public class HeartService {
 
 
     public String likeBoard(Long id,String userEmail) {
-        PostEntity post = postRepository.findById(id).orElseThrow(()->new IllegalArgumentException("해당 게시글이 없습니다."));
-        UserEntity user = userRepository.findByEmail(userEmail).orElseThrow(() -> new IllegalArgumentException("유저가 없습니다."));
+        PostEntity post = postRepository.findById(id).orElseThrow(() -> new ApiException(PostResponseMessage.POST_NOT_FOUND));
+        UserEntity user = userRepository.findByEmail(userEmail).orElseThrow(() -> new ApiException(UserResponseMessage.USER_NOT_FOUND));
         if(heartRepository.findByPostAndUser(post,user) == null) {
             // 좋아요를 누른적 없다면 LikeBoard 생성 후, 좋아요 처리
             if(post.getLikeCount() == null){
