@@ -8,6 +8,7 @@ import com.gdsc.blended.comment.replies.entity.RepliesEntity;
 import com.gdsc.blended.comment.replies.repository.RepliesRepository;
 import com.gdsc.blended.comment.repository.CommentRepository;
 import com.gdsc.blended.common.apiResponse.CommentResponseMessage;
+import com.gdsc.blended.common.apiResponse.PostResponseMessage;
 import com.gdsc.blended.common.apiResponse.UserResponseMessage;
 import com.gdsc.blended.common.exception.ApiException;
 import com.gdsc.blended.user.dto.response.AuthorDto;
@@ -50,7 +51,7 @@ public class RepliesService {
         RepliesEntity repliesEntity = findRepliesByRepliesId(repliesId);
         UserEntity user = findUserByEmail(email);
         if (!repliesEntity.getUser().equals(user)) {
-            throw new ApiException(CommentResponseMessage.COMMENT_NOT_FOUND);
+            throw new ApiException(UserResponseMessage.USER_NOT_MATCH);
         }
         return repliesEntity;
     }
@@ -83,19 +84,31 @@ public class RepliesService {
     }
 
     @Transactional
-    public RepliesResponseDto getReplies(Long repliesId) {
+    public RepliesResponseDto getReplies(Long repliesId, String email) {
         RepliesEntity comment = findRepliesByRepliesId(repliesId);
+        UserEntity user = findUserByEmail(email);
+
+        AuthorDto authorDto = AuthorDto.builder()
+                .nickname(user.getNickname())
+                .profileImageUrl(user.getProfileImageUrl())
+                .build();
 
         return RepliesResponseDto.builder()
                 .repliesId(comment.getId())
                 .content(comment.getContent())
+                .user(authorDto)
                 .modifiedDate(comment.getModifiedDate())
                 .build();
     }
 
     @Transactional
     public Page<RepliesResponseDto> getRepliesListByComment(Long commentId, Pageable pageable) {
-        List<RepliesEntity> comments = repliesRepository.findByCommentId(commentId);
+        List<RepliesEntity> comments;
+        try {
+            comments = repliesRepository.findByCommentId(commentId);
+        }catch (Exception e){
+            throw new ApiException(PostResponseMessage.POST_NOT_FOUND);
+        }
         List<RepliesResponseDto> repliesResponseDtos = new ArrayList<>();
 
         if (comments.isEmpty())
