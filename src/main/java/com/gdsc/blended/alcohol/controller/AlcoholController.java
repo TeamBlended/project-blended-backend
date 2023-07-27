@@ -4,20 +4,16 @@ package com.gdsc.blended.alcohol.controller;
 import com.gdsc.blended.alcohol.dto.AlcoholDto;
 import com.gdsc.blended.alcohol.service.AlcoholService;
 import com.gdsc.blended.common.image.service.S3UploadService;
-import com.gdsc.blended.utils.ApiResponse;
+import com.gdsc.blended.common.apiResponse.ApiResponse;
 import lombok.RequiredArgsConstructor;
-import org.apache.catalina.core.ApplicationPushBuilder;
-import org.apache.juli.logging.Log;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import software.amazon.awssdk.services.s3.endpoints.internal.Value;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.text.Normalizer;
-import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -46,10 +42,10 @@ public class AlcoholController {
         try {
             imageUrl = s3UploadService.upload(multipartFile, s3Path);
             alcoholService.uploadAlcoholsUrlInCsv(s3Path,alcoholName,imageUrl);
-            ApiResponse<String> apiResponse = new ApiResponse<>(imageUrl, 200, "SUCCESS");
+            ApiResponse<String> apiResponse = new ApiResponse<String>(imageUrl, HttpStatus.OK, "SUCCESS");
             return ResponseEntity.ok(apiResponse);
         } catch (IOException e) {
-            ApiResponse<String> apiResponse = new ApiResponse<>(null, 500, "사진 S3 업로드 실패");
+            ApiResponse<String> apiResponse = new ApiResponse<>(null, HttpStatus.BAD_REQUEST, "사진 S3 업로드 실패");
             return ResponseEntity.status(500).body(apiResponse);
         }
     }

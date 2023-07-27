@@ -1,5 +1,9 @@
 package com.gdsc.blended.jwt.exception;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gdsc.blended.common.apiResponse.ApiResponse;
+import com.gdsc.blended.common.apiResponse.DefaultMessage;
+import com.gdsc.blended.common.apiResponse.ResponseMessage;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.core.AuthenticationException;
@@ -15,6 +19,14 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException{
         // 401에러
-        response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+        ResponseMessage errorMessage = DefaultMessage.UNAUTHORIZED;
+        ApiResponse apiResponse = ApiResponse.message(errorMessage, null);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(apiResponse);
+
+        response.setContentType("application/json;charset=UTF-8");
+        response.setStatus(errorMessage.getStatusCode().value());
+        response.getWriter().write(json);
     }
 }
