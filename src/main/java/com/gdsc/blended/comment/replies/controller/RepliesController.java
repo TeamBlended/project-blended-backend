@@ -5,7 +5,7 @@ import com.gdsc.blended.comment.replies.dto.RepliesRequestDto;
 import com.gdsc.blended.comment.replies.dto.RepliesResponseDto;
 import com.gdsc.blended.comment.replies.service.RepliesService;
 import com.gdsc.blended.jwt.oauth.UserInfo;
-import com.gdsc.blended.utils.ApiResponse;
+import com.gdsc.blended.common.apiResponse.ApiResponse;
 import com.gdsc.blended.utils.PagingResponse;
 import com.gdsc.blended.utils.PagingUtil;
 import io.swagger.v3.oas.annotations.Operation;
@@ -32,18 +32,20 @@ public class RepliesController {
         ApiResponse<RepliesResponseDto> response = ApiResponse.success(responseDto);
         return ResponseEntity.ok(response);
     }
+
     @Operation(summary = "대댓글조회(필요없을듯)")
     @GetMapping("/{repliesId}")
-    public ResponseEntity<ApiResponse<RepliesResponseDto>> getReplies(@PathVariable Long repliesId){
-        RepliesResponseDto replies = repliesService.getReplies(repliesId);
+    public ResponseEntity<ApiResponse<RepliesResponseDto>> getReplies(@PathVariable Long repliesId, @AuthenticationPrincipal UserInfo user){
+        RepliesResponseDto replies = repliesService.getReplies(repliesId, user.getEmail());
         ApiResponse<RepliesResponseDto> response = ApiResponse.success(replies);
         return ResponseEntity.ok(response);
     }
+
     @Operation(summary = "해당뎃글에 속한 대댓글 리스트")
     @GetMapping()
     public ResponseEntity<ApiResponse<PagingResponse<RepliesResponseDto>>> getRepliesListByPost(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size,@PathVariable Long commentId) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<RepliesResponseDto> replies = repliesService.getRepliesListByPost(commentId,pageable);
+        Page<RepliesResponseDto> replies = repliesService.getRepliesListByComment(commentId,pageable);
         PagingResponse<RepliesResponseDto> pagingResponse = PagingUtil.toResponse(replies);
         ApiResponse<PagingResponse<RepliesResponseDto>> response = ApiResponse.success(pagingResponse);
         return ResponseEntity.ok(response);

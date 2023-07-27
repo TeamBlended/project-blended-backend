@@ -1,5 +1,8 @@
 package com.gdsc.blended.user.service;
 
+import com.gdsc.blended.common.apiResponse.AuthMessage;
+import com.gdsc.blended.common.apiResponse.UserResponseMessage;
+import com.gdsc.blended.common.exception.ApiException;
 import com.gdsc.blended.jwt.dto.TokenResponse;
 import com.gdsc.blended.jwt.oauth.GoogleOAuth2UserInfo;
 import com.gdsc.blended.jwt.token.TokenProvider;
@@ -27,7 +30,7 @@ public class AuthService {
     private final UserRepository userRepository;
 
     @Transactional
-    public TokenResponse googleLogin(String idToken) throws Exception {
+    public TokenResponse googleLogin(String idToken){
         GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), new GsonFactory())
                 .setAudience(Collections.singletonList(googleClientId))
                 .build();
@@ -36,7 +39,7 @@ public class AuthService {
             GoogleIdToken googleIdToken = verifier.verify(idToken);
 
             if (googleIdToken == null) {
-                throw new Exception("INVALID_TOKEN");
+                throw new ApiException(AuthMessage.LOGIN_BAD_REQUEST);
             }
             else {
                 GoogleOAuth2UserInfo userInfo = new GoogleOAuth2UserInfo(googleIdToken.getPayload());
@@ -48,16 +51,9 @@ public class AuthService {
                 return sendGenerateJwtToken(userInfo.getEmail(), userInfo.getNickname());
             }
         } catch (Exception e) {
-            throw new Exception("INVALID_TOKEN");
+            throw new ApiException(AuthMessage.INVALID_TOKEN);
         }
     }
-
-    /* 로그아웃
-    @Transactional
-    public void logout(String email, String refreshToken) throws Exception {
-        validateRefreshToken(refreshToken);
-        Claims claims = tokenProvider.parseClaims(refreshToken);
-    }*/
 
     @Transactional
     public TokenResponse reissue(String email, String nickname, String refreshToken) throws Exception {
@@ -72,9 +68,9 @@ public class AuthService {
         return tokenResponse;
     }
 
-    private void validateRefreshToken(String refreshToken) throws Exception {
+    private void validateRefreshToken(String refreshToken){
         if(!tokenProvider.validateToken(refreshToken))
-            throw new Exception("validateRefreshTokenError");
+            throw new ApiException(UserResponseMessage.REFRESH_TOKEN_INVALID);
     }
 
     private TokenResponse createToken(String email, String nickname) {

@@ -3,6 +3,8 @@ package com.gdsc.blended.alcohol.service;
 import com.gdsc.blended.alcohol.dto.AlcoholDto;
 import com.gdsc.blended.alcohol.entity.AlcoholEntity;
 import com.gdsc.blended.alcohol.repository.AlcoholRepository;
+import com.gdsc.blended.common.apiResponse.AlcoholResponseMessage;
+import com.gdsc.blended.common.exception.ApiException;
 import com.gdsc.blended.common.image.service.S3UploadService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +36,9 @@ public class AlcoholService {
         List<AlcoholEntity> findAlcohols = alcoholRepository.findByWhiskyKoreanContainingOrWhiskyEnglishContaining(keyword, keyword);
         List<AlcoholDto> alcoholDtoList = new ArrayList<>();
 
-        if (findAlcohols.isEmpty()) return alcoholDtoList;
+        if (findAlcohols.isEmpty()) {
+            throw new ApiException(AlcoholResponseMessage.ALCOHOL_NOT_FOUND);
+        }
 
         for (AlcoholEntity alcoholEntity : findAlcohols) {
             alcoholDtoList.add(this.convertEntityToDto(alcoholEntity));

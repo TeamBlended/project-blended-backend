@@ -1,20 +1,18 @@
 package com.gdsc.blended.post.controller;
 
 import com.gdsc.blended.common.image.dto.ImageDto;
-import com.gdsc.blended.common.image.service.ImageService;
 import com.gdsc.blended.common.image.service.S3UploadService;
 import com.gdsc.blended.jwt.oauth.UserInfo;
-import com.gdsc.blended.post.dto.GeoListResponseDto;
 import com.gdsc.blended.post.dto.PostRequestDto;
 import com.gdsc.blended.post.dto.PostResponseDto;
 import com.gdsc.blended.post.dto.PostUpdateRequestDto;
+import com.gdsc.blended.post.dto.SearchResponseDto;
 import com.gdsc.blended.post.service.PostService;
-import com.gdsc.blended.utils.ApiResponse;
+import com.gdsc.blended.common.apiResponse.ApiResponse;
 import com.gdsc.blended.utils.PagingResponse;
 import com.gdsc.blended.utils.PagingUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
-import org.locationtech.jts.operation.overlay.ConsistentPolygonRingChecker;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -53,7 +51,7 @@ public class PostController {
             return ResponseEntity.ok(response);
     }
 
-    @Operation(summary = "마감 시간이 되면 자동으로 마감 처리")
+    @Operation(summary = "게시글 목록 전체 조회")
     @GetMapping("/posts")
     public ResponseEntity<ApiResponse<PagingResponse<PostResponseDto>>> getAllPost(@RequestParam(defaultValue = "0") int page,
                                                                       @RequestParam(defaultValue = "10") int size) {
@@ -92,7 +90,7 @@ public class PostController {
         ApiResponse<PostResponseDto> response = ApiResponse.success(postResponseDto);
         return ResponseEntity.ok(response);
     }
-    @Operation(summary = "게시글 모집 마감 on/off 버튼")
+    @Operation(summary = "게시글 모집 마감 on/off 버튼(사용 x)")
     @PutMapping("/posts/{postId}/complete")
     public ResponseEntity<ApiResponse<PostResponseDto>> completePost(@PathVariable Long postId, @AuthenticationPrincipal UserInfo user) {
         PostResponseDto completedPost = postService.completePost(postId, user.getEmail());
@@ -102,10 +100,10 @@ public class PostController {
 
     //검색
     @GetMapping("/posts/{keyword}")
-    public ResponseEntity<ApiResponse<PagingResponse<PostResponseDto>>> searchPosts(@PathVariable String keyword){
-        Page<PostResponseDto> postResponseDtoList = postService.searchPosts(keyword);
-        PagingResponse<PostResponseDto>pagingResponse = PagingUtil.toResponse(postResponseDtoList);
-        ApiResponse<PagingResponse<PostResponseDto>> response = ApiResponse.success(pagingResponse);
+    public ResponseEntity<ApiResponse<PagingResponse<SearchResponseDto>>> searchPosts(@PathVariable String keyword){
+        Page<SearchResponseDto> postResponseDtoList = postService.searchPosts(keyword);
+        PagingResponse<SearchResponseDto>pagingResponse = PagingUtil.toResponse(postResponseDtoList);
+        ApiResponse<PagingResponse<SearchResponseDto>> response = ApiResponse.success(pagingResponse);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
