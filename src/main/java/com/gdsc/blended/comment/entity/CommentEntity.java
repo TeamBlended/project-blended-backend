@@ -4,6 +4,7 @@ import com.gdsc.blended.baseTime.BaseTimeEntity;
 import com.gdsc.blended.post.entity.PostEntity;
 import com.gdsc.blended.user.entity.UserEntity;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 

@@ -1,10 +1,13 @@
 package com.gdsc.blended.user.service;
 
 
+import com.gdsc.blended.common.apiResponse.UserResponseMessage;
+import com.gdsc.blended.common.exception.ApiException;
 import com.gdsc.blended.user.entity.UserEntity;
 import com.gdsc.blended.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
@@ -12,8 +15,10 @@ import org.springframework.stereotype.Service;
 public class UserService {
     private final UserRepository userRepository;
 
+    @Transactional
     public UserEntity updateUserNickname(String email, String newNickname){
-        UserEntity user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("유저가 정보가 없습니다." + email));
+        UserEntity user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ApiException(UserResponseMessage.NICKNAME_UPDATE_SUCCESS));
         user.setNickname(newNickname);
         return userRepository.save(user);
     }

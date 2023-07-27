@@ -2,6 +2,9 @@ package com.gdsc.blended.post.service;
 
 import com.gdsc.blended.category.entity.CategoryEntity;
 import com.gdsc.blended.category.repository.CategoryRepository;
+import com.gdsc.blended.common.apiResponse.PostResponseMessage;
+import com.gdsc.blended.common.apiResponse.UserResponseMessage;
+import com.gdsc.blended.common.exception.ApiException;
 import com.gdsc.blended.common.image.entity.ImageEntity;
 import com.gdsc.blended.common.image.repository.ImageRepository;
 import com.gdsc.blended.common.image.service.S3UploadService;
@@ -13,19 +16,16 @@ import com.gdsc.blended.post.heart.repository.HeartRepository;
 import com.gdsc.blended.post.heart.service.HeartService;
 import com.gdsc.blended.post.repository.PostRepository;
 import com.gdsc.blended.user.dto.response.AuthorDto;
+import com.gdsc.blended.user.dto.response.AuthorNicknameDto;
 import com.gdsc.blended.user.entity.UserEntity;
 import com.gdsc.blended.user.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
@@ -38,10 +38,6 @@ public class PostService {
     private final ImageRepository imageRepository;
     private final ImageService imageService;
     private final S3UploadService s3UploadService;
-
-    public PostEntity findById(Long id) {
-        return postRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid post id"));
-    }
 
     @Transactional
     //전체 출력(Get)
@@ -56,8 +52,8 @@ public class PostService {
     public PostResponseDto createPost(PostRequestDto postRequestDto, Long categoryId, String email) {
         CategoryEntity category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid category id"));
-        UserEntity user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("유저가 없습니다."));
-        ImageEntity image = imageRepository.findByPath(postRequestDto.getImagePath()).orElse(null);
+        UserEntity user = findUserByEmail(email);
+        ImageEntity image = findImagePath(postRequestDto.getImagePath());
 
         PostEntity postEntity = postRequestDto.toEntity(category, user);
         PostEntity savedPost = postRepository.save(postEntity);
@@ -66,18 +62,13 @@ public class PostService {
             image.setPost(postEntity);
         }
 
-        return new PostResponseDto(savedPost, image.getPath());
+        return new PostResponseDto(savedPost, image != null ? image.getPath() : null);
     }
 
     // 게시글 삭제(delete)
     @Transactional
     public void deletePost(Long postId,  String email) {
-        PostEntity postEntity = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("게시글이 없습니다."));
-        UserEntity user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("유저가 정보가 없습니다."));
-
-        if (!postEntity.getUserId().equals(user)) {
-            throw new IllegalArgumentException("해당 게시글을 작성한 유저가 아닙니다.");
-        }
+        PostEntity postEntity = checkPostOwnerShip(postId, email);
 
         ImageEntity image = imageService.findImageByPostId(postId);
         if (image != null) {
@@ -90,62 +81,48 @@ public class PostService {
     }
 
 
-    //TODO .. 만약에 기존 모집인원이 4명이여서 3명 참가했는데 2명으로 수정한다면?,,,
-
+    //TODO .. 만약에 기존 모집인원이 4명이여서 3명 참가했는데 2명으로 수정한다면?,,, -> 수정 불가능하게 막아야죠 (글을 내리고 재등록해야한다. 가 맞을 것 같아용)
     // 게시글 수정(Put)
     @Transactional
     public PostResponseDto updatePost(Long postId, PostUpdateRequestDto postRequestDto, String email) {
 
-        PostEntity postEntity = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("게시글이 없습니다."));
-        UserEntity user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("유저가 정보가 없습니다."));
+        PostEntity postEntity = checkPostOwnerShip(postId, email);
+        String imageUrl = imageService.findImagePathByPostId(postId);
+        postEntity.setTitle(postRequestDto.getTitle());
+        postEntity.setContent(postRequestDto.getContent());
+        postEntity.setLocationName(postRequestDto.getLocationName());
+        postEntity.setLatitude(postRequestDto.getLatitude());
+        postEntity.setLongitude(postRequestDto.getLongitude());
+        PostEntity updatedPost = postRepository.save(postEntity);
 
-        if (!postEntity.getUserId().getId().equals(user.getId())) {
-            throw new IllegalArgumentException("해당 게시글을 작성한 유저가 아닙니다.");
-        } else {
-
-            String imageUrl = imageService.findImagePathByPostId(postId);
-            postEntity.setTitle(postRequestDto.getTitle());
-            postEntity.setContent(postRequestDto.getContent());
-            postEntity.setLocationName(postRequestDto.getLocationName());
-            postEntity.setLatitude(postRequestDto.getLatitude());
-            postEntity.setLongitude(postRequestDto.getLongitude());
-            postEntity.setMaxRecruits(postRequestDto.getMaxParticipantsCount());
-            PostEntity updatedPost = postRepository.save(postEntity);
-
-            return new PostResponseDto(updatedPost, imageService.findImagePathByPostId(updatedPost.getId()));
-        }
+        return new PostResponseDto(updatedPost, imageService.findImagePathByPostId(updatedPost.getId()));
     }
 
     @Transactional
     public PostResponseDto detailPost(Long postId, String email) {
-        Optional<PostEntity> optionalPostEntity = postRepository.findById(postId);
-        UserEntity user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("유저가 정보가 없습니다."));
-        if (optionalPostEntity.isEmpty()) {
-            return null;
-        }
-        PostEntity postEntity = optionalPostEntity.get();
+        UserEntity user = findUserByEmail(email);
+        PostEntity postEntity = findPostByPostId(postId);
+
         //image 찾아오기
         String imageUrl = imageService.findImagePathByPostId(postId);
 
-        HeartEntity heartEntity =heartRepository.findByPostAndUser(postEntity, user);
-        Boolean heartCheck;
-        if (heartEntity != null) {
-            heartCheck = heartEntity.getStatus();
-        } else {
-            heartCheck = false;
-        }
+        HeartEntity heartEntity = heartRepository.findByPostAndUser(postEntity, user);
+        boolean heartCheck = heartEntity != null && heartEntity.getStatus();
 
-        if(!postEntity.getUserId().getId().equals(user.getId())) {
-
+        if (!postEntity.getUserId().getId().equals(user.getId())) {
             postEntity.increaseViewCount(); // 조회수 증가
             postRepository.save(postEntity);
         }
-        return new PostResponseDto(postEntity,heartCheck,imageUrl);
+
+        return new PostResponseDto(postEntity, heartCheck, imageUrl);
     }
 
     @Transactional
-
     public Page<GeoListResponseDto> getPostsByDistance(Double latitude, Double longitude) {
+
+        if (latitude == null || longitude == null) {
+            throw new ApiException(PostResponseMessage.NOT_FOUND_LATANDLONG);
+        }
 
         List<PostEntity> postEntities = postRepository.findByCompletedFalse();
 
@@ -156,26 +133,24 @@ public class PostService {
 
             // 위도 경도 간의 거리 계산 로직
             double distance = calculateDistance(latitude, longitude, postLatitude, postLongitude);
-
-            GeoListResponseDto postDto = new GeoListResponseDto();
-            postDto.setId(postEntity.getId());
-            postDto.setTitle(postEntity.getTitle());
-            postDto.setContent(postEntity.getContent());
-            LocationDto locationDto = new LocationDto();
-            locationDto.setName(postEntity.getLocationName());
-            locationDto.setLng(postEntity.getLongitude());
-            locationDto.setLat(postEntity.getLatitude());
-            postDto.setShareLocation(locationDto);
-            postDto.setDistanceRange(distance);
-            postDto.setCompleted(postEntity.getCompleted());
-            postDto.setUpdatedAt(postEntity.getModifiedDate());
-            postDto.setMaxParticipantsCount(postEntity.getMaxRecruits());
-            AuthorDto authorDto = new AuthorDto();
-            authorDto.setNickname(postEntity.getUserId().getNickname());
-            authorDto.setProfileImageUrl(postEntity.getUserId().getProfileImageUrl());
-            postDto.setAuthor(authorDto);
-
             if (distance <= 6) { // 단위는 km
+                GeoListResponseDto postDto = new GeoListResponseDto();
+                postDto.setId(postEntity.getId());
+                postDto.setTitle(postEntity.getTitle());
+                postDto.setContent(postEntity.getContent());
+                LocationDto locationDto = new LocationDto();
+                locationDto.setName(postEntity.getLocationName());
+                locationDto.setLng(postEntity.getLongitude());
+                locationDto.setLat(postEntity.getLatitude());
+                postDto.setShareLocation(locationDto);
+                postDto.setDistanceRange(distance);
+                postDto.setCompleted(postEntity.getCompleted());
+                postDto.setUpdatedAt(postEntity.getModifiedDate());
+                postDto.setMaxParticipantsCount(postEntity.getMaxRecruits());
+                AuthorDto authorDto = new AuthorDto();
+                authorDto.setNickname(postEntity.getUserId().getNickname());
+                authorDto.setProfileImageUrl(postEntity.getUserId().getProfileImageUrl());
+                postDto.setAuthor(authorDto);
                 postsByDistance.add(postDto);
             }
         }
@@ -209,47 +184,59 @@ public class PostService {
 
     @Transactional
     public Page<PostResponseDto> getNewestPosts(Integer page, Integer size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("modifiedDate").descending());
-        return postRepository.findAll(pageable).map(post ->
-            new PostResponseDto(post, imageService.findImagePathByPostId(post.getId()))
-        );
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createDate").descending());
+        Page<PostEntity> postPage = postRepository.findAll(pageable);
+
+        if (postPage.isEmpty()) {
+            throw new ApiException(PostResponseMessage.POST_NOT_FOUND);
+        }
+        return postPage.map(post -> new PostResponseDto(post, imageService.findImagePathByPostId(post.getId())));
     }
 
     @Transactional
     public Page<PostResponseDto> getPostsSortedByHeart(Pageable pageable) {
-        return postRepository.findAllByOrderByLikeCountDesc(pageable).map(post ->
-                new PostResponseDto(post, imageService.findImagePathByPostId(post.getId()))
-        );
+        Page<PostEntity> postPage = postRepository.findAllByOrderByLikeCountDesc(pageable);
+        if (postPage.isEmpty()) {
+            throw new ApiException(PostResponseMessage.POST_NOT_FOUND);
+        }
+        return postPage.map(post ->new PostResponseDto(post, imageService.findImagePathByPostId(post.getId())));
     }
 
     @Transactional
-    public Page<PostResponseDto> searchPosts(String keyword) {
+    public Page<SearchResponseDto> searchPosts(String keyword) {
         List<PostEntity> findPosts = postRepository.findByTitleContainingOrContentContaining(keyword, keyword);
-        List<PostResponseDto> postResponseDtoList = new ArrayList<>();
+        List<SearchResponseDto> searchResponseDtoList = new ArrayList<>();
 
+        if (findPosts.size() == 0) { //검색 결과 X
+            throw new ApiException(PostResponseMessage.POST_NOT_FOUND);
+        }
+
+        SearchResponseDto searchResponseDto = null;
         for (PostEntity postEntity : findPosts) {
             String image = imageService.findImagePathByPostId(postEntity.getId());
-            PostResponseDto postResponseDto = PostResponseDto.builder()
+            searchResponseDto = SearchResponseDto.builder()
+                    .id(postEntity.getId())
                     .title(postEntity.getTitle())
                     .content(postEntity.getContent())
-                    .shareLocation(new LocationDto(postEntity.getLocationName(), null, null))
-                    .author(new AuthorDto(postEntity.getUserId().getNickname(), null))
+                    .shareLocation(new LocationDto(postEntity.getLocationName(), postEntity.getLatitude(), postEntity.getLongitude()))
+                    .author(new AuthorNicknameDto(postEntity.getUserId().getNickname()))
                     .shareDateTime(postEntity.getShareDateTime())
+                    .createdAt(postEntity.getCreatedDate())
                     .maxParticipantsCount(postEntity.getMaxRecruits())
                     .image(image)
                     .build();
-            postResponseDtoList.add(postResponseDto);
+            searchResponseDtoList.add(searchResponseDto);
         }
-        return new PageImpl<>(postResponseDtoList);
+        return new PageImpl<>(searchResponseDtoList);
     }
 
     @Transactional
     public PostResponseDto completePost(Long postId, String email) {
-        PostEntity postEntity = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("게시글이 없습니다."));
-        UserEntity user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("유저가 정보가 없습니다."));
+        PostEntity postEntity = postRepository.findById(postId).orElseThrow(() -> new ApiException(PostResponseMessage.POST_NOT_FOUND));
+        UserEntity user = userRepository.findByEmail(email).orElseThrow(() -> new ApiException(UserResponseMessage.USER_NOT_FOUND));
 
         if (!postEntity.getUserId().getId().equals(user.getId())) {
-            throw new IllegalArgumentException("해당 게시글을 작성한 유저가 아닙니다.");
+            throw new ApiException(UserResponseMessage.USER_NOT_MATCH);
         } else {
             postEntity.setCompleted(!postEntity.getCompleted());
 
@@ -276,11 +263,39 @@ public class PostService {
 
     @Transactional
     public Page<PostResponseDto> getMyPostList(String email) {
-        UserEntity user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("유저가 정보가 없습니다."));
+        UserEntity user = findUserByEmail(email);
         List<PostEntity> postEntities = postRepository.findByUserId(user);
+
+        if (postEntities.isEmpty()) {
+            throw new ApiException(PostResponseMessage.POST_NOT_FOUND);
+        }
 
         return new PageImpl<>(postEntities.stream().map(postEntity ->
                 new PostResponseDto(postEntity, imageService.findImagePathByPostId(postEntity.getId()))
-        ).collect(Collectors.toList()));
+        ).toList());
     }
+
+    public PostEntity findPostByPostId(Long postId) {
+        return postRepository.findById(postId).orElseThrow(() ->
+                new ApiException(PostResponseMessage.POST_NOT_FOUND));
+    }
+
+    public UserEntity findUserByEmail(String email) {
+        return userRepository.findByEmail(email).orElseThrow(() ->
+                new ApiException(UserResponseMessage.USER_NOT_FOUND));
+    }
+
+    public ImageEntity findImagePath(String path){
+        return imageRepository.findByPath(path).orElseThrow(() ->
+                new ApiException(PostResponseMessage.NOT_FOUND_IMAGE));
+    }
+    private PostEntity checkPostOwnerShip(Long postId, String email){
+        PostEntity postEntity = findPostByPostId(postId);
+        UserEntity user = findUserByEmail(email);
+        if (!postEntity.getUserId().equals(user)) {
+            throw new ApiException(UserResponseMessage.USER_NOT_MATCH);
+        }
+        return postEntity;
+    }
+
 }

@@ -1,19 +1,17 @@
 package com.gdsc.blended.common.image.service;
 
+import com.gdsc.blended.common.apiResponse.PostResponseMessage;
+import com.gdsc.blended.common.exception.ApiException;
 import com.gdsc.blended.common.image.entity.ImageEntity;
 import com.gdsc.blended.common.image.repository.ImageRepository;
-import com.gdsc.blended.common.image.exception.BusinessLogicException;
-import com.gdsc.blended.common.image.exception.ExceptionCode;
 import com.gdsc.blended.post.entity.PostEntity;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 
 import java.io.IOException;
-import java.net.URI;
 
 @Service
 @RequiredArgsConstructor
@@ -32,7 +30,7 @@ public class ImageService {
             ImageEntity imageEntity = createImage(imageUrl);
             return imageEntity.getPath();
         } catch (IOException e) {
-            throw new BusinessLogicException(ExceptionCode.IMAGE_UPLOAD_FAILED);
+            throw new ApiException(PostResponseMessage.IMAGE_UPLOAD_FAILED);
         }
     }
     public ImageEntity createImage(String imagePath) {
@@ -51,14 +49,17 @@ public class ImageService {
     }
 
     public String findImagePathByPostId(Long postId) {
-        return findImageByPostId(postId).getPath();
+        ImageEntity imageEntity = findImageByPostId(postId);
+        return (imageEntity == null) ? null : imageEntity.getPath();
     }
 
     public ImageEntity findImageByPostId(Long postId) {
-        return imageRepository.findByPostId(postId)
-                .orElseThrow(() -> new BusinessLogicException(ExceptionCode.IMAGE_NOT_FOUND));
+        ImageEntity imageEntity = imageRepository.findByPostId(postId);
+        if (imageEntity == null) {
+            throw new ApiException(PostResponseMessage.IMAGE_NOT_FOUND);
+        }
+        return imageEntity;
     }
-
 }
 
     /*public void removeImage(Long imageId) {

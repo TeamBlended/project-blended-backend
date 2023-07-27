@@ -3,15 +3,13 @@ package com.gdsc.blended.common.image.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.gdsc.blended.post.entity.PostEntity;
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 
 @Entity
 @Getter
 @Setter
+@AllArgsConstructor
 @NoArgsConstructor
 public class ImageEntity {
     @Id
@@ -32,4 +30,5 @@ public class ImageEntity {
         this.post = post;
         this.path = path;
     }
+
 }

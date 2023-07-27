@@ -10,5 +10,9 @@ import lombok.*;
 public class AuthorDto {
     private String nickname;
     private String profileImageUrl;
+
+    public AuthorDto(String nickname) {
+
+    }
 }
 

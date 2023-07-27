@@ -1,11 +1,14 @@
 package com.gdsc.blended.user.controller;
 
 
+import com.gdsc.blended.common.apiResponse.UserResponseMessage;
 import com.gdsc.blended.jwt.oauth.UserInfo;
 import com.gdsc.blended.user.entity.UserEntity;
 import com.gdsc.blended.user.service.UserService;
-import com.gdsc.blended.utils.ApiResponse;
+import com.gdsc.blended.common.apiResponse.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.apache.catalina.User;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -21,12 +24,11 @@ public class UserController {
     public ResponseEntity<ApiResponse<UserEntity>> updateUserNickname(@AuthenticationPrincipal UserInfo user, @RequestParam("newNickname") String newNickname){
         try {
             UserEntity updatedUser = userService.updateUserNickname(user.getEmail(), newNickname);
-            ApiResponse<UserEntity> apiResponse = new ApiResponse<>(updatedUser, 200, "SUCCESS");
-            return ResponseEntity.ok(apiResponse);
+            return ResponseEntity.ok(new ApiResponse<>(updatedUser, UserResponseMessage.NICKNAME_UPDATE_SUCCESS));
         } catch (Exception e) {
-            ApiResponse<UserEntity> apiResponse = new ApiResponse<>(null, 500, "Failed to update user nickname");
-            return ResponseEntity.status(500).body(apiResponse);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse<>(null, UserResponseMessage.NICKNAME_UPDATE_FAIL));
         }
+
     }
 
 }
