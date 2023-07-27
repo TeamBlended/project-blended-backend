@@ -12,5 +12,5 @@ public interface ImageRepository extends JpaRepository<ImageEntity, Long> {
     Optional<ImageEntity> findByPath(String path);
     Optional<ImageEntity> findById(Long imageId);
 
-    Optional<ImageEntity> findByPostId(Long postId);
+    ImageEntity findByPostId(Long postId);
 }

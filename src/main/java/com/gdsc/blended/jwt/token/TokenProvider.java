@@ -1,11 +1,15 @@
 package com.gdsc.blended.jwt.token;
 
+import com.gdsc.blended.common.apiResponse.ApiResponse;
+import com.gdsc.blended.common.apiResponse.AuthMessage;
+import com.gdsc.blended.common.exception.ApiException;
 import com.gdsc.blended.jwt.dto.TokenResponse;
 import com.gdsc.blended.jwt.oauth.UserInfo;
 import com.gdsc.blended.user.entity.RoleType;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SecurityException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,7 +90,7 @@ public class TokenProvider {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
-        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
+        } catch (SecurityException | MalformedJwtException e) {
             logger.warn("잘못된 JWT 서명입니다.");
         } catch (ExpiredJwtException e) {
             logger.warn("만료된 JWT 토큰입니다.");

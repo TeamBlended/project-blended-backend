@@ -4,6 +4,10 @@ import com.gdsc.blended.comment.dto.CommentRequestDto;
 import com.gdsc.blended.comment.dto.CommentResponseDto;
 import com.gdsc.blended.comment.entity.CommentEntity;
 import com.gdsc.blended.comment.repository.CommentRepository;
+import com.gdsc.blended.common.apiResponse.CommentResponseMessage;
+import com.gdsc.blended.common.apiResponse.PostResponseMessage;
+import com.gdsc.blended.common.apiResponse.UserResponseMessage;
+import com.gdsc.blended.common.exception.ApiException;
 import com.gdsc.blended.post.entity.PostEntity;
 import com.gdsc.blended.post.repository.PostRepository;
 import com.gdsc.blended.user.dto.response.AuthorDto;
@@ -18,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @AllArgsConstructor
 @Service
@@ -27,15 +30,10 @@ public class CommentService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
 
-    public CommentEntity findById(Long id){
-        return commentRepository.findById(id).orElseThrow(()-> new IllegalArgumentException("Invalid Comment ID"));
-    }
-
     @Transactional
     public CommentResponseDto createComment(CommentRequestDto requestDto, Long postId, String email){
-        PostEntity post = postRepository.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 POST를 찾을 수 없습니다."));
-        UserEntity user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("유저가 정보가 없습니다."));
+        PostEntity post = findPostByPostId(postId);
+        UserEntity user = findUserByEmail(email);
 
         CommentEntity comment = CommentEntity.builder()
                 .content(requestDto.getContent())
@@ -59,8 +57,7 @@ public class CommentService {
 
     @Transactional
     public CommentResponseDto getComments(Long commentId) {
-        CommentEntity comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new NoSuchElementException("Comment not found with id: " + commentId));
+        CommentEntity comment = findCommentByCommentId(commentId);
 
         return CommentResponseDto.builder()
                 .commentId(comment.getId())
@@ -73,6 +70,9 @@ public class CommentService {
     public Page<CommentResponseDto> getCommentListByPost(Long postId, Pageable pageable) {
         List<CommentEntity> comments = commentRepository.findByPostId(postId);
         List<CommentResponseDto> commentResponseDtos = new ArrayList<>();
+
+        if (comments.isEmpty())
+            throw new ApiException(CommentResponseMessage.COMMENT_NOT_FOUND);
 
         for (CommentEntity comment : comments) {
             CommentResponseDto commentResponseDto = CommentResponseDto.builder()
@@ -92,13 +92,8 @@ public class CommentService {
 
     @Transactional
     public CommentResponseDto updateComment(CommentRequestDto requestDto, Long commentId, String email) {
-        CommentEntity comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new NoSuchElementException("Comment not found with id: " + commentId));
-        UserEntity user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("유저가 정보가 없습니다."));
-
-        if(!comment.getUser().equals(user)){
-            throw new IllegalArgumentException("해당 댓글을 작성한 유저가 아닙니다.");
-        }
+        CommentEntity comment = checkCommentOwnerShip(commentId, email);
+        UserEntity user = findUserByEmail(email);
         {
             comment.updateContent(requestDto.getContent());
             CommentEntity updatedComment = commentRepository.save(comment);
@@ -118,35 +113,44 @@ public class CommentService {
 
     @Transactional
     public CommentResponseDto deleteComment(Long commentId, String email) {
-        CommentEntity comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new NoSuchElementException("Comment not found with id: " + commentId));
-        UserEntity user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("유저가 정보가 없습니다."));
-        if(!comment.getUser().equals(user)){
-            throw new IllegalArgumentException("해당 댓글을 작성한 유저가 아닙니다.");
-        }
-        {
-            comment.deletComment(comment.getContent());
+        CommentEntity comment = checkCommentOwnerShip(commentId, email);
+        comment.deletComment(comment.getContent());
+        CommentEntity updatedComment = commentRepository.save(comment);
 
-            CommentEntity updatedComment = commentRepository.save(comment);
-
-            return CommentResponseDto.builder()
-                    .commentId(updatedComment.getId())
-                    .content(updatedComment.getContent())
-                    .modifiedDate(updatedComment.getModifiedDate())
-                    .build();
-        }
+        return CommentResponseDto.builder()
+                .commentId(updatedComment.getId())
+                .content(updatedComment.getContent())
+                .modifiedDate(updatedComment.getModifiedDate())
+                .build();
     }
 
     @Transactional
     public void realDeleteComment(Long commentId, String email) {
-        CommentEntity comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new IllegalArgumentException("Incalid comment id"));
-        UserEntity user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("유저가 정보가 없습니다."));
-        if(!comment.getUser().equals(user)){
-            throw new IllegalArgumentException("해당 댓글을 작성한 유저가 아닙니다.");
-        }
-        {
+        CommentEntity comment = checkCommentOwnerShip(commentId, email);
             commentRepository.delete(comment);
+    }
+
+    public UserEntity findUserByEmail(String email){
+        return userRepository.findByEmail(email).orElseThrow(() ->
+                new ApiException(UserResponseMessage.USER_NOT_FOUND));
+    }
+
+    public PostEntity findPostByPostId(Long postId){
+        return postRepository.findById(postId).orElseThrow(() ->
+                new ApiException(PostResponseMessage.POST_NOT_FOUND));
+    }
+
+    public CommentEntity findCommentByCommentId(Long commentId){
+        return commentRepository.findById(commentId).orElseThrow(() ->
+                new ApiException(CommentResponseMessage.COMMENT_NOT_FOUND));
+    }
+
+    private CommentEntity checkCommentOwnerShip(Long commentId, String email){
+        CommentEntity commentEntity = findCommentByCommentId(commentId);
+        UserEntity user = findUserByEmail(email);
+        if (!commentEntity.getUser().equals(user)) {
+            throw new ApiException(CommentResponseMessage.COMMENT_NOT_FOUND);
         }
+        return commentEntity;
     }
 }

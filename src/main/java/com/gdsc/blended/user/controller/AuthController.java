@@ -5,7 +5,7 @@ import com.gdsc.blended.jwt.dto.SocialLoginRequest;
 import com.gdsc.blended.jwt.dto.TokenResponse;
 import com.gdsc.blended.jwt.oauth.UserInfo;
 import com.gdsc.blended.user.service.AuthService;
-import com.gdsc.blended.utils.ApiResponse;
+import com.gdsc.blended.common.apiResponse.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -32,10 +32,4 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
-    /* 로그아웃
-    @DeleteMapping("/user")
-    public ResponseEntity<?> logout(@AuthenticationPrincipal UserInfo user, @RequestBody LogoutRequest logoutRequest) throws Exception {
-        authService.logout(user.getEmail() , logoutRequest.refreshToken());
-        return ResponseEntity.ok("LOGOUT_SUCCESS");
-    }*/
 }
