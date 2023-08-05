@@ -17,7 +17,10 @@ public class UserEntity {
     @Column(name = "user_id")
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
+    private String name;
+
+    @Column
     private String nickname;
 
     @Column(nullable = false, unique = true)
@@ -34,7 +37,7 @@ public class UserEntity {
 
 
     public UserEntity(GoogleOAuth2UserInfo userInfo){
-        this.nickname = userInfo.getNickname();
+        this.name = userInfo.getName();
         this.email = userInfo.getEmail();
         this.profileImageUrl = userInfo.getProfileImageUrl();
         this.roleType = RoleType.MEMBER;

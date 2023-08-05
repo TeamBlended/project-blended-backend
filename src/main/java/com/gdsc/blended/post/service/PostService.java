@@ -184,7 +184,7 @@ public class PostService {
 
     @Transactional
     public Page<PostResponseDto> getNewestPosts(Integer page, Integer size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createDate").descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
         Page<PostEntity> postPage = postRepository.findAll(pageable);
 
         if (postPage.isEmpty()) {
