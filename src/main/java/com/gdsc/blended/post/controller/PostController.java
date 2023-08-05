@@ -1,6 +1,9 @@
 package com.gdsc.blended.post.controller;
 
 import com.gdsc.blended.common.image.dto.ImageDto;
+import com.gdsc.blended.common.image.entity.ImageEntity;
+import com.gdsc.blended.common.image.repository.ImageRepository;
+import com.gdsc.blended.common.image.service.ImageService;
 import com.gdsc.blended.common.image.service.S3UploadService;
 import com.gdsc.blended.jwt.oauth.UserInfo;
 import com.gdsc.blended.post.dto.PostRequestDto;
@@ -31,6 +34,7 @@ import java.io.IOException;
 public class PostController {
     private final PostService postService;
     private final S3UploadService s3UploadService;
+    private final ImageService imageService;
 
 
     //개시글 쓰기
@@ -45,8 +49,10 @@ public class PostController {
     public ResponseEntity<ApiResponse<ImageDto>> uploadImage(@RequestParam("file") MultipartFile multipartFile) throws IOException {
             // ImageService를 이용하여 이미지 업로드 처리
             String imageName = s3UploadService.upload(multipartFile, "post");
+            imageService.createImage(imageName);
             ImageDto imageDto = new ImageDto();
             imageDto.setPath(imageName);
+
             ApiResponse<ImageDto> response = ApiResponse.success(imageDto);
             return ResponseEntity.ok(response);
     }
