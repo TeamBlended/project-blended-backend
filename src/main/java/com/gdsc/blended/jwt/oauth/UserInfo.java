@@ -27,8 +27,8 @@ public class UserInfo implements UserDetails, CredentialsContainer {
 
     private final boolean enabled;
 
-    public UserInfo(String email, String nickname, Collection<? extends GrantedAuthority> authorities) {
-        this(email, nickname, true, true, true, true, authorities);
+    public UserInfo(String email, String name, Collection<? extends GrantedAuthority> authorities) {
+        this(email, name, true, true, true, true, authorities);
     }
 
     public UserInfo(String email, String name, boolean enabled, boolean accountNonExpired,
@@ -49,8 +49,8 @@ public class UserInfo implements UserDetails, CredentialsContainer {
         return this.email;
     }
 
-    public String getNickname() {
-        return this.nickname;
+    public String getName() {
+        return this.name;
     }
 
     @Override

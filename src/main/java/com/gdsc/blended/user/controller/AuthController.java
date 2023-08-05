@@ -27,7 +27,7 @@ public class AuthController {
 
     @PostMapping("/token")
     public ResponseEntity<ApiResponse<TokenResponse>> reissue(@AuthenticationPrincipal UserInfo user, @RequestBody LogoutRequest logoutRequest) throws Exception {
-        TokenResponse tokenResponse = authService.reissue(user.getEmail(),user.getNickname(), logoutRequest.refreshToken());
+        TokenResponse tokenResponse = authService.reissue(user.getEmail(),user.getName(), logoutRequest.refreshToken());
         ApiResponse<TokenResponse> response = ApiResponse.success(tokenResponse);
         return ResponseEntity.ok(response);
     }
