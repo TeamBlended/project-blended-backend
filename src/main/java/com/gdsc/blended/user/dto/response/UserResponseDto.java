@@ -1,6 +1,5 @@
 package com.gdsc.blended.user.dto.response;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gdsc.blended.user.entity.RoleType;
 import com.gdsc.blended.user.entity.UserEntity;
 import lombok.Getter;
