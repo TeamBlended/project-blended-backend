@@ -26,7 +26,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Service
 public class S3UploadService {
-    private final ImageRepository imageRepository;
     private static final int CAPACITY_LIMIT_BYTE = 1024 * 1024 * 10;
 
     @Value("${cloud.aws.s3.bucket}")

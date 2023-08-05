@@ -1,32 +1,36 @@
 package com.gdsc.blended.alcohol.service;
 
+import com.gdsc.blended.alcohol.dto.AlcoholCameraResponseDto;
 import com.gdsc.blended.alcohol.dto.AlcoholDto;
 import com.gdsc.blended.alcohol.entity.AlcoholEntity;
 import com.gdsc.blended.alcohol.repository.AlcoholRepository;
 import com.gdsc.blended.common.apiResponse.AlcoholResponseMessage;
+import com.gdsc.blended.common.apiResponse.ApiResponse;
+import com.gdsc.blended.common.apiResponse.PostResponseMessage;
 import com.gdsc.blended.common.exception.ApiException;
-import com.gdsc.blended.common.image.service.S3UploadService;
+import com.gdsc.blended.common.image.entity.ImageEntity;
+import com.gdsc.blended.common.image.repository.ImageRepository;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 @Slf4j
 public class AlcoholService {
     private final AlcoholRepository alcoholRepository;
-    private final S3UploadService s3UploadService;
+    private final ImageRepository imageRepository;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
@@ -104,5 +108,31 @@ public class AlcoholService {
                 .imgUrl(alcoholEntity.getImgUrl())
                 .build();
     }
-}
 
+    @Transactional
+    public ResponseEntity<ApiResponse<AlcoholCameraResponseDto>> getAlcoholInfoByWhiskyKorean(Long alcoholId){
+        AlcoholEntity alcohol = findAlcoholByAlcoholId(alcoholId);
+
+        AlcoholCameraResponseDto cameraResponseDto = AlcoholCameraResponseDto.builder()
+                .whiskyKorean(alcohol.getWhiskyKorean())
+                .whiskyEnglish(alcohol.getWhiskyEnglish())
+                .abv(alcohol.getAbv())
+                .country(alcohol.getCountry())
+                .type(alcohol.getType())
+                .imgUrl(alcohol.getImgUrl())
+                .build();
+
+        ApiResponse<AlcoholCameraResponseDto> apiResponse = new ApiResponse<>(cameraResponseDto, HttpStatus.OK, "SUCCESS");
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    public AlcoholEntity findAlcoholByAlcoholId(Long alcoholId) {
+        return alcoholRepository.findById(alcoholId).orElseThrow(() ->
+                new ApiException(AlcoholResponseMessage.ALCOHOL_NOT_FOUND));
+    }
+
+    public ImageEntity findImagePath(String path){
+        return imageRepository.findByPath(path).orElseThrow(() ->
+                new ApiException(PostResponseMessage.NOT_FOUND_IMAGE));
+    }
+}
