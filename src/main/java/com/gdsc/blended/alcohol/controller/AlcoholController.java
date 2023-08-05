@@ -1,10 +1,12 @@
 package com.gdsc.blended.alcohol.controller;
 
 
+import com.gdsc.blended.alcohol.dto.AlcoholCameraResponseDto;
 import com.gdsc.blended.alcohol.dto.AlcoholDto;
 import com.gdsc.blended.alcohol.service.AlcoholService;
 import com.gdsc.blended.common.image.service.S3UploadService;
 import com.gdsc.blended.common.apiResponse.ApiResponse;
+import com.gdsc.blended.post.dto.PostResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -51,6 +53,13 @@ public class AlcoholController {
             return ResponseEntity.status(500).body(apiResponse);
         }
     }
+
+
+    @GetMapping("/{alcoholId}/{whiskyKorean}")
+    public ResponseEntity<ApiResponse<AlcoholCameraResponseDto>> getAlcoholInfoByWhiskyKorean(@PathVariable Long alcoholId){
+        return alcoholService.getAlcoholInfoByWhiskyKorean(alcoholId);
+    }
+
 }
 
 /*
