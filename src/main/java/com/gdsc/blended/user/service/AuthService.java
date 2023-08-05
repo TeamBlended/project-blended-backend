@@ -48,7 +48,7 @@ public class AuthService {
                     UserEntity userEntity = new UserEntity(userInfo);
                     userRepository.save(userEntity);
                 }
-                return sendGenerateJwtToken(userInfo.getEmail(), userInfo.getNickname());
+                return sendGenerateJwtToken(userInfo.getEmail(), userInfo.getName());
             }
         } catch (Exception e) {
             throw new ApiException(AuthMessage.INVALID_TOKEN);
@@ -56,15 +56,15 @@ public class AuthService {
     }
 
     @Transactional
-    public TokenResponse reissue(String email, String nickname, String refreshToken) throws Exception {
+    public TokenResponse reissue(String email, String name, String refreshToken) throws Exception {
         validateRefreshToken(refreshToken);
 
-        TokenResponse tokenResponse = createToken(email, nickname);
+        TokenResponse tokenResponse = createToken(email, name);
         return tokenResponse;
     }
 
-    private TokenResponse sendGenerateJwtToken(String email, String nickname) {
-        TokenResponse tokenResponse = createToken(email, nickname);
+    private TokenResponse sendGenerateJwtToken(String email, String name) {
+        TokenResponse tokenResponse = createToken(email, name);
         return tokenResponse;
     }
 
@@ -73,8 +73,8 @@ public class AuthService {
             throw new ApiException(UserResponseMessage.REFRESH_TOKEN_INVALID);
     }
 
-    private TokenResponse createToken(String email, String nickname) {
-        return tokenProvider.generateJwtToken(email, nickname, RoleType.MEMBER);
+    private TokenResponse createToken(String email, String name) {
+        return tokenProvider.generateJwtToken(email, name, RoleType.MEMBER);
     }
 
 }

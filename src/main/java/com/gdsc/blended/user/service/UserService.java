@@ -19,8 +19,14 @@ public class UserService {
     public UserEntity updateUserNickname(String email, String newNickname){
         UserEntity user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ApiException(UserResponseMessage.NICKNAME_UPDATE_SUCCESS));
+        
+        if(userRepository.existsByNickname(newNickname)){
+            throw new ApiException(UserResponseMessage.NICKNAME_IS_DUPLICATED);
+        }
         user.setNickname(newNickname);
         return userRepository.save(user);
     }
+
+
 
 }

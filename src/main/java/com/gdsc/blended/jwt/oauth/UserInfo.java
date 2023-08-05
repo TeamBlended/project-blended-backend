@@ -17,7 +17,7 @@ public class UserInfo implements UserDetails, CredentialsContainer {
     private static final long serialVersionUID = SpringSecurityCoreVersion.SERIAL_VERSION_UID;
     private static final Log logger = LogFactory.getLog(User.class);
     private final String email;
-    private final String nickname;
+    private final String name;
     private final Set<GrantedAuthority> authorities;
     private final boolean accountNonExpired;
 
@@ -27,17 +27,17 @@ public class UserInfo implements UserDetails, CredentialsContainer {
 
     private final boolean enabled;
 
-    public UserInfo(String email, String nickname, Collection<? extends GrantedAuthority> authorities) {
-        this(email, nickname, true, true, true, true, authorities);
+    public UserInfo(String email, String name, Collection<? extends GrantedAuthority> authorities) {
+        this(email, name, true, true, true, true, authorities);
     }
 
-    public UserInfo(String email, String nickname, boolean enabled, boolean accountNonExpired,
+    public UserInfo(String email, String name, boolean enabled, boolean accountNonExpired,
                     boolean credentialsNonExpired, boolean accountNonLocked,
                     Collection<? extends GrantedAuthority> authorities) {
-        Assert.isTrue(email != null && !"".equals(email) && nickname != null,
+        Assert.isTrue(email != null && !"".equals(email) && name != null,
                 "Cannot pass null or empty values to constructor");
         this.email = email;
-        this.nickname = nickname;
+        this.name = name;
         this.enabled = enabled;
         this.accountNonExpired = accountNonExpired;
         this.credentialsNonExpired = credentialsNonExpired;
@@ -49,8 +49,8 @@ public class UserInfo implements UserDetails, CredentialsContainer {
         return this.email;
     }
 
-    public String getNickname() {
-        return this.nickname;
+    public String getName() {
+        return this.name;
     }
 
     @Override
