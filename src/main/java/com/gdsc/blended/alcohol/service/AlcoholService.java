@@ -11,9 +11,7 @@ import com.gdsc.blended.common.exception.ApiException;
 import com.gdsc.blended.common.image.entity.ImageEntity;
 import com.gdsc.blended.common.image.repository.ImageRepository;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -32,8 +30,6 @@ public class AlcoholService {
     private final AlcoholRepository alcoholRepository;
     private final ImageRepository imageRepository;
 
-    @Value("${cloud.aws.s3.bucket}")
-    private String bucket;
 
     @Transactional
     public List<AlcoholDto> searchAlcohols(String keyword) {
