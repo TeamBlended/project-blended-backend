@@ -3,9 +3,8 @@ package com.gdsc.blended.common.image.service;
 
 import com.gdsc.blended.common.apiResponse.PostResponseMessage;
 import com.gdsc.blended.common.exception.ApiException;
-import com.gdsc.blended.common.image.repository.ImageRepository;
-
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,7 +18,7 @@ import software.amazon.awssdk.services.s3.model.S3Exception;
 import java.io.IOException;
 import java.util.UUID;
 
-@RequiredArgsConstructor
+@AllArgsConstructor
 @Service
 public class S3UploadService {
     private static final int CAPACITY_LIMIT_BYTE = 1024 * 1024 * 10;
@@ -27,9 +26,13 @@ public class S3UploadService {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-
-    //private final AmazonS3 amazonS3;
     private final S3Client s3Client;
+
+    @Autowired
+    public S3UploadService(S3Client s3Client) {
+        this.s3Client = s3Client;
+    }
+
 
     public String upload(MultipartFile multipartFile, String filePath) throws IOException {
         // 파일 이름이 중복되지 않게 하기 위해 UUID 로 랜덤 값으로 파일 이름 생성
