@@ -1,6 +1,7 @@
 package com.gdsc.blended.alcohol.controller;
 
 
+import com.gdsc.blended.alcohol.dto.AlcoholCameraResponseDto;
 import com.gdsc.blended.alcohol.dto.AlcoholDto;
 import com.gdsc.blended.alcohol.service.AlcoholService;
 import com.gdsc.blended.common.image.service.S3UploadService;
@@ -51,6 +52,13 @@ public class AlcoholController {
             return ResponseEntity.status(500).body(apiResponse);
         }
     }
+
+
+    @GetMapping("/{alcoholId}")
+    public ResponseEntity<ApiResponse<AlcoholCameraResponseDto>> getAlcoholInfoByWhiskyKorean(@PathVariable Long alcoholId){
+        return alcoholService.getAlcoholInfoByWhiskyKorean(alcoholId);
+    }
+
 }
 
 /*
