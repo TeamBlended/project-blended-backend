@@ -1,12 +1,11 @@
 package com.gdsc.blended.user.controller;
 
 
-import com.gdsc.blended.common.apiResponse.UserResponseMessage;
 import com.gdsc.blended.jwt.oauth.UserInfo;
 import com.gdsc.blended.user.dto.response.AuthorNicknameDto;
 import com.gdsc.blended.user.entity.UserEntity;
 import com.gdsc.blended.user.service.UserService;
-import com.gdsc.blended.common.apiResponse.ApiResponse;
+import com.gdsc.blended.common.message.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

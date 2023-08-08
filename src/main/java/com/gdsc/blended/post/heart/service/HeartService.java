@@ -1,10 +1,8 @@
 package com.gdsc.blended.post.heart.service;
 
-import com.gdsc.blended.common.apiResponse.PostResponseMessage;
-import com.gdsc.blended.common.apiResponse.UserResponseMessage;
+import com.gdsc.blended.common.message.PostResponseMessage;
+import com.gdsc.blended.common.message.UserResponseMessage;
 import com.gdsc.blended.common.exception.ApiException;
-import com.gdsc.blended.common.image.entity.ImageEntity;
-import com.gdsc.blended.common.image.repository.ImageRepository;
 import com.gdsc.blended.common.image.service.ImageService;
 import com.gdsc.blended.post.dto.LocationDto;
 import com.gdsc.blended.post.dto.PostResponseDto;
@@ -18,13 +16,7 @@ import com.gdsc.blended.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.*;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 
 @RequiredArgsConstructor

@@ -1,9 +1,7 @@
-package com.gdsc.blended.common.apiResponse;
+package com.gdsc.blended.common.message;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
-
-import java.awt.*;
 
 @Getter
 public enum PostResponseMessage implements ResponseMessage {

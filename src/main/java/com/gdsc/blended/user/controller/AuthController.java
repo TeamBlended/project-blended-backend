@@ -5,7 +5,7 @@ import com.gdsc.blended.jwt.dto.SocialLoginRequest;
 import com.gdsc.blended.jwt.dto.TokenResponse;
 import com.gdsc.blended.jwt.oauth.UserInfo;
 import com.gdsc.blended.user.service.AuthService;
-import com.gdsc.blended.common.apiResponse.ApiResponse;
+import com.gdsc.blended.common.message.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

@@ -1,8 +1,5 @@
 package com.gdsc.blended.jwt.token;
 
-import com.gdsc.blended.common.apiResponse.ApiResponse;
-import com.gdsc.blended.common.apiResponse.AuthMessage;
-import com.gdsc.blended.common.exception.ApiException;
 import com.gdsc.blended.jwt.dto.TokenResponse;
 import com.gdsc.blended.jwt.oauth.UserInfo;
 import com.gdsc.blended.user.entity.RoleType;

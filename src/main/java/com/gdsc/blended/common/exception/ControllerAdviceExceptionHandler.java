@@ -1,9 +1,8 @@
 package com.gdsc.blended.common.exception;
 
-import com.gdsc.blended.common.apiResponse.ApiResponse;
-import com.gdsc.blended.common.apiResponse.DefaultMessage;
-import com.gdsc.blended.common.apiResponse.ResponseMessage;
-import com.gdsc.blended.common.exception.ApiException;
+import com.gdsc.blended.common.message.ApiResponse;
+import com.gdsc.blended.common.message.DefaultMessage;
+import com.gdsc.blended.common.message.ResponseMessage;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;

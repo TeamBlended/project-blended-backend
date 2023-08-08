@@ -1,7 +1,7 @@
 package com.gdsc.blended.common.exception;
 
 
-import com.gdsc.blended.common.apiResponse.ResponseMessage;
+import com.gdsc.blended.common.message.ResponseMessage;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
