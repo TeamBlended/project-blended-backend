@@ -2,8 +2,8 @@ package com.gdsc.blended.post.service;
 
 import com.gdsc.blended.category.entity.CategoryEntity;
 import com.gdsc.blended.category.repository.CategoryRepository;
-import com.gdsc.blended.common.apiResponse.PostResponseMessage;
-import com.gdsc.blended.common.apiResponse.UserResponseMessage;
+import com.gdsc.blended.common.message.PostResponseMessage;
+import com.gdsc.blended.common.message.UserResponseMessage;
 import com.gdsc.blended.common.exception.ApiException;
 import com.gdsc.blended.common.image.entity.ImageEntity;
 import com.gdsc.blended.common.image.repository.ImageRepository;

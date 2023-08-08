@@ -4,7 +4,7 @@ import com.gdsc.blended.comment.dto.CommentRequestDto;
 import com.gdsc.blended.comment.dto.CommentResponseDto;
 import com.gdsc.blended.comment.service.CommentService;
 import com.gdsc.blended.jwt.oauth.UserInfo;
-import com.gdsc.blended.common.apiResponse.ApiResponse;
+import com.gdsc.blended.common.message.ApiResponse;
 import com.gdsc.blended.utils.PagingResponse;
 import com.gdsc.blended.utils.PagingUtil;
 import io.swagger.v3.oas.annotations.Operation;

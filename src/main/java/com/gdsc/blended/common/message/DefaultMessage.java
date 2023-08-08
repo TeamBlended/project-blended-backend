@@ -1,6 +1,5 @@
-package com.gdsc.blended.common.apiResponse;
+package com.gdsc.blended.common.message;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 

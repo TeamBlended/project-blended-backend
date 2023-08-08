@@ -1,8 +1,6 @@
 package com.gdsc.blended.post.controller;
 
 import com.gdsc.blended.common.image.dto.ImageDto;
-import com.gdsc.blended.common.image.entity.ImageEntity;
-import com.gdsc.blended.common.image.repository.ImageRepository;
 import com.gdsc.blended.common.image.service.ImageService;
 import com.gdsc.blended.common.image.service.S3UploadService;
 import com.gdsc.blended.jwt.oauth.UserInfo;
@@ -11,7 +9,7 @@ import com.gdsc.blended.post.dto.PostResponseDto;
 import com.gdsc.blended.post.dto.PostUpdateRequestDto;
 import com.gdsc.blended.post.dto.SearchResponseDto;
 import com.gdsc.blended.post.service.PostService;
-import com.gdsc.blended.common.apiResponse.ApiResponse;
+import com.gdsc.blended.common.message.ApiResponse;
 import com.gdsc.blended.utils.PagingResponse;
 import com.gdsc.blended.utils.PagingUtil;
 import io.swagger.v3.oas.annotations.Operation;

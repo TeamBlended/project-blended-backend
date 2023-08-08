@@ -1,7 +1,7 @@
 package com.gdsc.blended.user.service;
 
-import com.gdsc.blended.common.apiResponse.AuthMessage;
-import com.gdsc.blended.common.apiResponse.UserResponseMessage;
+import com.gdsc.blended.common.message.AuthMessage;
+import com.gdsc.blended.common.message.UserResponseMessage;
 import com.gdsc.blended.common.exception.ApiException;
 import com.gdsc.blended.jwt.dto.TokenResponse;
 import com.gdsc.blended.jwt.oauth.GoogleOAuth2UserInfo;

@@ -1,9 +1,9 @@
 package com.gdsc.blended.jwt.exception;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gdsc.blended.common.apiResponse.ApiResponse;
-import com.gdsc.blended.common.apiResponse.DefaultMessage;
-import com.gdsc.blended.common.apiResponse.ResponseMessage;
+import com.gdsc.blended.common.message.ApiResponse;
+import com.gdsc.blended.common.message.DefaultMessage;
+import com.gdsc.blended.common.message.ResponseMessage;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.core.AuthenticationException;

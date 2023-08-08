@@ -1,4 +1,4 @@
-package com.gdsc.blended.common.apiResponse;
+package com.gdsc.blended.common.message;
 
 
 import lombok.Getter;

@@ -1,6 +1,6 @@
 package com.gdsc.blended.common.image.service;
 
-import com.gdsc.blended.common.apiResponse.PostResponseMessage;
+import com.gdsc.blended.common.message.PostResponseMessage;
 import com.gdsc.blended.common.exception.ApiException;
 import com.gdsc.blended.common.image.entity.ImageEntity;
 import com.gdsc.blended.common.image.repository.ImageRepository;

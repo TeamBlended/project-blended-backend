@@ -1,7 +1,7 @@
 package com.gdsc.blended.common.image.service;
 
 
-import com.gdsc.blended.common.apiResponse.PostResponseMessage;
+import com.gdsc.blended.common.message.PostResponseMessage;
 import com.gdsc.blended.common.exception.ApiException;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
