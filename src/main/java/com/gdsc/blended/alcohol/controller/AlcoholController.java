@@ -54,11 +54,6 @@ public class AlcoholController {
     }
 
 
-    @GetMapping("/{alcoholId}")
-    public ResponseEntity<ApiResponse<AlcoholCameraResponseDto>> getAlcoholInfoByWhiskyKorean(@PathVariable Long alcoholId){
-        return alcoholService.getAlcoholInfoByWhiskyKorean(alcoholId);
-    }
-
 }
 
 /*

@@ -1,7 +1,12 @@
 package com.gdsc.blended.post.service;
 
+import com.gdsc.blended.alcohol.dto.AlcoholCameraResponseDto;
+import com.gdsc.blended.alcohol.entity.AlcoholEntity;
+import com.gdsc.blended.alcohol.repository.AlcoholRepository;
 import com.gdsc.blended.category.entity.CategoryEntity;
 import com.gdsc.blended.category.repository.CategoryRepository;
+import com.gdsc.blended.common.message.AlcoholResponseMessage;
+import com.gdsc.blended.common.message.ApiResponse;
 import com.gdsc.blended.common.message.PostResponseMessage;
 import com.gdsc.blended.common.message.UserResponseMessage;
 import com.gdsc.blended.common.exception.ApiException;
@@ -21,6 +26,7 @@ import com.gdsc.blended.user.entity.UserEntity;
 import com.gdsc.blended.user.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.*;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
@@ -38,6 +44,7 @@ public class PostService {
     private final ImageRepository imageRepository;
     private final ImageService imageService;
     private final S3UploadService s3UploadService;
+    private final AlcoholRepository alcoholRepository;
 
     @Transactional
     //전체 출력(Get)
@@ -296,6 +303,31 @@ public class PostService {
             throw new ApiException(UserResponseMessage.USER_NOT_MATCH);
         }
         return postEntity;
+    }
+
+    @Transactional
+    public ResponseEntity<ApiResponse<AlcoholCameraResponseDto>> getAlcoholInfoByWhisky(String keyword) {
+        List<AlcoholEntity> alcoholList = findByAlcoholContaining(keyword);
+
+        if (alcoholList.isEmpty()) {
+            throw new ApiException(AlcoholResponseMessage.ALCOHOL_NOT_FOUND);
+        }
+        AlcoholEntity alcohol = alcoholList.get(0);
+
+        AlcoholCameraResponseDto cameraResponseDto = AlcoholCameraResponseDto.builder()
+                .whiskyKorean(alcohol.getWhiskyKorean())
+                .whiskyEnglish(alcohol.getWhiskyEnglish())
+                .abv(alcohol.getAbv())
+                .country(alcohol.getCountry())
+                .type(alcohol.getType())
+                .imgUrl(alcohol.getImgUrl())
+                .build();
+        ApiResponse<AlcoholCameraResponseDto> response = ApiResponse.success(cameraResponseDto);
+        return ResponseEntity.ok(response);
+    }
+
+    private List<AlcoholEntity> findByAlcoholContaining(String keyword) {
+        return alcoholRepository.findByWhiskyKoreanContainingOrWhiskyEnglishContaining(keyword, keyword);
     }
 
 }
