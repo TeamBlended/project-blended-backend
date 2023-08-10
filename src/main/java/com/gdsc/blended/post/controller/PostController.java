@@ -112,6 +112,7 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    @Operation(summary = "ML이 생성 또는 사용자가 직접 입력시 술 정보를 반환")
     @GetMapping("/posts/alcohole/search")
     public ResponseEntity<ApiResponse<AlcoholCameraResponseDto>> getAlcoholInfoByWhiskyKorean(@RequestParam("keyword") String keyword){
         AlcoholCameraResponseDto alcoholCameraResponseDto = postService.getAlcoholInfoByWhisky(keyword);
