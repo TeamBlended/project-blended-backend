@@ -88,7 +88,6 @@ public class PostService {
     }
 
 
-    //TODO .. 만약에 기존 모집인원이 4명이여서 3명 참가했는데 2명으로 수정한다면?,,, -> 수정 불가능하게 막아야죠 (글을 내리고 재등록해야한다. 가 맞을 것 같아용)
     // 게시글 수정(Put)
     @Transactional
     public PostResponseDto updatePost(Long postId, PostUpdateRequestDto postRequestDto, String email) {
@@ -306,7 +305,7 @@ public class PostService {
     }
 
     @Transactional
-    public ResponseEntity<ApiResponse<AlcoholCameraResponseDto>> getAlcoholInfoByWhisky(String keyword) {
+    public AlcoholCameraResponseDto getAlcoholInfoByWhisky(String keyword) {
         List<AlcoholEntity> alcoholList = findByAlcoholContaining(keyword);
 
         if (alcoholList.isEmpty()) {
@@ -314,7 +313,7 @@ public class PostService {
         }
         AlcoholEntity alcohol = alcoholList.get(0);
 
-        AlcoholCameraResponseDto cameraResponseDto = AlcoholCameraResponseDto.builder()
+        return AlcoholCameraResponseDto.builder()
                 .whiskyKorean(alcohol.getWhiskyKorean())
                 .whiskyEnglish(alcohol.getWhiskyEnglish())
                 .abv(alcohol.getAbv())
@@ -322,8 +321,6 @@ public class PostService {
                 .type(alcohol.getType())
                 .imgUrl(alcohol.getImgUrl())
                 .build();
-        ApiResponse<AlcoholCameraResponseDto> response = ApiResponse.success(cameraResponseDto);
-        return ResponseEntity.ok(response);
     }
 
     private List<AlcoholEntity> findByAlcoholContaining(String keyword) {

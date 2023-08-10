@@ -114,7 +114,8 @@ public class PostController {
 
     @GetMapping("/posts/alcohole/search")
     public ResponseEntity<ApiResponse<AlcoholCameraResponseDto>> getAlcoholInfoByWhiskyKorean(@RequestParam("keyword") String keyword){
-        return postService.getAlcoholInfoByWhisky(keyword);
+        AlcoholCameraResponseDto alcoholCameraResponseDto = postService.getAlcoholInfoByWhisky(keyword);
+        return ResponseEntity.ok(ApiResponse.success(alcoholCameraResponseDto));
     }
 
 }
