@@ -1,5 +1,6 @@
 package com.gdsc.blended.post.controller;
 
+import com.gdsc.blended.alcohol.dto.AlcoholCameraResponseDto;
 import com.gdsc.blended.common.image.dto.ImageDto;
 import com.gdsc.blended.common.image.service.ImageService;
 import com.gdsc.blended.common.image.service.S3UploadService;
@@ -103,12 +104,17 @@ public class PostController {
     }
 
     //검색
-    @GetMapping("/posts/{keyword}")
+    @GetMapping("/posts/search/{keyword}")
     public ResponseEntity<ApiResponse<PagingResponse<SearchResponseDto>>> searchPosts(@PathVariable String keyword){
         Page<SearchResponseDto> postResponseDtoList = postService.searchPosts(keyword);
         PagingResponse<SearchResponseDto>pagingResponse = PagingUtil.toResponse(postResponseDtoList);
         ApiResponse<PagingResponse<SearchResponseDto>> response = ApiResponse.success(pagingResponse);
         return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping("/posts/alcohole/search")
+    public ResponseEntity<ApiResponse<AlcoholCameraResponseDto>> getAlcoholInfoByWhiskyKorean(@RequestParam("keyword") String keyword){
+        return postService.getAlcoholInfoByWhisky(keyword);
     }
 
 }
