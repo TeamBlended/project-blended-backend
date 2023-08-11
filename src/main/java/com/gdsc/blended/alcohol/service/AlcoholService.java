@@ -33,7 +33,7 @@ public class AlcoholService {
 
     @Transactional
     public List<AlcoholDto> searchAlcohols(String keyword) {
-        List<AlcoholEntity> findAlcohols = alcoholRepository.findByWhiskyKoreanContainingOrWhiskyEnglishContaining(keyword, keyword);
+        List<AlcoholEntity> findAlcohols = alcoholRepository.findByWhiskyKoreanContainingOrWhiskyEnglishContainingIgnoreCase(keyword, keyword);
         List<AlcoholDto> alcoholDtoList = new ArrayList<>();
 
         if (findAlcohols.isEmpty()) {
@@ -105,30 +105,5 @@ public class AlcoholService {
                 .build();
     }
 
-    @Transactional
-    public ResponseEntity<ApiResponse<AlcoholCameraResponseDto>> getAlcoholInfoByWhiskyKorean(Long alcoholId){
-        AlcoholEntity alcohol = findAlcoholByAlcoholId(alcoholId);
 
-        AlcoholCameraResponseDto cameraResponseDto = AlcoholCameraResponseDto.builder()
-                .whiskyKorean(alcohol.getWhiskyKorean())
-                .whiskyEnglish(alcohol.getWhiskyEnglish())
-                .abv(alcohol.getAbv())
-                .country(alcohol.getCountry())
-                .type(alcohol.getType())
-                .imgUrl(alcohol.getImgUrl())
-                .build();
-
-        ApiResponse<AlcoholCameraResponseDto> apiResponse = new ApiResponse<>(cameraResponseDto, HttpStatus.OK, "SUCCESS");
-        return ResponseEntity.ok(apiResponse);
-    }
-
-    public AlcoholEntity findAlcoholByAlcoholId(Long alcoholId) {
-        return alcoholRepository.findById(alcoholId).orElseThrow(() ->
-                new ApiException(AlcoholResponseMessage.ALCOHOL_NOT_FOUND));
-    }
-
-    public ImageEntity findImagePath(String path){
-        return imageRepository.findByPath(path).orElseThrow(() ->
-                new ApiException(PostResponseMessage.NOT_FOUND_IMAGE));
-    }
 }
