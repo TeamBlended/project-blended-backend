@@ -267,6 +267,11 @@ public class PostService {
         }
     }
 
+    public ImageEntity findImagePath(String path){
+        return imageRepository.findByPath(path).orElseThrow(() ->
+                new ApiException(PostResponseMessage.NOT_FOUND_IMAGE));
+    }
+
     @Transactional
     public Page<PostResponseDto> getMyPostList(String email) {
         UserEntity user = findUserByEmail(email);
@@ -279,29 +284,6 @@ public class PostService {
         return new PageImpl<>(postEntities.stream().map(postEntity ->
                 new PostResponseDto(postEntity, imageService.findImagePathByPostId(postEntity.getId()))
         ).toList());
-    }
-
-    public PostEntity findPostByPostId(Long postId) {
-        return postRepository.findById(postId).orElseThrow(() ->
-                new ApiException(PostResponseMessage.POST_NOT_FOUND));
-    }
-
-    public UserEntity findUserByEmail(String email) {
-        return userRepository.findByEmail(email).orElseThrow(() ->
-                new ApiException(UserResponseMessage.USER_NOT_FOUND));
-    }
-
-    public ImageEntity findImagePath(String path){
-        return imageRepository.findByPath(path).orElseThrow(() ->
-                new ApiException(PostResponseMessage.NOT_FOUND_IMAGE));
-    }
-    private PostEntity checkPostOwnerShip(Long postId, String email){
-        PostEntity postEntity = findPostByPostId(postId);
-        UserEntity user = findUserByEmail(email);
-        if (!postEntity.getUserId().equals(user)) {
-            throw new ApiException(UserResponseMessage.USER_NOT_MATCH);
-        }
-        return postEntity;
     }
 
     @Transactional
@@ -323,8 +305,26 @@ public class PostService {
                 .build();
     }
 
+    public PostEntity findPostByPostId(Long postId) {
+        return postRepository.findById(postId).orElseThrow(() ->
+                new ApiException(PostResponseMessage.POST_NOT_FOUND));
+    }
+    public UserEntity findUserByEmail(String email) {
+        return userRepository.findByEmail(email).orElseThrow(() ->
+                new ApiException(UserResponseMessage.USER_NOT_FOUND));
+    }
+
+    private PostEntity checkPostOwnerShip(Long postId, String email){
+        PostEntity postEntity = findPostByPostId(postId);
+        UserEntity user = findUserByEmail(email);
+        if (!postEntity.getUserId().equals(user)) {
+            throw new ApiException(UserResponseMessage.USER_NOT_MATCH);
+        }
+        return postEntity;
+    }
+
     private List<AlcoholEntity> findByAlcoholContaining(String keyword) {
-        return alcoholRepository.findByWhiskyKoreanContainingOrWhiskyEnglishContaining(keyword, keyword);
+        return alcoholRepository.findByWhiskyKoreanContainingOrWhiskyEnglishContainingIgnoreCase(keyword, keyword);
     }
 
 }
