@@ -1,7 +1,12 @@
 package com.gdsc.blended.post.service;
 
+import com.gdsc.blended.alcohol.dto.AlcoholCameraResponseDto;
+import com.gdsc.blended.alcohol.entity.AlcoholEntity;
+import com.gdsc.blended.alcohol.repository.AlcoholRepository;
 import com.gdsc.blended.category.entity.CategoryEntity;
 import com.gdsc.blended.category.repository.CategoryRepository;
+import com.gdsc.blended.common.message.AlcoholResponseMessage;
+import com.gdsc.blended.common.message.ApiResponse;
 import com.gdsc.blended.common.message.PostResponseMessage;
 import com.gdsc.blended.common.message.UserResponseMessage;
 import com.gdsc.blended.common.exception.ApiException;
@@ -21,6 +26,7 @@ import com.gdsc.blended.user.entity.UserEntity;
 import com.gdsc.blended.user.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.*;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
@@ -38,6 +44,7 @@ public class PostService {
     private final ImageRepository imageRepository;
     private final ImageService imageService;
     private final S3UploadService s3UploadService;
+    private final AlcoholRepository alcoholRepository;
 
     @Transactional
     //전체 출력(Get)
@@ -81,7 +88,6 @@ public class PostService {
     }
 
 
-    //TODO .. 만약에 기존 모집인원이 4명이여서 3명 참가했는데 2명으로 수정한다면?,,, -> 수정 불가능하게 막아야죠 (글을 내리고 재등록해야한다. 가 맞을 것 같아용)
     // 게시글 수정(Put)
     @Transactional
     public PostResponseDto updatePost(Long postId, PostUpdateRequestDto postRequestDto, String email) {
@@ -261,6 +267,11 @@ public class PostService {
         }
     }
 
+    public ImageEntity findImagePath(String path){
+        return imageRepository.findByPath(path).orElseThrow(() ->
+                new ApiException(PostResponseMessage.NOT_FOUND_IMAGE));
+    }
+
     @Transactional
     public Page<PostResponseDto> getMyPostList(String email) {
         UserEntity user = findUserByEmail(email);
@@ -275,20 +286,34 @@ public class PostService {
         ).toList());
     }
 
+    @Transactional
+    public AlcoholCameraResponseDto getAlcoholInfoByWhisky(String keyword) {
+        List<AlcoholEntity> alcoholList = findByAlcoholContaining(keyword);
+
+        if (alcoholList.isEmpty()) {
+            throw new ApiException(AlcoholResponseMessage.ALCOHOL_NOT_FOUND);
+        }
+        AlcoholEntity alcohol = alcoholList.get(0);
+
+        return AlcoholCameraResponseDto.builder()
+                .whiskyKorean(alcohol.getWhiskyKorean())
+                .whiskyEnglish(alcohol.getWhiskyEnglish())
+                .abv(alcohol.getAbv())
+                .country(alcohol.getCountry())
+                .type(alcohol.getType())
+                .imgUrl(alcohol.getImgUrl())
+                .build();
+    }
+
     public PostEntity findPostByPostId(Long postId) {
         return postRepository.findById(postId).orElseThrow(() ->
                 new ApiException(PostResponseMessage.POST_NOT_FOUND));
     }
-
     public UserEntity findUserByEmail(String email) {
         return userRepository.findByEmail(email).orElseThrow(() ->
                 new ApiException(UserResponseMessage.USER_NOT_FOUND));
     }
 
-    public ImageEntity findImagePath(String path){
-        return imageRepository.findByPath(path).orElseThrow(() ->
-                new ApiException(PostResponseMessage.NOT_FOUND_IMAGE));
-    }
     private PostEntity checkPostOwnerShip(Long postId, String email){
         PostEntity postEntity = findPostByPostId(postId);
         UserEntity user = findUserByEmail(email);
@@ -296,6 +321,10 @@ public class PostService {
             throw new ApiException(UserResponseMessage.USER_NOT_MATCH);
         }
         return postEntity;
+    }
+
+    private List<AlcoholEntity> findByAlcoholContaining(String keyword) {
+        return alcoholRepository.findByWhiskyKoreanContainingOrWhiskyEnglishContainingIgnoreCase(keyword, keyword);
     }
 
 }
