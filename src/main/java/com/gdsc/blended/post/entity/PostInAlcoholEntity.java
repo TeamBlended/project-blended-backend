@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "tb_post_in_alcohol")
 public class PostInAlcoholEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "post_in_alcohol_id")
     private Long id;
 

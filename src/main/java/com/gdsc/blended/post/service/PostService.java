@@ -68,16 +68,18 @@ public class PostService {
         AlcoholEntity alcohol = alcoholRepository.findById(postRequestDto.getAlcoholId())
                 .orElseThrow(() -> new ApiException(AlcoholResponseMessage.ALCOHOL_NOT_FOUND));
 
-        PostInAlcoholEntity postInAlcoholEntity = postInAlcoholRepository.save(PostInAlcoholEntity.builder()
+        PostInAlcoholEntity postInAlcoholEntity = PostInAlcoholEntity.builder()
                 .postEntity(savedPost)
                 .alcoholEntity(alcohol)
-                .build());
+                .build();
+
+        postInAlcoholRepository.save(postInAlcoholEntity);
 
         if (image != null) {
             image.setPost(postEntity);
         }
 
-        return new PostResponseDto(savedPost, image != null ? image.getPath() : null);
+        return new PostResponseDto(savedPost, image != null ? image.getPath() : null, postInAlcoholEntity);
     }
 
     // 게시글 삭제(delete)
@@ -297,11 +299,10 @@ public class PostService {
 
     @Transactional
     public AlcoholCameraResponseDto getAlcoholInfoByWhisky(Long alcoholId) {
-        AlcoholEntity alcohol = alcoholRepository.findByAlcoholId(alcoholId);
+        Optional<AlcoholEntity> optionalAlcohol = alcoholRepository.findById(alcoholId);
 
-        if (alcohol == null) {
-            throw new ApiException(AlcoholResponseMessage.ALCOHOL_NOT_FOUND);
-        }
+        AlcoholEntity alcohol = optionalAlcohol.orElseThrow(() ->
+                new ApiException(AlcoholResponseMessage.ALCOHOL_NOT_FOUND));
 
         return AlcoholCameraResponseDto.builder()
                 .whiskyKorean(alcohol.getWhiskyKorean())
