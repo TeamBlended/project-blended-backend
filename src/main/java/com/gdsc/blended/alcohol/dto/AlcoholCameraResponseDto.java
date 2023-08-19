@@ -8,6 +8,7 @@ import lombok.Getter;
 @Data
 @Builder
 public class AlcoholCameraResponseDto {
+    private Long id;
     private String whiskyKorean;
     private String whiskyEnglish;
     private String abv;
