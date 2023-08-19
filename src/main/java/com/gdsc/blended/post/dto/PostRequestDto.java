@@ -23,6 +23,7 @@ public class PostRequestDto {
     private Double latitude; //위도
     private Double longitude; //경도
     private String imagePath;
+    private Long AlcoholId;
 
     public PostEntity toEntity(CategoryEntity category, UserEntity user) {
         PostEntity postEntity = new PostEntity();
