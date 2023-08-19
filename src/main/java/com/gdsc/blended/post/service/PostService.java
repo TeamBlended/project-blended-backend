@@ -305,6 +305,7 @@ public class PostService {
                 new ApiException(AlcoholResponseMessage.ALCOHOL_NOT_FOUND));
 
         return AlcoholCameraResponseDto.builder()
+                .id(alcohol.getId())
                 .whiskyKorean(alcohol.getWhiskyKorean())
                 .whiskyEnglish(alcohol.getWhiskyEnglish())
                 .abv(alcohol.getAbv())
