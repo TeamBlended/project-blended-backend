@@ -6,7 +6,6 @@ import com.gdsc.blended.alcohol.repository.AlcoholRepository;
 import com.gdsc.blended.category.entity.CategoryEntity;
 import com.gdsc.blended.category.repository.CategoryRepository;
 import com.gdsc.blended.common.message.AlcoholResponseMessage;
-import com.gdsc.blended.common.message.ApiResponse;
 import com.gdsc.blended.common.message.PostResponseMessage;
 import com.gdsc.blended.common.message.UserResponseMessage;
 import com.gdsc.blended.common.exception.ApiException;
@@ -16,9 +15,11 @@ import com.gdsc.blended.common.image.service.S3UploadService;
 import com.gdsc.blended.common.image.service.ImageService;
 import com.gdsc.blended.post.dto.*;
 import com.gdsc.blended.post.entity.PostEntity;
+import com.gdsc.blended.post.entity.PostInAlcoholEntity;
 import com.gdsc.blended.post.heart.entity.HeartEntity;
 import com.gdsc.blended.post.heart.repository.HeartRepository;
 import com.gdsc.blended.post.heart.service.HeartService;
+import com.gdsc.blended.post.repository.PostInAlcoholRepository;
 import com.gdsc.blended.post.repository.PostRepository;
 import com.gdsc.blended.user.dto.response.AuthorDto;
 import com.gdsc.blended.user.dto.response.AuthorNicknameDto;
@@ -26,7 +27,6 @@ import com.gdsc.blended.user.entity.UserEntity;
 import com.gdsc.blended.user.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.*;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
@@ -45,6 +45,7 @@ public class PostService {
     private final ImageService imageService;
     private final S3UploadService s3UploadService;
     private final AlcoholRepository alcoholRepository;
+    private final PostInAlcoholRepository postInAlcoholRepository;
 
     @Transactional
     //전체 출력(Get)
@@ -64,6 +65,13 @@ public class PostService {
 
         PostEntity postEntity = postRequestDto.toEntity(category, user);
         PostEntity savedPost = postRepository.save(postEntity);
+        AlcoholEntity alcohol = alcoholRepository.findById(postRequestDto.getAlcoholId())
+                .orElseThrow(() -> new ApiException(AlcoholResponseMessage.ALCOHOL_NOT_FOUND));
+
+        PostInAlcoholEntity postInAlcoholEntity = postInAlcoholRepository.save(PostInAlcoholEntity.builder()
+                .postEntity(savedPost)
+                .alcoholEntity(alcohol)
+                .build());
 
         if (image != null) {
             image.setPost(postEntity);
@@ -108,6 +116,7 @@ public class PostService {
     public PostResponseDto detailPost(Long postId, String email) {
         UserEntity user = findUserByEmail(email);
         PostEntity postEntity = findPostByPostId(postId);
+        PostInAlcoholEntity postInAlcoholEntity = findAlcoholId(postId);
 
         //image 찾아오기
         String imageUrl = imageService.findImagePathByPostId(postId);
@@ -120,7 +129,7 @@ public class PostService {
             postRepository.save(postEntity);
         }
 
-        return new PostResponseDto(postEntity, heartCheck, imageUrl);
+        return new PostResponseDto(postEntity, heartCheck, imageUrl, postInAlcoholEntity);
     }
 
     @Transactional
@@ -287,13 +296,12 @@ public class PostService {
     }
 
     @Transactional
-    public AlcoholCameraResponseDto getAlcoholInfoByWhisky(String keyword) {
-        List<AlcoholEntity> alcoholList = findByAlcoholContaining(keyword);
+    public AlcoholCameraResponseDto getAlcoholInfoByWhisky(Long alcoholId) {
+        AlcoholEntity alcohol = alcoholRepository.findByAlcoholId(alcoholId);
 
-        if (alcoholList.isEmpty()) {
+        if (alcohol == null) {
             throw new ApiException(AlcoholResponseMessage.ALCOHOL_NOT_FOUND);
         }
-        AlcoholEntity alcohol = alcoholList.get(0);
 
         return AlcoholCameraResponseDto.builder()
                 .whiskyKorean(alcohol.getWhiskyKorean())
@@ -312,6 +320,10 @@ public class PostService {
     public UserEntity findUserByEmail(String email) {
         return userRepository.findByEmail(email).orElseThrow(() ->
                 new ApiException(UserResponseMessage.USER_NOT_FOUND));
+    }
+    private PostInAlcoholEntity findAlcoholId(Long postId) {
+        return (PostInAlcoholEntity) postInAlcoholRepository.findByPostEntityId(postId).orElseThrow(() ->
+                new ApiException(AlcoholResponseMessage.ALCOHOL_NOT_FOUND));
     }
 
     private PostEntity checkPostOwnerShip(Long postId, String email){
