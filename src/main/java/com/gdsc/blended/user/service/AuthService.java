@@ -19,6 +19,7 @@ import com.google.api.client.json.gson.GsonFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -45,10 +46,10 @@ public class AuthService {
                 GoogleOAuth2UserInfo userInfo = new GoogleOAuth2UserInfo(googleIdToken.getPayload());
 
                 if(!userRepository.existsByEmail(userInfo.getEmail())){
-                    UserEntity userEntity = new UserEntity(userInfo);
-                    userRepository.save(userEntity);
+                    throw new ApiException(UserResponseMessage.USER_NOT_FOUND);
+                }else{
+                    return sendGenerateJwtToken(userInfo.getEmail(), userInfo.getName());
                 }
-                return sendGenerateJwtToken(userInfo.getEmail(), userInfo.getName());
             }
         } catch (Exception e) {
             throw new ApiException(AuthMessage.INVALID_TOKEN);
@@ -58,6 +59,19 @@ public class AuthService {
     @Transactional
     public TokenResponse reissue(String email, String name, String refreshToken) throws Exception {
         validateRefreshToken(refreshToken);
+
+        Optional<UserEntity> userEntityOptional = userRepository.findByEmail(email);
+
+        if (userEntityOptional.isPresent()) {
+            UserEntity userEntity = userEntityOptional.get();
+
+            if (!userEntity.getName().equals(name)) {
+                userEntity.setName(name);
+                userRepository.save(userEntity);
+            }
+        } else {
+            throw new ApiException(UserResponseMessage.USER_NOT_FOUND);
+        }
 
         TokenResponse tokenResponse = createToken(email, name);
         return tokenResponse;
