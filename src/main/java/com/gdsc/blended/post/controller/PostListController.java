@@ -31,9 +31,11 @@ public class PostListController {
     @GetMapping("/posts/distanceList")
     public ResponseEntity<ApiResponse<PagingResponse<GeoListResponseDto>>> getPostsByDistance(
             @RequestParam("nowLatitude") Double latitude,
-            @RequestParam("nowLongitude") Double longitude
+            @RequestParam("nowLongitude") Double longitude,
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "10") Integer size
     ) {
-        Page<GeoListResponseDto> posts = postService.getPostsByDistance(latitude, longitude);
+        Page<GeoListResponseDto> posts = postService.getPostsByDistance(latitude, longitude, page, size);
         PagingResponse<GeoListResponseDto>pagingResponse = PagingUtil.toResponse(posts);
         ApiResponse<PagingResponse<GeoListResponseDto>> response = ApiResponse.success(pagingResponse);
         return ResponseEntity.status(HttpStatus.OK).body(response);
