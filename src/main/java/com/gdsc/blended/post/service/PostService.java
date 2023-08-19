@@ -135,13 +135,13 @@ public class PostService {
     }
 
     @Transactional
-    public Page<GeoListResponseDto> getPostsByDistance(Double latitude, Double longitude) {
+    public Page<GeoListResponseDto> getPostsByDistance(Double latitude, Double longitude , Integer page, Integer size) {
 
         if (latitude == null || longitude == null) {
             throw new ApiException(PostResponseMessage.NOT_FOUND_LATANDLONG);
         }
-
-        List<PostEntity> postEntities = postRepository.findByCompletedFalse();
+        Pageable pageable = PageRequest.of(page, size);
+        List<PostEntity> postEntities = postRepository.findByCompletedFalse(pageable).getContent();
 
         List<GeoListResponseDto> postsByDistance = new ArrayList<>();
         for (PostEntity postEntity : postEntities) {
