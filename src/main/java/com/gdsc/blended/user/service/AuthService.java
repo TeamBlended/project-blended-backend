@@ -43,10 +43,17 @@ public class AuthService {
             }
             else {
                 GoogleOAuth2UserInfo userInfo = new GoogleOAuth2UserInfo(googleIdToken.getPayload());
+                String email = userInfo.getEmail();
 
                 if(!userRepository.existsByEmail(userInfo.getEmail())){
                     UserEntity userEntity = new UserEntity(userInfo);
                     userRepository.save(userEntity);
+                }else {
+                    UserEntity user = userRepository.findByEmail(email).orElseThrow(() ->
+                            new ApiException(UserResponseMessage.USER_NOT_FOUND));
+                    if(user.getNickname() == null){
+                        throw new ApiException(UserResponseMessage.NICKNAME_NOT_PROVIDED);
+                    }
                 }
                 return sendGenerateJwtToken(userInfo.getEmail(), userInfo.getName());
             }

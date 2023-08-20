@@ -6,7 +6,6 @@ import com.gdsc.blended.alcohol.repository.AlcoholRepository;
 import com.gdsc.blended.category.entity.CategoryEntity;
 import com.gdsc.blended.category.repository.CategoryRepository;
 import com.gdsc.blended.common.message.AlcoholResponseMessage;
-import com.gdsc.blended.common.message.ApiResponse;
 import com.gdsc.blended.common.message.PostResponseMessage;
 import com.gdsc.blended.common.message.UserResponseMessage;
 import com.gdsc.blended.common.exception.ApiException;
@@ -17,9 +16,11 @@ import com.gdsc.blended.common.image.service.ImageService;
 import com.gdsc.blended.post.dto.*;
 import com.gdsc.blended.post.entity.ExistenceStatus;
 import com.gdsc.blended.post.entity.PostEntity;
+import com.gdsc.blended.post.entity.PostInAlcoholEntity;
 import com.gdsc.blended.post.heart.entity.HeartEntity;
 import com.gdsc.blended.post.heart.repository.HeartRepository;
 import com.gdsc.blended.post.heart.service.HeartService;
+import com.gdsc.blended.post.repository.PostInAlcoholRepository;
 import com.gdsc.blended.post.repository.PostRepository;
 import com.gdsc.blended.user.dto.response.AuthorDto;
 import com.gdsc.blended.user.dto.response.AuthorNicknameDto;
@@ -27,7 +28,6 @@ import com.gdsc.blended.user.entity.UserEntity;
 import com.gdsc.blended.user.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.*;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
@@ -46,6 +46,7 @@ public class PostService {
     private final ImageService imageService;
     private final S3UploadService s3UploadService;
     private final AlcoholRepository alcoholRepository;
+    private final PostInAlcoholRepository postInAlcoholRepository;
 
     @Transactional
     //전체 출력(Get)
@@ -68,12 +69,21 @@ public class PostService {
 
         PostEntity postEntity = postRequestDto.toEntity(category, user);
         PostEntity savedPost = postRepository.save(postEntity);
+        AlcoholEntity alcohol = alcoholRepository.findById(postRequestDto.getAlcoholId())
+                .orElseThrow(() -> new ApiException(AlcoholResponseMessage.ALCOHOL_NOT_FOUND));
+
+        PostInAlcoholEntity postInAlcoholEntity = PostInAlcoholEntity.builder()
+                .postEntity(savedPost)
+                .alcoholEntity(alcohol)
+                .build();
+
+        postInAlcoholRepository.save(postInAlcoholEntity);
 
         if (image != null) {
             image.setPost(postEntity);
         }
 
-        return new PostResponseDto(savedPost, image != null ? image.getPath() : null);
+        return new PostResponseDto(savedPost, image != null ? image.getPath() : null, postInAlcoholEntity);
     }
 
     // 게시글 삭제(delete)
@@ -120,6 +130,7 @@ public class PostService {
     public PostResponseDto detailPost(Long postId, String email) {
         UserEntity user = findUserByEmail(email);
         PostEntity postEntity = findPostByPostId(postId);
+        PostInAlcoholEntity postInAlcoholEntity = findAlcoholId(postId);
 
         //image 찾아오기
         String imageUrl = imageService.findImagePathByPostId(postId);
@@ -132,17 +143,17 @@ public class PostService {
             postRepository.save(postEntity);
         }
 
-        return new PostResponseDto(postEntity, heartCheck, imageUrl);
+        return new PostResponseDto(postEntity, heartCheck, imageUrl, postInAlcoholEntity);
     }
 
     @Transactional
-    public Page<GeoListResponseDto> getPostsByDistance(Double latitude, Double longitude) {
+    public Page<GeoListResponseDto> getPostsByDistance(Double latitude, Double longitude , Integer page, Integer size) {
 
         if (latitude == null || longitude == null) {
             throw new ApiException(PostResponseMessage.NOT_FOUND_LATANDLONG);
         }
-
-        List<PostEntity> postEntities = postRepository.findByCompletedFalse();
+        Pageable pageable = PageRequest.of(page, size);
+        List<PostEntity> postEntities = postRepository.findByCompletedFalse(pageable).getContent();
 
         List<GeoListResponseDto> postsByDistance = new ArrayList<>();
         for (PostEntity postEntity : postEntities) {
@@ -327,15 +338,14 @@ public class PostService {
     }
 
     @Transactional
-    public AlcoholCameraResponseDto getAlcoholInfoByWhisky(String keyword) {
-        List<AlcoholEntity> alcoholList = findByAlcoholContaining(keyword);
+    public AlcoholCameraResponseDto getAlcoholInfoByWhisky(Long alcoholId) {
+        Optional<AlcoholEntity> optionalAlcohol = alcoholRepository.findById(alcoholId);
 
-        if (alcoholList.isEmpty()) {
-            throw new ApiException(AlcoholResponseMessage.ALCOHOL_NOT_FOUND);
-        }
-        AlcoholEntity alcohol = alcoholList.get(0);
+        AlcoholEntity alcohol = optionalAlcohol.orElseThrow(() ->
+                new ApiException(AlcoholResponseMessage.ALCOHOL_NOT_FOUND));
 
         return AlcoholCameraResponseDto.builder()
+                .id(alcohol.getId())
                 .whiskyKorean(alcohol.getWhiskyKorean())
                 .whiskyEnglish(alcohol.getWhiskyEnglish())
                 .abv(alcohol.getAbv())
@@ -352,6 +362,10 @@ public class PostService {
     public UserEntity findUserByEmail(String email) {
         return userRepository.findByEmail(email).orElseThrow(() ->
                 new ApiException(UserResponseMessage.USER_NOT_FOUND));
+    }
+    private PostInAlcoholEntity findAlcoholId(Long postId) {
+        return (PostInAlcoholEntity) postInAlcoholRepository.findByPostEntityId(postId).orElseThrow(() ->
+                new ApiException(AlcoholResponseMessage.ALCOHOL_NOT_FOUND));
     }
 
     private PostEntity checkPostOwnerShip(Long postId, String email){
