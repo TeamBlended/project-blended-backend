@@ -20,4 +20,5 @@ public class GeoListResponseDto {
     private AuthorDto author;
     private Double distanceRange;
 
+
 }
