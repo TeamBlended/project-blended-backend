@@ -9,4 +9,5 @@ import java.util.Optional;
 
 public interface AlcoholRepository extends JpaRepository<AlcoholEntity, Long> {
     List<AlcoholEntity> findByWhiskyKoreanContainingOrWhiskyEnglishContainingIgnoreCase(String koreanKeyword, String englishKeyword);
+    Optional<AlcoholEntity> findById(Long alcoholId);
 }

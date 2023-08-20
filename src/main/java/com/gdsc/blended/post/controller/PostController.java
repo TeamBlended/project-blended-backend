@@ -38,7 +38,7 @@ public class PostController {
 
     //개시글 쓰기
     @PostMapping(value = "/posts/{categoryId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ApiResponse<PostResponseDto>> createPost(@ModelAttribute PostRequestDto postRequestDto, @PathVariable Long categoryId, @AuthenticationPrincipal UserInfo user) throws IOException {
+    public ResponseEntity<ApiResponse<PostResponseDto>> createPost(@ModelAttribute PostRequestDto postRequestDto, @PathVariable Long categoryId, @AuthenticationPrincipal UserInfo user) {
         PostResponseDto createdPost = postService.createPost(postRequestDto, categoryId, user.getEmail());
         ApiResponse<PostResponseDto> response = ApiResponse.success(createdPost);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
@@ -121,11 +121,12 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @Operation(summary = "ML이 생성 또는 사용자가 직접 입력시 술 정보를 반환")
-    @GetMapping("/posts/alcohole/search")
-    public ResponseEntity<ApiResponse<AlcoholCameraResponseDto>> getAlcoholInfoByWhiskyKorean(@RequestParam("keyword") String keyword){
-        AlcoholCameraResponseDto alcoholCameraResponseDto = postService.getAlcoholInfoByWhisky(keyword);
+    @Operation(summary = "ML이 생성 술 정보를 반환")
+    @GetMapping("/posts/alcohole/{alcoholId}")
+    public ResponseEntity<ApiResponse<AlcoholCameraResponseDto>> getAlcoholInfoByWhiskyKorean(@PathVariable Long alcoholId){
+        AlcoholCameraResponseDto alcoholCameraResponseDto = postService.getAlcoholInfoByWhisky(alcoholId);
         return ResponseEntity.ok(ApiResponse.success(alcoholCameraResponseDto));
     }
+
 
 }

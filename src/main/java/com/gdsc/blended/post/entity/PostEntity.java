@@ -10,7 +10,9 @@ import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 
 @Getter
@@ -60,12 +62,12 @@ public class PostEntity extends BaseTimeEntity {
     @Column(name = "existence_status")
     private ExistenceStatus existenceStatus;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @OnDelete(action= OnDeleteAction.CASCADE)
     @JoinColumn(name = "category_id")
     private CategoryEntity category;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @OnDelete(action= OnDeleteAction.CASCADE)
     @JoinColumn(name = "user_id")
     private UserEntity userId;

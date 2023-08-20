@@ -18,7 +18,9 @@ public interface PostRepository extends JpaRepository<PostEntity, Long> {
 
     List<PostEntity> findByTitleContainingOrContentContaining(String titleKeyword, String contentKeyword);
 
-    List<PostEntity> findByCompletedFalse();
+
+    Page<PostEntity> findByCompletedFalse(Pageable pageable);
+
 
     List<PostEntity> findByUserId(UserEntity user);
 }
