@@ -14,6 +14,7 @@ import com.gdsc.blended.common.image.repository.ImageRepository;
 import com.gdsc.blended.common.image.service.S3UploadService;
 import com.gdsc.blended.common.image.service.ImageService;
 import com.gdsc.blended.post.dto.*;
+import com.gdsc.blended.post.entity.ExistenceStatus;
 import com.gdsc.blended.post.entity.PostEntity;
 import com.gdsc.blended.post.entity.PostInAlcoholEntity;
 import com.gdsc.blended.post.heart.entity.HeartEntity;
@@ -50,9 +51,12 @@ public class PostService {
     @Transactional
     //전체 출력(Get)
     public Page<PostResponseDto> getAllPost(Pageable pageable) {
-        return postRepository.findAll(pageable).map(postDto ->
-                new PostResponseDto(postDto, imageService.findImagePathByPostId(postDto.getId()))
-        );
+        return postRepository.findAll(pageable).map(postDto -> {
+            if (postDto.getExistenceStatus() == ExistenceStatus.NON_EXIST) {
+                return null;
+            }
+            return new PostResponseDto(postDto, imageService.findImagePathByPostId(postDto.getId()));
+        });
     }
 
     //게시글 생성 (Post)
@@ -84,7 +88,7 @@ public class PostService {
 
     // 게시글 삭제(delete)
     @Transactional
-    public void deletePost(Long postId,  String email) {
+    public void deletePostDB(Long postId,  String email) {
         PostEntity postEntity = checkPostOwnerShip(postId, email);
 
         ImageEntity image = imageService.findImageByPostId(postId);
@@ -97,8 +101,16 @@ public class PostService {
         postRepository.delete(postEntity);
     }
 
+    public PostResponseDto deletePost(Long postId, String email) {
+        PostEntity postEntity = checkPostOwnerShip(postId, email);
+        postEntity.setExistenceStatus(ExistenceStatus.NON_EXIST);
+
+        PostEntity deletedPost = postRepository.save(postEntity);
+        return new PostResponseDto(deletedPost, imageService.findImagePathByPostId(deletedPost.getId()));
+    }
 
     // 게시글 수정(Put)
+
     @Transactional
     public PostResponseDto updatePost(Long postId, PostUpdateRequestDto postRequestDto, String email) {
 
@@ -151,30 +163,35 @@ public class PostService {
             // 위도 경도 간의 거리 계산 로직
             double distance = calculateDistance(latitude, longitude, postLatitude, postLongitude);
             if (distance <= 6) { // 단위는 km
-                GeoListResponseDto postDto = new GeoListResponseDto();
-                postDto.setId(postEntity.getId());
-                postDto.setTitle(postEntity.getTitle());
-                postDto.setContent(postEntity.getContent());
-                LocationDto locationDto = new LocationDto();
-                locationDto.setName(postEntity.getLocationName());
-                locationDto.setLng(postEntity.getLongitude());
-                locationDto.setLat(postEntity.getLatitude());
-                postDto.setShareLocation(locationDto);
-                postDto.setDistanceRange(distance);
-                postDto.setCompleted(postEntity.getCompleted());
-                postDto.setUpdatedAt(postEntity.getModifiedDate());
-                postDto.setMaxParticipantsCount(postEntity.getMaxRecruits());
-                AuthorDto authorDto = new AuthorDto();
-                authorDto.setNickname(postEntity.getUserId().getNickname());
-                authorDto.setProfileImageUrl(postEntity.getUserId().getProfileImageUrl());
-                postDto.setAuthor(authorDto);
-                postsByDistance.add(postDto);
+                if (postEntity.getExistenceStatus() == ExistenceStatus.NON_EXIST) {
+
+                    GeoListResponseDto postDto = new GeoListResponseDto();
+                    postDto.setId(postEntity.getId());
+                    postDto.setTitle(postEntity.getTitle());
+                    postDto.setContent(postEntity.getContent());
+                    LocationDto locationDto = new LocationDto();
+                    locationDto.setName(postEntity.getLocationName());
+                    locationDto.setLng(postEntity.getLongitude());
+                    locationDto.setLat(postEntity.getLatitude());
+                    postDto.setShareLocation(locationDto);
+                    postDto.setDistanceRange(distance);
+                    postDto.setCompleted(postEntity.getCompleted());
+                    postDto.setUpdatedAt(postEntity.getModifiedDate());
+                    postDto.setMaxParticipantsCount(postEntity.getMaxRecruits());
+                    AuthorDto authorDto = new AuthorDto();
+                    authorDto.setNickname(postEntity.getUserId().getNickname());
+                    authorDto.setProfileImageUrl(postEntity.getUserId().getProfileImageUrl());
+                    postDto.setAuthor(authorDto);
+                    postsByDistance.add(postDto);
+                }
             }
         }
         postsByDistance.sort(Comparator.comparingDouble(GeoListResponseDto::getDistanceRange));
 
         return new PageImpl<>(postsByDistance);
     }
+
+
 
     private double calculateDistance(Double latitude1, Double longitude1, Double latitude2, Double longitude2) {
         // 지구의 반지름 (단위: km)
@@ -207,7 +224,15 @@ public class PostService {
         if (postPage.isEmpty()) {
             throw new ApiException(PostResponseMessage.POST_NOT_FOUND);
         }
-        return postPage.map(post -> new PostResponseDto(post, imageService.findImagePathByPostId(post.getId())));
+
+        List<PostResponseDto> validPosts = new ArrayList<>();
+        for (PostEntity post : postPage) {
+            if (post.getExistenceStatus() != ExistenceStatus.NON_EXIST) {
+                validPosts.add(new PostResponseDto(post, imageService.findImagePathByPostId(post.getId())));
+            }
+        }
+
+        return new PageImpl<>(validPosts, pageable, validPosts.size());
     }
 
     @Transactional
@@ -215,6 +240,12 @@ public class PostService {
         Page<PostEntity> postPage = postRepository.findAllByOrderByLikeCountDesc(pageable);
         if (postPage.isEmpty()) {
             throw new ApiException(PostResponseMessage.POST_NOT_FOUND);
+        }
+        List<PostResponseDto> validPosts = new ArrayList<>();
+        for (PostEntity post : postPage) {
+            if (post.getExistenceStatus() != ExistenceStatus.NON_EXIST) {
+                validPosts.add(new PostResponseDto(post, imageService.findImagePathByPostId(post.getId())));
+            }
         }
         return postPage.map(post ->new PostResponseDto(post, imageService.findImagePathByPostId(post.getId())));
     }
@@ -224,26 +255,28 @@ public class PostService {
         List<PostEntity> findPosts = postRepository.findByTitleContainingOrContentContaining(keyword, keyword);
         List<SearchResponseDto> searchResponseDtoList = new ArrayList<>();
 
-        if (findPosts.size() == 0) { //검색 결과 X
+        for (PostEntity postEntity : findPosts) {
+            if (postEntity.getExistenceStatus() != ExistenceStatus.NON_EXIST) {
+                String image = imageService.findImagePathByPostId(postEntity.getId());
+                SearchResponseDto searchResponseDto = SearchResponseDto.builder()
+                        .id(postEntity.getId())
+                        .title(postEntity.getTitle())
+                        .content(postEntity.getContent())
+                        .shareLocation(new LocationDto(postEntity.getLocationName(), postEntity.getLatitude(), postEntity.getLongitude()))
+                        .author(new AuthorNicknameDto(postEntity.getUserId().getNickname()))
+                        .shareDateTime(postEntity.getShareDateTime())
+                        .createdAt(postEntity.getCreatedDate())
+                        .maxParticipantsCount(postEntity.getMaxRecruits())
+                        .image(image)
+                        .build();
+                searchResponseDtoList.add(searchResponseDto);
+            }
+        }
+
+        if (searchResponseDtoList.isEmpty()) { // 검색 결과가 없는 경우
             throw new ApiException(PostResponseMessage.POST_NOT_FOUND);
         }
 
-        SearchResponseDto searchResponseDto = null;
-        for (PostEntity postEntity : findPosts) {
-            String image = imageService.findImagePathByPostId(postEntity.getId());
-            searchResponseDto = SearchResponseDto.builder()
-                    .id(postEntity.getId())
-                    .title(postEntity.getTitle())
-                    .content(postEntity.getContent())
-                    .shareLocation(new LocationDto(postEntity.getLocationName(), postEntity.getLatitude(), postEntity.getLongitude()))
-                    .author(new AuthorNicknameDto(postEntity.getUserId().getNickname()))
-                    .shareDateTime(postEntity.getShareDateTime())
-                    .createdAt(postEntity.getCreatedDate())
-                    .maxParticipantsCount(postEntity.getMaxRecruits())
-                    .image(image)
-                    .build();
-            searchResponseDtoList.add(searchResponseDto);
-        }
         return new PageImpl<>(searchResponseDtoList);
     }
 
@@ -288,6 +321,13 @@ public class PostService {
         UserEntity user = findUserByEmail(email);
         List<PostEntity> postEntities = postRepository.findByUserId(user);
 
+        List<PostResponseDto> validPostDtos = new ArrayList<>();
+        for (PostEntity postEntity : postEntities) {
+            if (postEntity.getExistenceStatus() != ExistenceStatus.NON_EXIST) {
+                validPostDtos.add(new PostResponseDto(postEntity, imageService.findImagePathByPostId(postEntity.getId())));
+            }
+        }
+
         if (postEntities.isEmpty()) {
             throw new ApiException(PostResponseMessage.POST_NOT_FOUND);
         }
@@ -314,11 +354,11 @@ public class PostService {
                 .imgUrl(alcohol.getImgUrl())
                 .build();
     }
-
     public PostEntity findPostByPostId(Long postId) {
         return postRepository.findById(postId).orElseThrow(() ->
                 new ApiException(PostResponseMessage.POST_NOT_FOUND));
     }
+
     public UserEntity findUserByEmail(String email) {
         return userRepository.findByEmail(email).orElseThrow(() ->
                 new ApiException(UserResponseMessage.USER_NOT_FOUND));
@@ -340,5 +380,4 @@ public class PostService {
     private List<AlcoholEntity> findByAlcoholContaining(String keyword) {
         return alcoholRepository.findByWhiskyKoreanContainingOrWhiskyEnglishContainingIgnoreCase(keyword, keyword);
     }
-
 }

@@ -58,6 +58,10 @@ public class PostEntity extends BaseTimeEntity {
     @Column(name = "share_date_time")
     private Date shareDateTime;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "existence_status")
+    private ExistenceStatus existenceStatus;
+
     @ManyToOne
     @OnDelete(action= OnDeleteAction.CASCADE)
     @JoinColumn(name = "category_id")

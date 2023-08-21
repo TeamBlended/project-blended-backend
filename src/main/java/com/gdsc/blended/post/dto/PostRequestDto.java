@@ -1,6 +1,7 @@
 package com.gdsc.blended.post.dto;
 
 import com.gdsc.blended.category.entity.CategoryEntity;
+import com.gdsc.blended.post.entity.ExistenceStatus;
 import com.gdsc.blended.post.entity.PostEntity;
 import com.gdsc.blended.user.entity.UserEntity;
 import lombok.*;
@@ -38,6 +39,7 @@ public class PostRequestDto {
         postEntity.setLikeCount(0L);
         postEntity.setShareDateTime(shareDateTime);
         postEntity.setMaxRecruits(maxParticipantsCount);
+        postEntity.setExistenceStatus(ExistenceStatus.EXIST);
         postEntity.setCategory(category);
         postEntity.setUserId(user);
         return postEntity;

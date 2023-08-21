@@ -77,10 +77,18 @@ public class PostController {
 
     //게시글 삭제
     // TODO: 2023/07/22 삭제 방식 바꿔야됨
+    @Operation(summary = "게시글 DB 삭제(사용안함, 게발자용)")
     @DeleteMapping("/posts/{postId}")
     public ResponseEntity<Void> deletePost(@ModelAttribute PostRequestDto postRequestDto, @PathVariable Long postId, @AuthenticationPrincipal UserInfo user) {
-        postService.deletePost(postId, user.getEmail());
+        postService.deletePostDB(postId, user.getEmail());
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/posts/delete/{postId}")
+    public ResponseEntity<ApiResponse<PostResponseDto>> deletePost(@PathVariable Long postId, @AuthenticationPrincipal UserInfo user) {
+        PostResponseDto deletedPost = postService.deletePost(postId, user.getEmail());
+        ApiResponse<PostResponseDto> response = ApiResponse.success(deletedPost);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     //게시글 상세 구현
@@ -103,6 +111,7 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    // TODO: 2023/08/20 삭제된거 안보이게 해야됨
     //검색
     @GetMapping("/posts/search/{keyword}")
     public ResponseEntity<ApiResponse<PagingResponse<SearchResponseDto>>> searchPosts(@PathVariable String keyword){
