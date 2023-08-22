@@ -1,6 +1,7 @@
 package com.gdsc.blended.comment.entity;
 
 import com.gdsc.blended.baseTime.BaseTimeEntity;
+import com.gdsc.blended.post.entity.ExistenceStatus;
 import com.gdsc.blended.post.entity.PostEntity;
 import com.gdsc.blended.user.entity.UserEntity;
 import jakarta.persistence.*;
@@ -21,6 +22,10 @@ public class CommentEntity extends BaseTimeEntity{
 
     private String content;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "existence_status")
+    private ExistenceStatus existenceStatus;
+
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "post_id")
     private PostEntity post;
@@ -34,8 +39,9 @@ public class CommentEntity extends BaseTimeEntity{
     }
 
     @Builder
-    public CommentEntity(String content, PostEntity post, UserEntity user) {
+    public CommentEntity(String content,ExistenceStatus existenceStatus,  PostEntity post, UserEntity user) {
         this.content = content;
+        this.existenceStatus = existenceStatus;
         this.post = post;
         this.user = user;
     }
@@ -44,8 +50,9 @@ public class CommentEntity extends BaseTimeEntity{
         this.content = content;
     }
 
-    public void deletComment(String content) {
-        this.content = "해당 댓글이 삭제되었습니다.";
+
+    public void deleteStatus(ExistenceStatus nonExist) {
+        this.existenceStatus = nonExist;
     }
 }
 

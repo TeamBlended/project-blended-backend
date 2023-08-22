@@ -11,6 +11,7 @@ import com.gdsc.blended.common.message.CommentResponseMessage;
 import com.gdsc.blended.common.message.PostResponseMessage;
 import com.gdsc.blended.common.message.UserResponseMessage;
 import com.gdsc.blended.common.exception.ApiException;
+import com.gdsc.blended.post.entity.ExistenceStatus;
 import com.gdsc.blended.user.dto.response.AuthorDto;
 import com.gdsc.blended.user.entity.UserEntity;
 import com.gdsc.blended.user.repository.UserRepository;
@@ -64,6 +65,7 @@ public class RepliesService {
 
         RepliesEntity replies = RepliesEntity.builder()
                 .content(requestDto.getContent())
+                .existenceStatus(ExistenceStatus.EXIST)
                 .comment(comment)
                 .user(user)
                 .build();
@@ -103,25 +105,29 @@ public class RepliesService {
 
     @Transactional
     public Page<RepliesResponseDto> getRepliesListByComment(Long commentId, Pageable pageable) {
-        List<RepliesEntity> comments;
+        List<RepliesEntity> repliesList;
         try {
-            comments = repliesRepository.findByCommentId(commentId);
+            repliesList = repliesRepository.findByCommentId(commentId);
         }catch (Exception e){
-            throw new ApiException(PostResponseMessage.POST_NOT_FOUND);
+            throw new ApiException(CommentResponseMessage.COMMENT_NOT_FOUND);
         }
         List<RepliesResponseDto> repliesResponseDtos = new ArrayList<>();
 
-        if (comments.isEmpty())
-            throw new ApiException(CommentResponseMessage.COMMENT_NOT_FOUND);
-        for (RepliesEntity comment : comments) {
+        if (repliesList.isEmpty())
+            throw new ApiException(CommentResponseMessage.REPLIES_NOT_FOUND);
+
+        for (RepliesEntity replies : repliesList) {
+            if (replies.getExistenceStatus() == ExistenceStatus.NON_EXIST)
+                continue;
+
             RepliesResponseDto repliesResponseDto = RepliesResponseDto.builder()
-                    .repliesId(comment.getId())
-                    .content(comment.getContent())
+                    .repliesId(replies.getId())
+                    .content(replies.getContent())
                     .user(AuthorDto.builder()
-                            .nickname(comment.getUser().getNickname())
-                            .profileImageUrl(comment.getUser().getProfileImageUrl())
+                            .nickname(replies.getUser().getNickname())
+                            .profileImageUrl(replies.getUser().getProfileImageUrl())
                             .build())
-                    .modifiedDate(comment.getModifiedDate())
+                    .modifiedDate(replies.getModifiedDate())
                     .build();
             repliesResponseDtos.add(repliesResponseDto);
         }
@@ -155,16 +161,19 @@ public class RepliesService {
     @Transactional
     public RepliesResponseDto deleteReplies(Long repliesId, String email) {
         RepliesEntity replies = checkRepliesOwnerShip(repliesId, email);
+        replies.deleteReplies(ExistenceStatus.NON_EXIST);
+        RepliesEntity updatedComment = repliesRepository.save(replies);
 
-            replies.deleteReComment(replies.getContent());
-
-            RepliesEntity updatedComment = repliesRepository.save(replies);
-
-            return RepliesResponseDto.builder()
-                    .repliesId(updatedComment.getId())
-                    .content(updatedComment.getContent())
-                    .modifiedDate(updatedComment.getModifiedDate())
-                    .build();
+        AuthorDto authorDto = AuthorDto.builder()
+                .nickname(replies.getUser().getNickname())
+                .profileImageUrl(replies.getUser().getProfileImageUrl())
+                .build();
+        return RepliesResponseDto.builder()
+                .repliesId(updatedComment.getId())
+                .content(updatedComment.getContent())
+                .modifiedDate(updatedComment.getModifiedDate())
+                .user(authorDto)
+                .build();
     }
 
     @Transactional
