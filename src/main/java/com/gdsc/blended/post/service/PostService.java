@@ -33,6 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
@@ -51,12 +52,12 @@ public class PostService {
     @Transactional
     //전체 출력(Get)
     public Page<PostResponseDto> getAllPost(Pageable pageable) {
-        return postRepository.findAll(pageable).map(postDto -> {
-            if (postDto.getExistenceStatus() == ExistenceStatus.NON_EXIST) {
-                return null;
-            }
-            return new PostResponseDto(postDto, imageService.findImagePathByPostId(postDto.getId()));
-        });
+        List<PostResponseDto> postResponseDtos = postRepository.findAll(pageable).stream()
+                .filter(postDto -> postDto.getExistenceStatus() != ExistenceStatus.NON_EXIST)
+                .map(postDto -> new PostResponseDto(postDto, imageService.findImagePathByPostId(postDto.getId())))
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(postResponseDtos, pageable, postResponseDtos.size());
     }
 
     //게시글 생성 (Post)
