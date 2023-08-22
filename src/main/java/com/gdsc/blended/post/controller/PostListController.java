@@ -1,9 +1,8 @@
 package com.gdsc.blended.post.controller;
 
 import com.gdsc.blended.jwt.oauth.UserInfo;
-import com.gdsc.blended.post.dto.GeoListResponseDto;
-import com.gdsc.blended.post.dto.PostResponseDto;
-import com.gdsc.blended.post.entity.ExistenceStatus;
+import com.gdsc.blended.post.dto.response.GeoListResponseDto;
+import com.gdsc.blended.post.dto.response.PostResponseDto;
 import com.gdsc.blended.post.service.PostService;
 import com.gdsc.blended.common.message.ApiResponse;
 import com.gdsc.blended.utils.PagingResponse;
@@ -20,9 +19,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 
 @AllArgsConstructor

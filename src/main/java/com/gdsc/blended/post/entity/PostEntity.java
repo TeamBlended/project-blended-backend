@@ -77,8 +77,6 @@ public class PostEntity extends BaseTimeEntity {
         this.viewCount++;
     }
 
-    //TODO .. maxRecruits를 0일떄 어떻게 해야할까?
-
 
 
 }

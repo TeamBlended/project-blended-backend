@@ -1,5 +1,6 @@
-package com.gdsc.blended.post.dto;
+package com.gdsc.blended.post.dto.response;
 
+import com.gdsc.blended.post.dto.LocationDto;
 import com.gdsc.blended.post.entity.PostEntity;
 import com.gdsc.blended.user.dto.response.AuthorDto;
 import com.gdsc.blended.user.dto.response.AuthorNicknameDto;

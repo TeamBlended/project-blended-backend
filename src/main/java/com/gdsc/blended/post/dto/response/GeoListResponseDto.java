@@ -1,6 +1,7 @@
-package com.gdsc.blended.post.dto;
+package com.gdsc.blended.post.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gdsc.blended.post.dto.LocationDto;
 import com.gdsc.blended.user.dto.response.AuthorDto;
 import lombok.Getter;
 import lombok.Setter;
