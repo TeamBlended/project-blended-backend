@@ -77,7 +77,6 @@ public class PostController {
     }
 
     //게시글 삭제
-    // TODO: 2023/07/22 삭제 방식 바꿔야됨
     @Operation(summary = "게시글 DB 삭제(사용안함, 게발자용)")
     @DeleteMapping("/posts/{postId}")
     public ResponseEntity<Void> deletePost(@ModelAttribute PostRequestDto postRequestDto, @PathVariable Long postId, @AuthenticationPrincipal UserInfo user) {
@@ -94,7 +93,6 @@ public class PostController {
 
     //게시글 상세 구현
     //조회수 구현
-    // TODO: 2023/07/22 이거 형식좀 일관성있게 바꿔야될듯
     @GetMapping("/posts/detail/{postId}")
     public ResponseEntity<ApiResponse<PostDetailResponseDto>> detailPost(@PathVariable Long postId , @AuthenticationPrincipal UserInfo user){
         PostDetailResponseDto postResponseDto = postService.detailPost(postId, user.getEmail());
@@ -112,7 +110,6 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    // TODO: 2023/08/20 삭제된거 안보이게 해야됨
     //검색
     @GetMapping("/posts/search/{keyword}")
     public ResponseEntity<ApiResponse<PagingResponse<SearchResponseDto>>> searchPosts(@PathVariable String keyword){
