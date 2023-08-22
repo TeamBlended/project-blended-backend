@@ -1,7 +1,7 @@
 package com.gdsc.blended.post.heart.controller;
 
 import com.gdsc.blended.jwt.oauth.UserInfo;
-import com.gdsc.blended.post.dto.PostResponseDto;
+import com.gdsc.blended.post.dto.response.PostResponseDto;
 import com.gdsc.blended.post.heart.service.HeartService;
 import com.gdsc.blended.common.message.ApiResponse;
 import com.gdsc.blended.utils.PagingResponse;

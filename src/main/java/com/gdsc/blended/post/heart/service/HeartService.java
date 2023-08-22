@@ -5,7 +5,7 @@ import com.gdsc.blended.common.message.UserResponseMessage;
 import com.gdsc.blended.common.exception.ApiException;
 import com.gdsc.blended.common.image.service.ImageService;
 import com.gdsc.blended.post.dto.LocationDto;
-import com.gdsc.blended.post.dto.PostResponseDto;
+import com.gdsc.blended.post.dto.response.PostResponseDto;
 import com.gdsc.blended.post.entity.PostEntity;
 import com.gdsc.blended.post.heart.entity.HeartEntity;
 import com.gdsc.blended.post.heart.repository.HeartRepository;
@@ -69,7 +69,6 @@ public class HeartService {
                         .lat(postEntity.getLatitude())
                         .lng(postEntity.getLongitude())
                         .build())
-                .liked(postEntity.getLiked())
                 .completed(postEntity.getCompleted())
                 .createdAt(postEntity.getCreatedDate())
                 .updatedAt(postEntity.getModifiedDate())
