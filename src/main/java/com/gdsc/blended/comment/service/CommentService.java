@@ -8,6 +8,7 @@ import com.gdsc.blended.common.message.CommentResponseMessage;
 import com.gdsc.blended.common.message.PostResponseMessage;
 import com.gdsc.blended.common.message.UserResponseMessage;
 import com.gdsc.blended.common.exception.ApiException;
+import com.gdsc.blended.post.entity.ExistenceStatus;
 import com.gdsc.blended.post.entity.PostEntity;
 import com.gdsc.blended.post.repository.PostRepository;
 import com.gdsc.blended.user.dto.response.AuthorDto;
@@ -38,6 +39,7 @@ public class CommentService {
         CommentEntity comment = CommentEntity.builder()
                 .content(requestDto.getContent())
                 .post(post)
+                .existenceStatus(ExistenceStatus.EXIST)
                 .user(user)
                 .build();
         CommentEntity savedComment =  commentRepository.save(comment);
@@ -88,15 +90,20 @@ public class CommentService {
             throw new ApiException(CommentResponseMessage.COMMENT_NOT_FOUND);
 
         for (CommentEntity comment : comments) {
-            CommentResponseDto commentResponseDto = CommentResponseDto.builder()
-                    .commentId(comment.getId())
-                    .content(comment.getContent())
-                    .user(AuthorDto.builder()
-                            .nickname(comment.getUser().getNickname())
-                            .profileImageUrl(comment.getUser().getProfileImageUrl())
-                            .build())
-                    .modifiedDate(comment.getModifiedDate())
-                    .build();
+            CommentResponseDto commentResponseDto;
+            if(comment.getExistenceStatus() == ExistenceStatus.NON_EXIST){
+                continue;
+            }else {
+                commentResponseDto = CommentResponseDto.builder()
+                        .commentId(comment.getId())
+                        .content(comment.getContent())
+                        .user(AuthorDto.builder()
+                                .nickname(comment.getUser().getNickname())
+                                .profileImageUrl(comment.getUser().getProfileImageUrl())
+                                .build())
+                        .modifiedDate(comment.getModifiedDate())
+                        .build();
+            }
             commentResponseDtos.add(commentResponseDto);
         }
 
@@ -127,13 +134,19 @@ public class CommentService {
     @Transactional
     public CommentResponseDto deleteComment(Long commentId, String email) {
         CommentEntity comment = checkCommentOwnerShip(commentId, email);
-        comment.deletComment(comment.getContent());
+        comment.deleteStatus(ExistenceStatus.NON_EXIST);
         CommentEntity updatedComment = commentRepository.save(comment);
+
+        AuthorDto authorDto = AuthorDto.builder()
+                .nickname(comment.getUser().getNickname())
+                .profileImageUrl(comment.getUser().getProfileImageUrl())
+                .build();
 
         return CommentResponseDto.builder()
                 .commentId(updatedComment.getId())
                 .content(updatedComment.getContent())
                 .modifiedDate(updatedComment.getModifiedDate())
+                .user(authorDto)
                 .build();
     }
 

@@ -10,8 +10,10 @@ public enum CommentResponseMessage implements ResponseMessage{
     COMMENT_DELETE("댓글 삭제 성공", HttpStatus.OK),
     COMMENT_FIND_ONE("댓글 조회 성공", HttpStatus.OK),
     COMMENT_FIND_ALL("댓글 전체 조회 성공", HttpStatus.OK),
-    COMMENT_NOT_FOUND("댓글을 찾을 수 없습니다.", HttpStatus.NOT_FOUND);
+    COMMENT_NOT_FOUND("댓글을 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
+    COMMENT_IS_DELETED("삭제된 댓글입니다.", HttpStatus.NOT_FOUND),
 
+    REPLIES_NOT_FOUND("대댓글을 찾을 수 없습니다.", HttpStatus.NOT_FOUND);
     private final String message;
     private final HttpStatus statusCode;
 
