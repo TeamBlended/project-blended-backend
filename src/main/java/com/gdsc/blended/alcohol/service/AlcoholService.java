@@ -21,6 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -106,4 +107,21 @@ public class AlcoholService {
     }
 
 
+    @Transactional
+    public AlcoholCameraResponseDto getAlcoholInfoByWhisky(Long alcoholId) {
+        Optional<AlcoholEntity> optionalAlcohol = alcoholRepository.findById(alcoholId);
+
+        AlcoholEntity alcohol = optionalAlcohol.orElseThrow(() ->
+                new ApiException(AlcoholResponseMessage.ALCOHOL_NOT_FOUND));
+
+        return AlcoholCameraResponseDto.builder()
+                .id(alcohol.getId())
+                .whiskyKorean(alcohol.getWhiskyKorean())
+                .whiskyEnglish(alcohol.getWhiskyEnglish())
+                .abv(alcohol.getAbv())
+                .country(alcohol.getCountry())
+                .type(alcohol.getType())
+                .imgUrl(alcohol.getImgUrl())
+                .build();
+    }
 }

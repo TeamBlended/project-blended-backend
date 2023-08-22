@@ -121,12 +121,6 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @Operation(summary = "ML이 생성 술 정보를 반환")
-    @GetMapping("/posts/alcohole/{alcoholId}")
-    public ResponseEntity<ApiResponse<AlcoholCameraResponseDto>> getAlcoholInfoByWhiskyKorean(@PathVariable Long alcoholId){
-        AlcoholCameraResponseDto alcoholCameraResponseDto = postService.getAlcoholInfoByWhisky(alcoholId);
-        return ResponseEntity.ok(ApiResponse.success(alcoholCameraResponseDto));
-    }
 
 
 }
