@@ -337,23 +337,6 @@ public class PostService {
         ).toList());
     }
 
-    @Transactional
-    public AlcoholCameraResponseDto getAlcoholInfoByWhisky(Long alcoholId) {
-        Optional<AlcoholEntity> optionalAlcohol = alcoholRepository.findById(alcoholId);
-
-        AlcoholEntity alcohol = optionalAlcohol.orElseThrow(() ->
-                new ApiException(AlcoholResponseMessage.ALCOHOL_NOT_FOUND));
-
-        return AlcoholCameraResponseDto.builder()
-                .id(alcohol.getId())
-                .whiskyKorean(alcohol.getWhiskyKorean())
-                .whiskyEnglish(alcohol.getWhiskyEnglish())
-                .abv(alcohol.getAbv())
-                .country(alcohol.getCountry())
-                .type(alcohol.getType())
-                .imgUrl(alcohol.getImgUrl())
-                .build();
-    }
     public PostEntity findPostByPostId(Long postId) {
         return postRepository.findById(postId).orElseThrow(() ->
                 new ApiException(PostResponseMessage.POST_NOT_FOUND));

@@ -53,6 +53,12 @@ public class AlcoholController {
         }
     }
 
+    @Operation(summary = "ML이 생성 술 정보를 반환")
+    @GetMapping("/alcohol/info/{alcoholId}")
+    public ResponseEntity<ApiResponse<AlcoholCameraResponseDto>> getAlcoholInfoByWhiskyKorean(@PathVariable Long alcoholId){
+        AlcoholCameraResponseDto alcoholCameraResponseDto = alcoholService.getAlcoholInfoByWhisky(alcoholId);
+        return ResponseEntity.ok(ApiResponse.success(alcoholCameraResponseDto));
+    }
 
 }
 
