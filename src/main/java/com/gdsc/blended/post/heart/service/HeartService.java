@@ -69,7 +69,6 @@ public class HeartService {
                         .lat(postEntity.getLatitude())
                         .lng(postEntity.getLongitude())
                         .build())
-                .liked(postEntity.getLiked())
                 .completed(postEntity.getCompleted())
                 .createdAt(postEntity.getCreatedDate())
                 .updatedAt(postEntity.getModifiedDate())
