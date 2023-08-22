@@ -1,14 +1,15 @@
 package com.gdsc.blended.post.controller;
 
-import com.gdsc.blended.alcohol.dto.AlcoholCameraResponseDto;
 import com.gdsc.blended.common.image.dto.ImageDto;
 import com.gdsc.blended.common.image.service.ImageService;
 import com.gdsc.blended.common.image.service.S3UploadService;
 import com.gdsc.blended.jwt.oauth.UserInfo;
-import com.gdsc.blended.post.dto.PostRequestDto;
-import com.gdsc.blended.post.dto.PostResponseDto;
-import com.gdsc.blended.post.dto.PostUpdateRequestDto;
-import com.gdsc.blended.post.dto.SearchResponseDto;
+import com.gdsc.blended.post.dto.request.PostRequestDto;
+import com.gdsc.blended.post.dto.response.PostCreateResponseDto;
+import com.gdsc.blended.post.dto.response.PostDetailResponseDto;
+import com.gdsc.blended.post.dto.response.PostResponseDto;
+import com.gdsc.blended.post.dto.request.PostUpdateRequestDto;
+import com.gdsc.blended.post.dto.response.SearchResponseDto;
 import com.gdsc.blended.post.service.PostService;
 import com.gdsc.blended.common.message.ApiResponse;
 import com.gdsc.blended.utils.PagingResponse;
@@ -38,9 +39,9 @@ public class PostController {
 
     //개시글 쓰기
     @PostMapping(value = "/posts/{categoryId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ApiResponse<PostResponseDto>> createPost(@ModelAttribute PostRequestDto postRequestDto, @PathVariable Long categoryId, @AuthenticationPrincipal UserInfo user) {
-        PostResponseDto createdPost = postService.createPost(postRequestDto, categoryId, user.getEmail());
-        ApiResponse<PostResponseDto> response = ApiResponse.success(createdPost);
+    public ResponseEntity<ApiResponse<PostCreateResponseDto>> createPost(@ModelAttribute PostRequestDto postRequestDto, @PathVariable Long categoryId, @AuthenticationPrincipal UserInfo user) {
+        PostCreateResponseDto createdPost = postService.createPost(postRequestDto, categoryId, user.getEmail());
+        ApiResponse<PostCreateResponseDto> response = ApiResponse.success(createdPost);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
     // 이미지 업로드
@@ -95,12 +96,12 @@ public class PostController {
     //조회수 구현
     // TODO: 2023/07/22 이거 형식좀 일관성있게 바꿔야될듯
     @GetMapping("/posts/detail/{postId}")
-    public ResponseEntity<ApiResponse<PostResponseDto>> detailPost(@PathVariable Long postId ,@AuthenticationPrincipal UserInfo user){
-        PostResponseDto postResponseDto = postService.detailPost(postId, user.getEmail());
+    public ResponseEntity<ApiResponse<PostDetailResponseDto>> detailPost(@PathVariable Long postId , @AuthenticationPrincipal UserInfo user){
+        PostDetailResponseDto postResponseDto = postService.detailPost(postId, user.getEmail());
         if (postResponseDto == null) {
             return ResponseEntity.notFound().build();
         }
-        ApiResponse<PostResponseDto> response = ApiResponse.success(postResponseDto);
+        ApiResponse<PostDetailResponseDto> response = ApiResponse.success(postResponseDto);
         return ResponseEntity.ok(response);
     }
     @Operation(summary = "게시글 모집 마감 on/off 버튼(사용 x)")

@@ -1,6 +1,5 @@
 package com.gdsc.blended.post.service;
 
-import com.gdsc.blended.alcohol.dto.AlcoholCameraResponseDto;
 import com.gdsc.blended.alcohol.entity.AlcoholEntity;
 import com.gdsc.blended.alcohol.repository.AlcoholRepository;
 import com.gdsc.blended.category.entity.CategoryEntity;
@@ -14,6 +13,9 @@ import com.gdsc.blended.common.image.repository.ImageRepository;
 import com.gdsc.blended.common.image.service.S3UploadService;
 import com.gdsc.blended.common.image.service.ImageService;
 import com.gdsc.blended.post.dto.*;
+import com.gdsc.blended.post.dto.request.PostRequestDto;
+import com.gdsc.blended.post.dto.request.PostUpdateRequestDto;
+import com.gdsc.blended.post.dto.response.*;
 import com.gdsc.blended.post.entity.ExistenceStatus;
 import com.gdsc.blended.post.entity.PostEntity;
 import com.gdsc.blended.post.entity.PostInAlcoholEntity;
@@ -62,7 +64,7 @@ public class PostService {
 
     //게시글 생성 (Post)
     @Transactional
-    public PostResponseDto createPost(PostRequestDto postRequestDto, Long categoryId, String email) {
+    public PostCreateResponseDto createPost(PostRequestDto postRequestDto, Long categoryId, String email) {
         CategoryEntity category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid category id"));
         UserEntity user = findUserByEmail(email);
@@ -84,7 +86,7 @@ public class PostService {
             image.setPost(postEntity);
         }
 
-        return new PostResponseDto(savedPost, image != null ? image.getPath() : null, postInAlcoholEntity);
+        return new PostCreateResponseDto(savedPost, image != null ? image.getPath() : null, postInAlcoholEntity);
     }
 
     // 게시글 삭제(delete)
@@ -128,7 +130,7 @@ public class PostService {
     }
 
     @Transactional
-    public PostResponseDto detailPost(Long postId, String email) {
+    public PostDetailResponseDto detailPost(Long postId, String email) {
         UserEntity user = findUserByEmail(email);
         PostEntity postEntity = findPostByPostId(postId);
         PostInAlcoholEntity postInAlcoholEntity = findAlcoholId(postId);
@@ -144,7 +146,7 @@ public class PostService {
             postRepository.save(postEntity);
         }
 
-        return new PostResponseDto(postEntity, heartCheck, imageUrl, postInAlcoholEntity);
+        return new PostDetailResponseDto(postEntity, heartCheck, imageUrl, postInAlcoholEntity);
     }
 
     @Transactional
