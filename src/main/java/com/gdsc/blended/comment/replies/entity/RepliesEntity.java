@@ -2,6 +2,7 @@ package com.gdsc.blended.comment.replies.entity;
 
 import com.gdsc.blended.baseTime.BaseTimeEntity;
 import com.gdsc.blended.comment.entity.CommentEntity;
+import com.gdsc.blended.post.entity.ExistenceStatus;
 import com.gdsc.blended.user.entity.UserEntity;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -21,6 +22,10 @@ public class RepliesEntity extends BaseTimeEntity {
 
     private String content;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "existence_status")
+    private ExistenceStatus existenceStatus;
+
     @ManyToOne
     private CommentEntity comment;
 
@@ -34,8 +39,9 @@ public class RepliesEntity extends BaseTimeEntity {
 
 
     @Builder
-    public RepliesEntity(String content, CommentEntity comment, UserEntity user) {
+    public RepliesEntity(String content, ExistenceStatus existenceStatus, CommentEntity comment, UserEntity user) {
         this.content = content;
+        this.existenceStatus = existenceStatus;
         this.comment = comment;
         this.user = user;
     }
@@ -44,7 +50,7 @@ public class RepliesEntity extends BaseTimeEntity {
         this.content = content;
     }
 
-    public void deleteReComment(String content) {
-        this.content = "해당 대댓글이 삭제되었습니다.";
+    public void deleteReplies(ExistenceStatus existenceStatus) {
+        this.existenceStatus = existenceStatus;
     }
 }

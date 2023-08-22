@@ -51,6 +51,7 @@ public class RepliesController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "대댓글 수정")
     @PutMapping("/{repliesId}")
     public ResponseEntity<ApiResponse<RepliesResponseDto>> updateReplies(@RequestBody CommentRequestDto requestDto, @PathVariable Long repliesId, @AuthenticationPrincipal UserInfo user) {
         RepliesResponseDto updateComment = repliesService.updateReplies(requestDto, repliesId, user.getEmail());
