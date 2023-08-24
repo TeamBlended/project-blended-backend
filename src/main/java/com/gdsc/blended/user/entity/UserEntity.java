@@ -5,6 +5,9 @@ import com.gdsc.blended.jwt.oauth.GoogleOAuth2UserInfo;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+import java.util.Date;
+
 
 @Getter
 @Setter
@@ -34,6 +37,9 @@ public class UserEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "user_type")
     private RoleType roleType;
+
+    @Column(name = "withdrawal_date")
+    private LocalDateTime withdrawalDate;
 
 
     public UserEntity(GoogleOAuth2UserInfo userInfo){

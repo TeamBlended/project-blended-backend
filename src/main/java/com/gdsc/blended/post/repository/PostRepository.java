@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -18,9 +19,9 @@ public interface PostRepository extends JpaRepository<PostEntity, Long> {
 
     List<PostEntity> findByTitleContainingOrContentContaining(String titleKeyword, String contentKeyword);
 
-
     Page<PostEntity> findByCompletedFalse(Pageable pageable);
 
-
     List<PostEntity> findByUserId(UserEntity user);
+
+    List<PostEntity> findByUserAndCreatedAtBefore(UserEntity userEntity, LocalDateTime cutoffDate);
 }
