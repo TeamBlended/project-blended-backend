@@ -16,5 +16,8 @@ public interface CommentRepository extends JpaRepository<CommentEntity, Long> {
 
     List<CommentEntity> findByPostId(Long postId);
 
-    List<CommentEntity> findByUserAndCreatedAtBefore(UserEntity userEntity, LocalDateTime cutoffDate);
+    //List<CommentEntity> findByUserAndCreatedAtBefore(UserEntity userEntity, LocalDateTime cutoffDate);
+
+    List<CommentEntity> findByUserAndCreatedDateBefore(UserEntity userEntity, LocalDateTime cutoffDate);
+
 }

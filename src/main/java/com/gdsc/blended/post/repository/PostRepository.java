@@ -23,5 +23,8 @@ public interface PostRepository extends JpaRepository<PostEntity, Long> {
 
     List<PostEntity> findByUserId(UserEntity user);
 
-    List<PostEntity> findByUserAndCreatedAtBefore(UserEntity userEntity, LocalDateTime cutoffDate);
+    //List<PostEntity> findByUserAndCreatedAtBefore(UserEntity userEntity, LocalDateTime cutoffDate);
+
+    List<PostEntity> findByUserIdAndCreatedDateBefore(UserEntity userEntity, LocalDateTime cutoffDate);
+
 }
