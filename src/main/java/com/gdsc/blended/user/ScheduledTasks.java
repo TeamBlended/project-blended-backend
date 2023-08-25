@@ -29,13 +29,13 @@ public class ScheduledTasks {
 
         userRepository.findAll().forEach(userEntity -> {
             if (userEntity.getWithdrawalDate() != null && userEntity.getWithdrawalDate().isBefore(oneWeekAgo)) {
-                List<PostEntity> postToDelete = postRepository.findByUserAndCreatedAtBefore(userEntity, oneWeekAgo);
+                List<PostEntity> postToDelete = postRepository.findByUserIdAndCreatedDateBefore(userEntity, oneWeekAgo);
                 postRepository.deleteAll(postToDelete);
 
-                List<CommentEntity> commentsToDelete = commentRepository.findByUserAndCreatedAtBefore(userEntity, oneWeekAgo);
+                List<CommentEntity> commentsToDelete = commentRepository.findByUserAndCreatedDateBefore(userEntity, oneWeekAgo);
                 commentRepository.deleteAll(commentsToDelete);
 
-                List<RepliesEntity> RepliesToDelete = repliesRepository.findByComment_UserAndCreatedAtBefore(userEntity, oneWeekAgo);
+                List<RepliesEntity> RepliesToDelete = repliesRepository.findByComment_UserAndCreatedDateBefore(userEntity, oneWeekAgo);
                 repliesRepository.deleteAll(RepliesToDelete);
             }
         });

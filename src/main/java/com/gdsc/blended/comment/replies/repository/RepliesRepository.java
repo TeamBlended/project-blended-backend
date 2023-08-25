@@ -16,5 +16,7 @@ public interface RepliesRepository extends JpaRepository<RepliesEntity, Long> {
 
     List<RepliesEntity> findByCommentId(Long postId);
 
-    List<RepliesEntity> findByComment_UserAndCreatedAtBefore(UserEntity userEntity, LocalDateTime cutoffDate);
+    //List<RepliesEntity> findByComment_UserAndCreatedAtBefore(UserEntity userEntity, LocalDateTime cutoffDate);
+    List<RepliesEntity> findByComment_UserAndCreatedDateBefore(UserEntity userEntity, LocalDateTime cutoffDate);
+
 }
