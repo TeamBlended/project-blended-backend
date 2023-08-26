@@ -17,7 +17,7 @@ public class ImageEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long imageId;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "post_id")
     @JsonBackReference
     private PostEntity post;
