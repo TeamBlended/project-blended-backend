@@ -86,7 +86,7 @@ public class PostService {
             image.setPost(postEntity);
         }
 
-        return new PostCreateResponseDto(savedPost, image != null ? image.getPath() : null, postInAlcoholEntity);
+        return new PostCreateResponseDto(savedPost, imageService.findImagePathByPostId(savedPost.getId()), postInAlcoholEntity);
     }
 
     // 게시글 삭제(delete)
