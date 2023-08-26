@@ -25,7 +25,7 @@ public class ScheduledTasks {
 
     @Scheduled(cron = "0 0 0 * * *" ) //10초  //일주일로 설정하기
     public void deleteExpiredDate(){
-        LocalDateTime oneWeekAgo = LocalDateTime.now().minus(5, ChronoUnit.SECONDS);
+        LocalDateTime oneWeekAgo = LocalDateTime.now().minus(1, ChronoUnit.WEEKS);
 
         userRepository.findAll().forEach(userEntity -> {
             if (userEntity.getWithdrawalDate() != null && userEntity.getWithdrawalDate().isBefore(oneWeekAgo)) {
