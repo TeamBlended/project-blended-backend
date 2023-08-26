@@ -19,7 +19,7 @@ public class PostInAlcoholEntity {
     @Column(name = "post_in_alcohol_id")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "post_id")
     private PostEntity postEntity;
 

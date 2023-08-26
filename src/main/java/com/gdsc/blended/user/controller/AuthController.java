@@ -32,4 +32,11 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
+    @DeleteMapping("/auth/withdraw")
+    public ResponseEntity<ApiResponse<String>> withdrawUser(@AuthenticationPrincipal UserInfo user) {
+        authService.withdrawUser(user.getEmail());
+        ApiResponse<String> response = ApiResponse.success("User has been withdrawn successfully.");
+        return ResponseEntity.ok(response);
+    }
+
 }
