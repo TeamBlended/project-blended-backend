@@ -3,6 +3,8 @@ package com.gdsc.blended.comment.service;
 import com.gdsc.blended.comment.dto.CommentRequestDto;
 import com.gdsc.blended.comment.dto.CommentResponseDto;
 import com.gdsc.blended.comment.entity.CommentEntity;
+import com.gdsc.blended.comment.replies.entity.RepliesEntity;
+import com.gdsc.blended.comment.replies.repository.RepliesRepository;
 import com.gdsc.blended.comment.repository.CommentRepository;
 import com.gdsc.blended.common.message.CommentResponseMessage;
 import com.gdsc.blended.common.message.PostResponseMessage;
@@ -30,9 +32,10 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final RepliesRepository repliesRepository;
 
     @Transactional
-    public CommentResponseDto createComment(CommentRequestDto requestDto, Long postId, String email){
+    public CommentResponseDto createComment(CommentRequestDto requestDto, Long postId, String email) {
         PostEntity post = findPostByPostId(postId);
         UserEntity user = findUserByEmail(email);
 
@@ -42,7 +45,7 @@ public class CommentService {
                 .existenceStatus(ExistenceStatus.EXIST)
                 .user(user)
                 .build();
-        CommentEntity savedComment =  commentRepository.save(comment);
+        CommentEntity savedComment = commentRepository.save(comment);
 
         // Comment 엔티티 저장 로직
         AuthorDto authorDto = AuthorDto.builder()
@@ -80,7 +83,7 @@ public class CommentService {
         List<CommentEntity> comments;
         try {
             comments = commentRepository.findByPostId(postId);
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new ApiException(PostResponseMessage.POST_NOT_FOUND);
         }
 
@@ -91,9 +94,9 @@ public class CommentService {
 
         for (CommentEntity comment : comments) {
             CommentResponseDto commentResponseDto;
-            if(comment.getExistenceStatus() == ExistenceStatus.NON_EXIST){
+            if (comment.getExistenceStatus() == ExistenceStatus.NON_EXIST) {
                 continue;
-            }else {
+            } else {
                 commentResponseDto = CommentResponseDto.builder()
                         .commentId(comment.getId())
                         .content(comment.getContent())
@@ -135,6 +138,11 @@ public class CommentService {
     public CommentResponseDto deleteComment(Long commentId, String email) {
         CommentEntity comment = checkCommentOwnerShip(commentId, email);
         comment.deleteStatus(ExistenceStatus.NON_EXIST);
+
+        RepliesEntity replies = (RepliesEntity) repliesRepository.findByCommentId(commentId);
+        replies.deleteReplies(ExistenceStatus.NON_EXIST);
+        RepliesEntity deletedReplies = repliesRepository.save(replies);
+
         CommentEntity updatedComment = commentRepository.save(comment);
 
         AuthorDto authorDto = AuthorDto.builder()
@@ -153,25 +161,25 @@ public class CommentService {
     @Transactional
     public void realDeleteComment(Long commentId, String email) {
         CommentEntity comment = checkCommentOwnerShip(commentId, email);
-            commentRepository.delete(comment);
+        commentRepository.delete(comment);
     }
 
-    public UserEntity findUserByEmail(String email){
+    public UserEntity findUserByEmail(String email) {
         return userRepository.findByEmail(email).orElseThrow(() ->
                 new ApiException(UserResponseMessage.USER_NOT_FOUND));
     }
 
-    public PostEntity findPostByPostId(Long postId){
+    public PostEntity findPostByPostId(Long postId) {
         return postRepository.findById(postId).orElseThrow(() ->
                 new ApiException(PostResponseMessage.POST_NOT_FOUND));
     }
 
-    public CommentEntity findCommentByCommentId(Long commentId){
+    public CommentEntity findCommentByCommentId(Long commentId) {
         return commentRepository.findById(commentId).orElseThrow(() ->
                 new ApiException(CommentResponseMessage.COMMENT_NOT_FOUND));
     }
 
-    private CommentEntity checkCommentOwnerShip(Long commentId, String email){
+    private CommentEntity checkCommentOwnerShip(Long commentId, String email) {
         CommentEntity commentEntity = findCommentByCommentId(commentId);
         UserEntity user = findUserByEmail(email);
         if (!commentEntity.getUser().equals(user)) {
@@ -180,3 +188,4 @@ public class CommentService {
         return commentEntity;
     }
 }
+

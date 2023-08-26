@@ -1,4 +1,4 @@
-package com.gdsc.blended.user;
+package com.gdsc.blended.post.schedule;
 
 import com.gdsc.blended.comment.entity.CommentEntity;
 import com.gdsc.blended.comment.replies.entity.RepliesEntity;
@@ -23,9 +23,9 @@ public class ScheduledTasks {
     private final CommentRepository commentRepository;
     private final RepliesRepository repliesRepository;
 
-    @Scheduled(cron = "0 0 0 * * *") //일주일로 설정하기
+    @Scheduled(cron = "0 0 0 * * *" ) //10초  //일주일로 설정하기
     public void deleteExpiredDate(){
-        LocalDateTime oneWeekAgo = LocalDateTime.now().minus(1, ChronoUnit.WEEKS);
+        LocalDateTime oneWeekAgo = LocalDateTime.now().minus(5, ChronoUnit.SECONDS);
 
         userRepository.findAll().forEach(userEntity -> {
             if (userEntity.getWithdrawalDate() != null && userEntity.getWithdrawalDate().isBefore(oneWeekAgo)) {
@@ -37,6 +37,8 @@ public class ScheduledTasks {
 
                 List<RepliesEntity> RepliesToDelete = repliesRepository.findByComment_UserAndCreatedDateBefore(userEntity, oneWeekAgo);
                 repliesRepository.deleteAll(RepliesToDelete);
+
+                userRepository.delete(userEntity);
             }
         });
     }
