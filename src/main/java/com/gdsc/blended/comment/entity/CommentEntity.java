@@ -30,7 +30,7 @@ public class CommentEntity extends BaseTimeEntity{
     @JoinColumn(name = "post_id")
     private PostEntity post;
 
-    @ManyToOne(cascade = CascadeType.ALL  )
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private UserEntity user;
 

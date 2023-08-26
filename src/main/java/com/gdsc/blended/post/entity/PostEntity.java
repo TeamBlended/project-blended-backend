@@ -2,6 +2,9 @@ package com.gdsc.blended.post.entity;
 
 import com.gdsc.blended.baseTime.BaseTimeEntity;
 import com.gdsc.blended.category.entity.CategoryEntity;
+import com.gdsc.blended.comment.entity.CommentEntity;
+import com.gdsc.blended.common.image.entity.ImageEntity;
+import com.gdsc.blended.post.heart.entity.HeartEntity;
 import com.gdsc.blended.user.entity.UserEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -62,21 +65,31 @@ public class PostEntity extends BaseTimeEntity {
     @Column(name = "existence_status")
     private ExistenceStatus existenceStatus;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action= OnDeleteAction.CASCADE)
     @JoinColumn(name = "category_id")
     private CategoryEntity category;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action= OnDeleteAction.CASCADE)
     @JoinColumn(name = "user_id")
     private UserEntity userId;
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    private List<CommentEntity> comments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "postEntity", cascade = CascadeType.ALL)
+    private List<PostInAlcoholEntity> postInAlcoholEntities = new ArrayList<>();
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    private List<ImageEntity> images = new ArrayList<>();
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    private List<HeartEntity> hearts = new ArrayList<>();
 
 
     public void increaseViewCount() {
         this.viewCount++;
     }
-
-
 
 }

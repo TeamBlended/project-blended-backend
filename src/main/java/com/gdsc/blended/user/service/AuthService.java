@@ -18,7 +18,9 @@ import org.springframework.stereotype.Service;
 import com.google.api.client.json.gson.GsonFactory;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.Date;
 
 @Service
 @RequiredArgsConstructor
@@ -82,6 +84,16 @@ public class AuthService {
 
     private TokenResponse createToken(String email, String name) {
         return tokenProvider.generateJwtToken(email, name, RoleType.MEMBER);
+    }
+
+
+    @Transactional
+    public void withdrawUser(String email){
+        UserEntity userEntity = userRepository.findByEmail(email).orElseThrow(() ->
+                new ApiException(UserResponseMessage.USER_NOT_FOUND));
+
+        userEntity.setWithdrawalDate(LocalDateTime.now());
+        userRepository.save(userEntity);
     }
 
 }
