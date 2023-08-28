@@ -20,7 +20,7 @@ public class UserController {
     private final UserService userService;
 
     @PutMapping("/{userId}/nickname")
-    public ResponseEntity<ApiResponse<AuthorNicknameDto>> updateUserNickname(@AuthenticationPrincipal UserInfo user, @RequestParam("newNickname") String newNickname){
+    public ResponseEntity<ApiResponse<AuthorNicknameDto>> updateUserNickname(@AuthenticationPrincipal UserInfo user, @RequestBody String newNickname){
             UserEntity updatedUser = userService.updateUserNickname(user.getEmail(), newNickname);
             AuthorNicknameDto authorNicknameDto = new AuthorNicknameDto(updatedUser.getNickname());
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(authorNicknameDto));
