@@ -93,7 +93,7 @@ public class PostController {
 
     //게시글 상세 구현
     //조회수 구현
-    @GetMapping("/posts/detail/{postId}")
+    @GetMapping("/posts/{postId}")
     public ResponseEntity<ApiResponse<PostDetailResponseDto>> detailPost(@PathVariable Long postId , @AuthenticationPrincipal UserInfo user){
         PostDetailResponseDto postResponseDto = postService.detailPost(postId, user.getEmail());
         if (postResponseDto == null) {
@@ -111,8 +111,8 @@ public class PostController {
     }
 
     //검색
-    @GetMapping("/posts/search/{keyword}")
-    public ResponseEntity<ApiResponse<PagingResponse<SearchResponseDto>>> searchPosts(@PathVariable String keyword){
+    @GetMapping("/posts/search")
+    public ResponseEntity<ApiResponse<PagingResponse<SearchResponseDto>>> searchPosts(@RequestParam String keyword){
         Page<SearchResponseDto> postResponseDtoList = postService.searchPosts(keyword);
         PagingResponse<SearchResponseDto>pagingResponse = PagingUtil.toResponse(postResponseDtoList);
         ApiResponse<PagingResponse<SearchResponseDto>> response = ApiResponse.success(pagingResponse);
