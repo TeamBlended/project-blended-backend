@@ -44,7 +44,6 @@ public class PostService {
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
     private final HeartRepository heartRepository;
-    private final HeartService heartService;
     private final ImageRepository imageRepository;
     private final ImageService imageService;
     private final S3UploadService s3UploadService;

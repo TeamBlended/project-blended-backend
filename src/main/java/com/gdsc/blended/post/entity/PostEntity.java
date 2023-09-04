@@ -1,6 +1,6 @@
 package com.gdsc.blended.post.entity;
 
-import com.gdsc.blended.baseTime.BaseTimeEntity;
+import com.gdsc.blended.common.baseTime.BaseTimeEntity;
 import com.gdsc.blended.category.entity.CategoryEntity;
 import com.gdsc.blended.comment.entity.CommentEntity;
 import com.gdsc.blended.common.image.entity.ImageEntity;

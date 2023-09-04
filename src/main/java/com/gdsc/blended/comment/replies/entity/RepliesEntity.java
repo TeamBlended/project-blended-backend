@@ -1,6 +1,6 @@
 package com.gdsc.blended.comment.replies.entity;
 
-import com.gdsc.blended.baseTime.BaseTimeEntity;
+import com.gdsc.blended.common.baseTime.BaseTimeEntity;
 import com.gdsc.blended.comment.entity.CommentEntity;
 import com.gdsc.blended.post.entity.ExistenceStatus;
 import com.gdsc.blended.user.entity.UserEntity;
