@@ -1,4 +1,4 @@
-package com.gdsc.blended.utils;
+package com.gdsc.blended.common.utils;
 
 import org.springframework.data.domain.Page;
 
