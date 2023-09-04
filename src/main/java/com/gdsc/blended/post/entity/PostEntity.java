@@ -75,16 +75,16 @@ public class PostEntity extends BaseTimeEntity {
     @JoinColumn(name = "user_id")
     private UserEntity userId;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CommentEntity> comments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "postEntity", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "postEntity", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostInAlcoholEntity> postInAlcoholEntities = new ArrayList<>();
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<ImageEntity> images = new ArrayList<>();
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<HeartEntity> hearts = new ArrayList<>();
 
 

@@ -19,11 +19,11 @@ public class PostInAlcoholEntity {
     @Column(name = "post_in_alcohol_id")
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "post_id")
     private PostEntity postEntity;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "alcohol_id")
     private AlcoholEntity alcoholEntity;
 

@@ -5,7 +5,6 @@ import com.gdsc.blended.post.entity.ExistenceStatus;
 import com.gdsc.blended.post.entity.PostEntity;
 import com.gdsc.blended.user.entity.UserEntity;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 
 
@@ -26,11 +25,11 @@ public class CommentEntity extends BaseTimeEntity{
     @Column(name = "existence_status")
     private ExistenceStatus existenceStatus;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY ,cascade = CascadeType.ALL)
     @JoinColumn(name = "post_id")
     private PostEntity post;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY ,cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private UserEntity user;
 

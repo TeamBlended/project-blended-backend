@@ -18,12 +18,12 @@ public class HeartEntity {
     // 좋아요 아이디
     private Long likePostId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     // 게시글 아이디
     private PostEntity post;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     // 유저 아이디
     private UserEntity user;

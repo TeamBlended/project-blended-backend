@@ -26,10 +26,10 @@ public class RepliesEntity extends BaseTimeEntity {
     @Column(name = "existence_status")
     private ExistenceStatus existenceStatus;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private CommentEntity comment;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
