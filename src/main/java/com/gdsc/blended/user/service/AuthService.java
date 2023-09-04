@@ -42,23 +42,25 @@ public class AuthService {
 
             if (googleIdToken == null) {
                 throw new ApiException(AuthMessage.LOGIN_BAD_REQUEST);
-            }
-            else {
+            } else {
                 GoogleOAuth2UserInfo userInfo = new GoogleOAuth2UserInfo(googleIdToken.getPayload());
                 String email = userInfo.getEmail();
 
-                if(!userRepository.existsByEmail(userInfo.getEmail())){
+                if (!userRepository.existsByEmail(userInfo.getEmail())) {
                     UserEntity userEntity = new UserEntity(userInfo);
                     userRepository.save(userEntity);
-                }else {
+                    throw new ApiException(UserResponseMessage.NICKNAME_NOT_PROVIDED);
+                } else {
                     UserEntity user = userRepository.findByEmail(email).orElseThrow(() ->
                             new ApiException(UserResponseMessage.USER_NOT_FOUND));
-                    if(user.getNickname() == null){
+                    if (user.getNickname() == null) {
                         throw new ApiException(UserResponseMessage.NICKNAME_NOT_PROVIDED);
                     }
                 }
                 return sendGenerateJwtToken(userInfo.getEmail(), userInfo.getName());
             }
+        }catch (ApiException e) {
+            throw e;
         } catch (Exception e) {
             throw new ApiException(AuthMessage.INVALID_TOKEN);
         }
