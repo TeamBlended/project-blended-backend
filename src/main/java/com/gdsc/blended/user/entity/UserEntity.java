@@ -42,8 +42,9 @@ public class UserEntity {
     private LocalDateTime withdrawalDate;
 
 
-    public UserEntity(GoogleOAuth2UserInfo userInfo){
+    public UserEntity(GoogleOAuth2UserInfo userInfo, String nickname){
         this.name = userInfo.getName();
+        this.nickname = nickname;
         this.email = userInfo.getEmail();
         this.profileImageUrl = userInfo.getProfileImageUrl();
         this.roleType = RoleType.MEMBER;
