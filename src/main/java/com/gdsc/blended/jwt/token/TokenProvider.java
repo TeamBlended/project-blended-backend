@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -41,7 +42,7 @@ public class TokenProvider {
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public TokenResponse generateJwtToken(String email, String name, RoleType role) {
+    public TokenResponse generateJwtToken(String email, String name, RoleType role, String message) {
         long now = (new Date()).getTime();
 
         Map<String, Object> payloads = Map.of(
@@ -62,7 +63,7 @@ public class TokenProvider {
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
 
-        return new TokenResponse(BEARER_TYPE, accessToken, refreshToken, accessTokenExpiresIn.getTime());
+        return new TokenResponse(BEARER_TYPE, accessToken, refreshToken, accessTokenExpiresIn.getTime(), message);
     }
 
     public Authentication getAuthentication(String accessToken) {

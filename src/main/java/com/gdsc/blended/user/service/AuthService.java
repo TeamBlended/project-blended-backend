@@ -14,13 +14,13 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import com.google.api.client.json.gson.GsonFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
-import java.util.Date;
 
 @Service
 @RequiredArgsConstructor
@@ -30,7 +30,7 @@ public class AuthService {
 
     private final TokenProvider tokenProvider;
     private final UserRepository userRepository;
-
+    private String message = null;
     @Transactional
     public TokenResponse googleLogin(String idToken){
         GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), new GsonFactory())
@@ -49,15 +49,15 @@ public class AuthService {
                 if (!userRepository.existsByEmail(userInfo.getEmail())) {
                     UserEntity userEntity = new UserEntity(userInfo);
                     userRepository.save(userEntity);
-                    throw new ApiException(UserResponseMessage.NICKNAME_NOT_PROVIDED);
+                    message = UserResponseMessage.SIGNIN_SUCCESS.getMessage();
                 } else {
                     UserEntity user = userRepository.findByEmail(email).orElseThrow(() ->
                             new ApiException(UserResponseMessage.USER_NOT_FOUND));
                     if (user.getNickname() == null) {
-                        throw new ApiException(UserResponseMessage.NICKNAME_NOT_PROVIDED);
+                        message = UserResponseMessage.NICKNAME_NOT_PROVIDED.getMessage();
                     }
                 }
-                return sendGenerateJwtToken(userInfo.getEmail(), userInfo.getName());
+                return sendGenerateJwtToken(userInfo.getEmail(), userInfo.getName(), message);
             }
         }catch (ApiException e) {
             throw e;
@@ -67,16 +67,14 @@ public class AuthService {
     }
 
     @Transactional
-    public TokenResponse reissue(String email, String name, String refreshToken) throws Exception {
+    public TokenResponse reissue(String email, String name, String refreshToken) {
         validateRefreshToken(refreshToken);
-
-        TokenResponse tokenResponse = createToken(email, name);
-        return tokenResponse;
+        message = UserResponseMessage.REISSUE_SUCCESS.getMessage();
+        return createToken(email, name, message);
     }
 
-    private TokenResponse sendGenerateJwtToken(String email, String name) {
-        TokenResponse tokenResponse = createToken(email, name);
-        return tokenResponse;
+    private TokenResponse sendGenerateJwtToken(String email, String name, String message) {
+        return createToken(email, name, message);
     }
 
     private void validateRefreshToken(String refreshToken){
@@ -84,8 +82,8 @@ public class AuthService {
             throw new ApiException(UserResponseMessage.REFRESH_TOKEN_INVALID);
     }
 
-    private TokenResponse createToken(String email, String name) {
-        return tokenProvider.generateJwtToken(email, name, RoleType.MEMBER);
+    private TokenResponse createToken(String email, String name, String message ) {
+        return tokenProvider.generateJwtToken(email, name, RoleType.MEMBER, message);
     }
 
 

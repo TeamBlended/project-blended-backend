@@ -14,9 +14,6 @@ public class ApiResponse<T> {
     private HttpStatus statusCode;
     private String message;
 
-    public ApiResponse(UserEntity updatedUser, UserResponseMessage nicknameUpdateSuccess) {
-        //이런식으로 가면 나중에 관리하기 힘들어요 그냥 Message 만들어놨으니까 그거 최대한 활용하는 방식으로 하는게 제일 편하지 않을까..?합니당당
-    }
 
     public static <T> ApiResponse<T> success(T data) {
         return new ApiResponse<>(data, HttpStatus.OK, "SUCCESS");
@@ -34,24 +31,3 @@ public class ApiResponse<T> {
     }
 
 }
-
-/**
- * @Getter
- * @AllArgsConstructor
- * public class JMTApiResponse<T> {
- *     T data;
- *     String message;
- *     String code;
- *
- *     public static <G> JMTApiResponse<G> createResponseWithMessage(G data, ResponseMessage responseMessage) {
- *         return new JMTApiResponse<>(data, responseMessage.getMessage(), responseMessage.toString());
- *     }
- * }
- *
- *
- * @Getter
- * @RequiredArgsConstructor
- * public class ApiException extends RuntimeException{
- *     private final ResponseMessage responseMessage;
- * }
- * */
