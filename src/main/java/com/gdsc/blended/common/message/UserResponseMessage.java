@@ -9,11 +9,12 @@ import org.springframework.http.HttpStatus;
 public enum UserResponseMessage implements ResponseMessage {
     LOGIN_SUCCESS("로그인에 성공", HttpStatus.OK),
     REISSUE_SUCCESS("토큰 재발급 성공", HttpStatus.OK),
+    SIGNIN_SUCCESS("회원가입 성공 닉네임을 입력하세요", HttpStatus.OK),
     REFRESH_TOKEN_INVALID("RefreshToken이 유효하지 않습니다.", HttpStatus.BAD_REQUEST),
     NICKNAME_UPDATE_SUCCESS("닉네임 변경에 성공하였습니다.", HttpStatus.OK),
     NICKNAME_UPDATE_FAIL("닉네임 변경 실패", HttpStatus.INTERNAL_SERVER_ERROR),
     NICKNAME_IS_DUPLICATED("이미 존재하는 닉네임입니다.", HttpStatus.CONFLICT),
-    NICKNAME_NOT_PROVIDED("닉네임을 찾을 수 없습니다.", HttpStatus.BAD_REQUEST),
+    NICKNAME_NOT_PROVIDED("닉네임이 없습니다. 닉네임을 입력하세요", HttpStatus.BAD_REQUEST),
     USER_NOT_FOUND("유저를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
     USER_NOT_MATCH("유저에게 권한이 없습니다.", HttpStatus.BAD_REQUEST);
 

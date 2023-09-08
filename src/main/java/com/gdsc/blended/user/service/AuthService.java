@@ -14,13 +14,16 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import com.google.api.client.json.gson.GsonFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
-import java.util.Date;
+import java.util.HashSet;
+import java.util.Random;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -30,7 +33,7 @@ public class AuthService {
 
     private final TokenProvider tokenProvider;
     private final UserRepository userRepository;
-
+    private String message = null;
     @Transactional
     public TokenResponse googleLogin(String idToken){
         GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), new GsonFactory())
@@ -47,14 +50,14 @@ public class AuthService {
                 String email = userInfo.getEmail();
 
                 if (!userRepository.existsByEmail(userInfo.getEmail())) {
-                    UserEntity userEntity = new UserEntity(userInfo);
+                    UserEntity userEntity = new UserEntity(userInfo, randomNickname());
                     userRepository.save(userEntity);
-                    throw new ApiException(UserResponseMessage.NICKNAME_NOT_PROVIDED);
                 } else {
                     UserEntity user = userRepository.findByEmail(email).orElseThrow(() ->
                             new ApiException(UserResponseMessage.USER_NOT_FOUND));
                     if (user.getNickname() == null) {
-                        throw new ApiException(UserResponseMessage.NICKNAME_NOT_PROVIDED);
+                        UserEntity userEntity = new UserEntity(userInfo, randomNickname());
+                        userRepository.save(userEntity);
                     }
                 }
                 return sendGenerateJwtToken(userInfo.getEmail(), userInfo.getName());
@@ -66,17 +69,39 @@ public class AuthService {
         }
     }
 
-    @Transactional
-    public TokenResponse reissue(String email, String name, String refreshToken) throws Exception {
-        validateRefreshToken(refreshToken);
+    private String randomNickname() {
+        final String[] adjectives = {
+                "친절한", "잘생긴", "똑똑한", "용감한", "우아한", "행복한"
+        };
 
-        TokenResponse tokenResponse = createToken(email, name);
-        return tokenResponse;
+        final String[] nouns = {
+                "고양이", "강아지", "호랑이", "사자", "펭귄", "악어"
+        };
+
+        Random random = new Random();
+        String adjective = adjectives[random.nextInt(adjectives.length)];
+        String noun = nouns[random.nextInt(nouns.length)];
+        int number;
+
+        // 중복되지 않는 닉네임을 생성하기 위해 중복 체크
+        String nickname;
+        do {
+            number = random.nextInt(1000);
+            nickname = adjective + noun + "#" + number;
+        } while (userRepository.existsByNickname(nickname));
+
+        return nickname;
     }
 
-    private TokenResponse sendGenerateJwtToken(String email, String name) {
-        TokenResponse tokenResponse = createToken(email, name);
-        return tokenResponse;
+    @Transactional
+    public TokenResponse reissue(String email, String name, String refreshToken) {
+        validateRefreshToken(refreshToken);
+        message = UserResponseMessage.REISSUE_SUCCESS.getMessage();
+        return createToken(email, name );
+    }
+
+    private TokenResponse sendGenerateJwtToken(String email, String name ) {
+        return createToken(email, name );
     }
 
     private void validateRefreshToken(String refreshToken){
