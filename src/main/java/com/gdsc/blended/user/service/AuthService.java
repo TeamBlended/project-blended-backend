@@ -21,6 +21,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Random;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -47,17 +50,17 @@ public class AuthService {
                 String email = userInfo.getEmail();
 
                 if (!userRepository.existsByEmail(userInfo.getEmail())) {
-                    UserEntity userEntity = new UserEntity(userInfo);
+                    UserEntity userEntity = new UserEntity(userInfo, randomNickname());
                     userRepository.save(userEntity);
-                    message = UserResponseMessage.SIGNIN_SUCCESS.getMessage();
                 } else {
                     UserEntity user = userRepository.findByEmail(email).orElseThrow(() ->
                             new ApiException(UserResponseMessage.USER_NOT_FOUND));
                     if (user.getNickname() == null) {
-                        message = UserResponseMessage.NICKNAME_NOT_PROVIDED.getMessage();
+                        UserEntity userEntity = new UserEntity(userInfo, randomNickname());
+                        userRepository.save(userEntity);
                     }
                 }
-                return sendGenerateJwtToken(userInfo.getEmail(), userInfo.getName(), message);
+                return sendGenerateJwtToken(userInfo.getEmail(), userInfo.getName());
             }
         }catch (ApiException e) {
             throw e;
@@ -66,15 +69,39 @@ public class AuthService {
         }
     }
 
+    private String randomNickname() {
+        final String[] adjectives = {
+                "친절한", "잘생긴", "똑똑한", "용감한", "우아한", "행복한"
+        };
+
+        final String[] nouns = {
+                "고양이", "강아지", "호랑이", "사자", "펭귄", "악어"
+        };
+
+        Random random = new Random();
+        String adjective = adjectives[random.nextInt(adjectives.length)];
+        String noun = nouns[random.nextInt(nouns.length)];
+        int number;
+
+        // 중복되지 않는 닉네임을 생성하기 위해 중복 체크
+        String nickname;
+        do {
+            number = random.nextInt(1000);
+            nickname = adjective + noun + "#" + number;
+        } while (userRepository.existsByNickname(nickname));
+
+        return nickname;
+    }
+
     @Transactional
     public TokenResponse reissue(String email, String name, String refreshToken) {
         validateRefreshToken(refreshToken);
         message = UserResponseMessage.REISSUE_SUCCESS.getMessage();
-        return createToken(email, name, message);
+        return createToken(email, name );
     }
 
-    private TokenResponse sendGenerateJwtToken(String email, String name, String message) {
-        return createToken(email, name, message);
+    private TokenResponse sendGenerateJwtToken(String email, String name ) {
+        return createToken(email, name );
     }
 
     private void validateRefreshToken(String refreshToken){
@@ -82,8 +109,8 @@ public class AuthService {
             throw new ApiException(UserResponseMessage.REFRESH_TOKEN_INVALID);
     }
 
-    private TokenResponse createToken(String email, String name, String message ) {
-        return tokenProvider.generateJwtToken(email, name, RoleType.MEMBER, message);
+    private TokenResponse createToken(String email, String name) {
+        return tokenProvider.generateJwtToken(email, name, RoleType.MEMBER);
     }
 
 

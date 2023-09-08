@@ -42,7 +42,7 @@ public class TokenProvider {
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public TokenResponse generateJwtToken(String email, String name, RoleType role, String message) {
+    public TokenResponse generateJwtToken(String email, String name, RoleType role) {
         long now = (new Date()).getTime();
 
         Map<String, Object> payloads = Map.of(
@@ -63,7 +63,7 @@ public class TokenProvider {
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
 
-        return new TokenResponse(BEARER_TYPE, accessToken, refreshToken, accessTokenExpiresIn.getTime(), message);
+        return new TokenResponse(BEARER_TYPE, accessToken, refreshToken, accessTokenExpiresIn.getTime());
     }
 
     public Authentication getAuthentication(String accessToken) {
