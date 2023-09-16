@@ -98,4 +98,26 @@ public class AuthService {
         userRepository.save(userEntity);
     }
 
+    // TODO: 2023/09/15   이거 통합 해줘
+    public boolean isFirstTimeRegistration(String token) {
+        GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), new GsonFactory())
+                .setAudience(Collections.singletonList(googleClientId))
+                .build();
+
+        try {
+            GoogleIdToken googleIdToken = verifier.verify(idToken);
+
+            if (googleIdToken == null) {
+                throw new ApiException(AuthMessage.LOGIN_BAD_REQUEST);
+            } else {
+                GoogleOAuth2UserInfo userInfo = new GoogleOAuth2UserInfo(googleIdToken.getPayload());
+
+                return !userRepository.existsByEmail(userInfo.getEmail());
+            }
+        } catch (ApiException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new ApiException(AuthMessage.INVALID_TOKEN);
+        }
+    }
 }
