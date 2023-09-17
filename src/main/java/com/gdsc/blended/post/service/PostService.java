@@ -254,8 +254,8 @@ public class PostService {
     }
 
     @Transactional
-    public Page<SearchResponseDto> searchPosts(String keyword) {
-        List<PostEntity> findPosts = postRepository.findByTitleContainingOrContentContaining(keyword, keyword);
+    public Page<SearchResponseDto> searchPosts(String keyword, Pageable pageable) {
+        Page<PostEntity> findPosts = postRepository.findByTitleContainingOrContentContaining(keyword, keyword, pageable);
         List<SearchResponseDto> searchResponseDtoList = new ArrayList<>();
 
         for (PostEntity postEntity : findPosts) {
@@ -280,7 +280,7 @@ public class PostService {
             throw new ApiException(PostResponseMessage.POST_NOT_FOUND);
         }
 
-        return new PageImpl<>(searchResponseDtoList);
+        return new PageImpl<>(searchResponseDtoList, pageable, findPosts.getTotalElements());
     }
 
     @Transactional
