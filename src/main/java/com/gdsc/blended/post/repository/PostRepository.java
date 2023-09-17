@@ -17,7 +17,7 @@ public interface PostRepository extends JpaRepository<PostEntity, Long> {
 
     Page<PostEntity> findAllByOrderByLikeCountDesc(Pageable pageable);
 
-    List<PostEntity> findByTitleContainingOrContentContaining(String titleKeyword, String contentKeyword);
+    Page<PostEntity> findByTitleContainingOrContentContaining(String titleKeyword, String contentKeyword, Pageable pageable);
 
     Page<PostEntity> findByCompletedFalse(Pageable pageable);
 
