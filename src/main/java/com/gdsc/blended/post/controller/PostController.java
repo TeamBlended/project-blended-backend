@@ -112,8 +112,9 @@ public class PostController {
 
     //검색
     @GetMapping("/posts/search")
-    public ResponseEntity<ApiResponse<PagingResponse<SearchResponseDto>>> searchPosts(@RequestParam String keyword){
-        Page<SearchResponseDto> postResponseDtoList = postService.searchPosts(keyword);
+    public ResponseEntity<ApiResponse<PagingResponse<SearchResponseDto>>> searchPosts(@RequestParam String keyword, @RequestParam int page, @RequestParam int size){
+        Pageable pageable = PageRequest.of(page, size);
+        Page<SearchResponseDto> postResponseDtoList = postService.searchPosts(keyword , pageable);
         PagingResponse<SearchResponseDto>pagingResponse = PagingUtil.toResponse(postResponseDtoList);
         ApiResponse<PagingResponse<SearchResponseDto>> response = ApiResponse.success(pagingResponse);
         return ResponseEntity.status(HttpStatus.OK).body(response);
