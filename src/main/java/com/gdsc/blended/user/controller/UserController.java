@@ -2,6 +2,7 @@ package com.gdsc.blended.user.controller;
 
 
 import com.gdsc.blended.jwt.oauth.UserInfo;
+import com.gdsc.blended.user.dto.response.AuthorDto;
 import com.gdsc.blended.user.dto.response.AuthorNicknameDto;
 import com.gdsc.blended.user.entity.UserEntity;
 import com.gdsc.blended.user.service.UserService;
@@ -24,8 +25,15 @@ public class UserController {
             UserEntity updatedUser = userService.updateUserNickname(user.getEmail(), newNickname);
             AuthorNicknameDto authorNicknameDto = new AuthorNicknameDto(updatedUser.getNickname());
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(authorNicknameDto));
-
     }
+
+    @GetMapping("/users/me")
+    public ResponseEntity<ApiResponse<AuthorDto>> getMyProfile(@AuthenticationPrincipal UserInfo user){
+        UserEntity userEntity = userService.getUserByEmail(user.getEmail());
+        AuthorDto authorDto = new AuthorDto(userEntity.getNickname(), userEntity.getProfileImageUrl());
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(authorDto));
+    }
+
 
 }
 
