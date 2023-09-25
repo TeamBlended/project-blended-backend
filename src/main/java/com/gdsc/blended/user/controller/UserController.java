@@ -17,18 +17,18 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping
+@RequestMapping("/api/v1/users")
 public class UserController {
     private final UserService userService;
 
-    @PutMapping("/api/v1/users/{userId}/nickname")
+    @PutMapping("/{userId}/nickname")
     public ResponseEntity<ApiResponse<AuthorNicknameDto>> updateUserNickname(@AuthenticationPrincipal UserInfo user, @RequestBody String newNickname){
             UserEntity updatedUser = userService.updateUserNickname(user.getEmail(), newNickname);
             AuthorNicknameDto authorNicknameDto = new AuthorNicknameDto(updatedUser.getNickname());
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(authorNicknameDto));
     }
 
-    @GetMapping("/users/me")
+    @GetMapping("/me")
     public ResponseEntity<ApiResponse<UserMeDto>> getMyProfile(@AuthenticationPrincipal UserInfo user){
         UserEntity userEntity = userService.getUserByEmail(user.getEmail());
         UserMeDto userMeDto = new UserMeDto( userEntity.getId(),userEntity.getNickname(), userEntity.getProfileImageUrl());
