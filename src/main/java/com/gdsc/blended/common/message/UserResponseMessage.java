@@ -11,6 +11,7 @@ public enum UserResponseMessage implements ResponseMessage {
     REISSUE_SUCCESS("토큰 재발급 성공", HttpStatus.OK),
     SIGNIN_SUCCESS("회원가입 성공 닉네임을 입력하세요", HttpStatus.OK),
     REFRESH_TOKEN_INVALID("RefreshToken이 유효하지 않습니다.", HttpStatus.BAD_REQUEST),
+    TOKEN_EXPIRED("토큰이 만료되었습니다.", HttpStatus.UNAUTHORIZED),
     NICKNAME_UPDATE_SUCCESS("닉네임 변경에 성공하였습니다.", HttpStatus.OK),
     NICKNAME_UPDATE_FAIL("닉네임 변경 실패", HttpStatus.INTERNAL_SERVER_ERROR),
     NICKNAME_IS_DUPLICATED("이미 존재하는 닉네임입니다.", HttpStatus.CONFLICT),

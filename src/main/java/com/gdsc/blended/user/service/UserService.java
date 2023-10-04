@@ -3,6 +3,7 @@ package com.gdsc.blended.user.service;
 
 import com.gdsc.blended.common.message.UserResponseMessage;
 import com.gdsc.blended.common.exception.ApiException;
+import com.gdsc.blended.jwt.token.TokenProvider;
 import com.gdsc.blended.user.entity.UserEntity;
 import com.gdsc.blended.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private TokenProvider tokenProvider;
 
     @Transactional
     public UserEntity updateUserNickname(String email, String newNickname){
@@ -27,9 +29,16 @@ public class UserService {
         return userRepository.save(user);
     }
 
-
     public UserEntity getUserByEmail(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new ApiException(UserResponseMessage.USER_NOT_FOUND));
     }
+
+    /*public UserEntity getUserByEmail(String email, String accessToken) {
+        if (!tokenProvider.validateToken(accessToken)){
+            throw new ApiException(UserResponseMessage.TOKEN_EXPIRED);
+        }
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new ApiException(UserResponseMessage.USER_NOT_FOUND));
+    }*/
 }

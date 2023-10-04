@@ -9,4 +9,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ApiException extends RuntimeException{
     private final ResponseMessage responseMessage;
+
+    /*public int getHttpStatus() {
+        return responseMessage.getStatusCode().value();
+    }*/
 }

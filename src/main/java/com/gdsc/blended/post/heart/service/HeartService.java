@@ -76,7 +76,7 @@ public class HeartService {
                 .scrapCount(postEntity.getLikeCount())
                 .maxParticipantsCount(postEntity.getMaxRecruits())
                 .shareDateTime(postEntity.getShareDateTime())
-                .category(postEntity.getCategory().getId())
+                //.category(postEntity.getCategory().getId())
                 .author(AuthorDto.builder()
                         .nickname(postEntity.getUserId().getNickname())
                         .profileImageUrl(postEntity.getUserId().getProfileImageUrl())
