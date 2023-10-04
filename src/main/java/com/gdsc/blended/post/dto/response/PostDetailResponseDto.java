@@ -50,7 +50,7 @@ public class PostDetailResponseDto {
         this.scrapCount = postEntity.getLikeCount();
         this.maxParticipantsCount = postEntity.getMaxRecruits();
         this.shareDateTime = postEntity.getShareDateTime();
-        this.category = postEntity.getCategory().getId();
+        //this.category = postEntity.getCategory().getId();
         this.author = new AuthorDto();
         this.author.setNickname(postEntity.getUserId().getNickname());
         this.author.setProfileImageUrl(postEntity.getUserId().getProfileImageUrl());

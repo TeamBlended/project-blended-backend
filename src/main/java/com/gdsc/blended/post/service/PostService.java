@@ -64,13 +64,13 @@ public class PostService {
 
     //게시글 생성 (Post)
     @Transactional
-    public PostCreateResponseDto createPost(PostRequestDto postRequestDto, Long categoryId, String email) {
-        CategoryEntity category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid category id"));
+    public PostCreateResponseDto createPost(PostRequestDto postRequestDto, String email) {
+        /*CategoryEntity category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid category id"));*/
         UserEntity user = findUserByEmail(email);
         ImageEntity image = findImagePath(postRequestDto.getImagePath());
 
-        PostEntity postEntity = postRequestDto.toEntity(category, user);
+        PostEntity postEntity = postRequestDto.toEntity(user);
         PostEntity savedPost = postRepository.save(postEntity);
         AlcoholEntity alcohol = alcoholRepository.findById(postRequestDto.getAlcoholId())
                 .orElseThrow(() -> new ApiException(AlcoholResponseMessage.ALCOHOL_NOT_FOUND));
