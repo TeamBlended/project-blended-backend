@@ -38,7 +38,7 @@ public class PostController {
 
 
     //개시글 쓰기
-    @PostMapping(value = "/posts", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/posts")
     public ResponseEntity<ApiResponse<PostCreateResponseDto>> createPost(@ModelAttribute PostRequestDto postRequestDto, @AuthenticationPrincipal UserInfo user) {
         PostCreateResponseDto createdPost = postService.createPost(postRequestDto, user.getEmail());
         ApiResponse<PostCreateResponseDto> response = ApiResponse.success(createdPost);
