@@ -51,7 +51,7 @@ public class PostResponseDto {
         this.scrapCount = postEntity.getLikeCount();
         this.maxParticipantsCount = postEntity.getMaxRecruits();
         this.shareDateTime = postEntity.getShareDateTime();
-        this.category = postEntity.getCategory().getId();
+        //this.category = postEntity.getCategory().getId();
         this.author = new AuthorDto();
         this.author.setNickname(postEntity.getUserId().getNickname());
         this.author.setProfileImageUrl(postEntity.getUserId().getProfileImageUrl());
@@ -74,7 +74,7 @@ public class PostResponseDto {
         this.scrapCount = updatedPost.getLikeCount();
         this.maxParticipantsCount = updatedPost.getMaxRecruits();
         this.shareDateTime = updatedPost.getShareDateTime();
-        this.category = updatedPost.getCategory().getId();
+        //this.category = updatedPost.getCategory().getId();
         this.author = new AuthorDto();
         this.author.setNickname(updatedPost.getUserId().getNickname());
         this.author.setProfileImageUrl(updatedPost.getUserId().getProfileImageUrl());
