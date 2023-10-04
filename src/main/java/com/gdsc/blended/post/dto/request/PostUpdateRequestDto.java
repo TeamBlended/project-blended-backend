@@ -38,7 +38,7 @@ public class PostUpdateRequestDto {
         postEntity.setLikeCount(0L);
         postEntity.setShareDateTime(shareDateTime);
         postEntity.setMaxRecruits(maxParticipantsCount);
-        postEntity.setCategory(category);
+        //postEntity.setCategory(category);
         postEntity.setUserId(user);
         return postEntity;
     }

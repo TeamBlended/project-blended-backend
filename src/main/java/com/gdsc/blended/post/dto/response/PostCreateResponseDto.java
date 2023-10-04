@@ -26,7 +26,7 @@ public class PostCreateResponseDto {
     private Long viewCount;
     private Long scrapCount;
     private Long maxParticipantsCount;
-    private Long category;
+    //private Long category;
     private AuthorDto author;
     private String image;
     private Long alcoholId;
@@ -46,7 +46,7 @@ public class PostCreateResponseDto {
         this.scrapCount = postEntity.getLikeCount();
         this.maxParticipantsCount = postEntity.getMaxRecruits();
         this.shareDateTime = postEntity.getShareDateTime();
-        this.category = postEntity.getCategory().getId();
+        //this.category = postEntity.getCategory().getId();
         this.author = new AuthorDto();
         this.author.setNickname(postEntity.getUserId().getNickname());
         this.author.setProfileImageUrl(postEntity.getUserId().getProfileImageUrl());

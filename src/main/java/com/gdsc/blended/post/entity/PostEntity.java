@@ -65,10 +65,10 @@ public class PostEntity extends BaseTimeEntity {
     @Column(name = "existence_status")
     private ExistenceStatus existenceStatus;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    /*@ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action= OnDeleteAction.CASCADE)
     @JoinColumn(name = "category_id")
-    private CategoryEntity category;
+    private CategoryEntity category;*/
 
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action= OnDeleteAction.CASCADE)
