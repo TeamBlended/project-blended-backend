@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @Setter
 public class GeoListResponseDto {
     private Long id;
+    private Long alcoholId;
     private String title;
     private String content;
     private LocationDto shareLocation;
