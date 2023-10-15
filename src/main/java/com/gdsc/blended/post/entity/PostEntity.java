@@ -38,7 +38,6 @@ public class PostEntity extends BaseTimeEntity {
 
     // varchar를 넘어서는 큰 데이터를 넣을 때 @Lob 사용
     //@Lob
-    @NotNull
     @Size(max = 3000)
     private String content;
 
