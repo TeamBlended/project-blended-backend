@@ -322,14 +322,15 @@ public class PostService {
     }
 
     @Transactional
-    public Page<PostResponseDto> getMyPostList(String email) {
+    public Page<PostListResponseDto> getMyPostList(String email) {
         UserEntity user = findUserByEmail(email);
         List<PostEntity> postEntities = postRepository.findByUserId(user);
 
-        List<PostResponseDto> validPostDtos = new ArrayList<>();
+        List<PostListResponseDto> validPostDtos = new ArrayList<>();
         for (PostEntity postEntity : postEntities) {
             if (postEntity.getExistenceStatus() != ExistenceStatus.NON_EXIST) {
-                validPostDtos.add(new PostResponseDto(postEntity, imageService.findImagePathByPostId(postEntity.getId())));
+                PostInAlcoholEntity postInAlcohol = findAlcoholId(postEntity.getId());
+                validPostDtos.add(new PostListResponseDto(postEntity, imageService.findImagePathByPostId(postEntity.getId()), postInAlcohol.getAlcoholEntity().getId()));
             }
         }
 
@@ -338,7 +339,7 @@ public class PostService {
         }
 
         return new PageImpl<>(postEntities.stream().map(postEntity ->
-                new PostResponseDto(postEntity, imageService.findImagePathByPostId(postEntity.getId()))
+                new PostListResponseDto(postEntity, imageService.findImagePathByPostId(postEntity.getId()), findAlcoholId(postEntity.getId()).getAlcoholEntity().getId())
         ).toList());
     }
 
