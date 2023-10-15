@@ -221,7 +221,7 @@ public class PostService {
     }
 
     @Transactional
-    public Page<PostResponseDto> getNewestPosts(Integer page, Integer size) {
+    public Page<PostListResponseDto> getNewestPosts(Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
         Page<PostEntity> postPage = postRepository.findAll(pageable);
 
@@ -229,10 +229,11 @@ public class PostService {
             throw new ApiException(PostResponseMessage.POST_NOT_FOUND);
         }
 
-        List<PostResponseDto> validPosts = new ArrayList<>();
+        List<PostListResponseDto> validPosts = new ArrayList<>();
         for (PostEntity post : postPage) {
             if (post.getExistenceStatus() != ExistenceStatus.NON_EXIST) {
-                validPosts.add(new PostResponseDto(post, imageService.findImagePathByPostId(post.getId())));
+                PostInAlcoholEntity postInAlcohol = findAlcoholId(post.getId());
+                validPosts.add(new PostListResponseDto(post, imageService.findImagePathByPostId(post.getId()), postInAlcohol.getAlcoholEntity().getId()));
             }
         }
 

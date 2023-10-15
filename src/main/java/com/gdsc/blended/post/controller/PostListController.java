@@ -44,13 +44,13 @@ public class PostListController {
 
     @Operation(summary = "최신 순으로 게시글 가져오기")
     @GetMapping("/posts/newestList")
-    public ResponseEntity<ApiResponse<PagingResponse<PostResponseDto>>> getNewestPosts(
+    public ResponseEntity<ApiResponse<PagingResponse<PostListResponseDto>>> getNewestPosts(
             @RequestParam(defaultValue = "0") Integer page,
             @RequestParam(defaultValue = "10") Integer size
     ) {
-        Page<PostResponseDto> posts = postService.getNewestPosts(page, size);
-        PagingResponse<PostResponseDto> pagingResponse = PagingUtil.toResponse(posts);
-        ApiResponse<PagingResponse<PostResponseDto>> response = ApiResponse.success(pagingResponse);
+        Page<PostListResponseDto> posts = postService.getNewestPosts(page, size);
+        PagingResponse<PostListResponseDto> pagingResponse = PagingUtil.toResponse(posts);
+        ApiResponse<PagingResponse<PostListResponseDto>> response = ApiResponse.success(pagingResponse);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
