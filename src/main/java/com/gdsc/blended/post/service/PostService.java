@@ -2,7 +2,6 @@ package com.gdsc.blended.post.service;
 
 import com.gdsc.blended.alcohol.entity.AlcoholEntity;
 import com.gdsc.blended.alcohol.repository.AlcoholRepository;
-import com.gdsc.blended.category.entity.CategoryEntity;
 import com.gdsc.blended.category.repository.CategoryRepository;
 import com.gdsc.blended.common.message.AlcoholResponseMessage;
 import com.gdsc.blended.common.message.PostResponseMessage;
@@ -167,9 +166,11 @@ public class PostService {
             double distance = calculateDistance(latitude, longitude, postLatitude, postLongitude);
             if (distance <= 6) { // 단위는 km
                 if (postEntity.getExistenceStatus() == ExistenceStatus.NON_EXIST) {
+                    PostInAlcoholEntity postInAlcohol = findAlcoholId(postEntity.getId());
 
                     GeoListResponseDto postDto = new GeoListResponseDto();
                     postDto.setId(postEntity.getId());
+                    postDto.setAlcoholId(postInAlcohol.getAlcoholEntity().getId());
                     postDto.setTitle(postEntity.getTitle());
                     postDto.setContent(postEntity.getContent());
                     LocationDto locationDto = new LocationDto();
