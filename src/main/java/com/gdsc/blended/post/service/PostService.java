@@ -253,7 +253,7 @@ public class PostService {
                 validPosts.add(new PostListResponseDto(post, imageService.findImagePathByPostId(post.getId()), postInAlcohol.getAlcoholEntity().getId()));
             }
         }
-        return postPage.map(post ->new PostListResponseDto(post, imageService.findImagePathByPostId(post.getId()), findAlcoholId(post.getId()).getAlcoholEntity().getId()));
+        return new PageImpl<>(validPosts, pageable, validPosts.size());
     }
 
     @Transactional
@@ -317,21 +317,16 @@ public class PostService {
         }
     }
 
-    public ImageEntity findImagePath(String path){
-        return imageRepository.findByPath(path).orElseThrow(() ->
-                new ApiException(PostResponseMessage.NOT_FOUND_IMAGE));
-    }
-
     @Transactional
     public Page<PostListResponseDto> getMyPostList(String email) {
         UserEntity user = findUserByEmail(email);
         List<PostEntity> postEntities = postRepository.findByUserId(user);
 
-        List<PostListResponseDto> validPostDtos = new ArrayList<>();
+        List<PostListResponseDto> validPosts = new ArrayList<>();
         for (PostEntity postEntity : postEntities) {
             if (postEntity.getExistenceStatus() != ExistenceStatus.NON_EXIST) {
                 PostInAlcoholEntity postInAlcohol = findAlcoholId(postEntity.getId());
-                validPostDtos.add(new PostListResponseDto(postEntity, imageService.findImagePathByPostId(postEntity.getId()), postInAlcohol.getAlcoholEntity().getId()));
+                validPosts.add(new PostListResponseDto(postEntity, imageService.findImagePathByPostId(postEntity.getId()), postInAlcohol.getAlcoholEntity().getId()));
             }
         }
 
@@ -339,9 +334,13 @@ public class PostService {
             throw new ApiException(PostResponseMessage.POST_NOT_FOUND);
         }
 
-        return new PageImpl<>(postEntities.stream().map(postEntity ->
-                new PostListResponseDto(postEntity, imageService.findImagePathByPostId(postEntity.getId()), findAlcoholId(postEntity.getId()).getAlcoholEntity().getId())
-        ).toList());
+
+        return new PageImpl<>(validPosts);
+    }
+
+    public ImageEntity findImagePath(String path){
+        return imageRepository.findByPath(path).orElseThrow(() ->
+                new ApiException(PostResponseMessage.NOT_FOUND_IMAGE));
     }
 
     public PostEntity findPostByPostId(Long postId) {
