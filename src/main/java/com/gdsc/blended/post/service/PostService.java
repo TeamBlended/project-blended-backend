@@ -133,6 +133,16 @@ public class PostService {
         UserEntity user = findUserByEmail(email);
         PostEntity postEntity = findPostByPostId(postId);
         PostInAlcoholEntity postInAlcoholEntity = findAlcoholId(postId);
+        Optional<AlcoholEntity> alcohol = alcoholRepository.findById(postInAlcoholEntity.getAlcoholEntity().getId());
+
+        AlcoholInfo alcoholInfo = new AlcoholInfo();
+        alcoholInfo.setAlcohol_id(alcohol.get().getId());
+        alcoholInfo.setWhiskyKorean(alcohol.get().getWhiskyKorean());
+        alcoholInfo.setWhiskyEnglish(alcohol.get().getWhiskyEnglish());
+        alcoholInfo.setImgUrl(alcohol.get().getImgUrl());
+        alcoholInfo.setType(alcohol.get().getType());
+        alcoholInfo.setCountry(alcohol.get().getCountry());
+        alcoholInfo.setAbv(alcohol.get().getAbv());
 
         //image 찾아오기
         String imageUrl = imageService.findImagePathByPostId(postId);
@@ -145,7 +155,7 @@ public class PostService {
             postRepository.save(postEntity);
         }
 
-        return new PostDetailResponseDto(postEntity, heartCheck, imageUrl, postInAlcoholEntity);
+        return new PostDetailResponseDto(postEntity, heartCheck, imageUrl, alcoholInfo);
     }
 
     @Transactional
