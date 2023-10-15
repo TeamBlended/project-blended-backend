@@ -2,6 +2,7 @@ package com.gdsc.blended.post.controller;
 
 import com.gdsc.blended.jwt.oauth.UserInfo;
 import com.gdsc.blended.post.dto.response.GeoListResponseDto;
+import com.gdsc.blended.post.dto.response.PostListResponseDto;
 import com.gdsc.blended.post.dto.response.PostResponseDto;
 import com.gdsc.blended.post.service.PostService;
 import com.gdsc.blended.common.message.ApiResponse;
@@ -55,12 +56,12 @@ public class PostListController {
 
     @Operation(summary = "좋아요 많은 순으로 게시글 가져오기")
     @GetMapping("/posts/heartList")
-    public ResponseEntity<ApiResponse<PagingResponse<PostResponseDto>>> heartList(@RequestParam(defaultValue = "0") int page,
-                                                           @RequestParam(defaultValue = "10") int size) {
+    public ResponseEntity<ApiResponse<PagingResponse<PostListResponseDto>>> heartList(@RequestParam(defaultValue = "0") int page,
+                                                                                      @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<PostResponseDto> postPage = postService.getPostsSortedByHeart(pageable);
-        PagingResponse<PostResponseDto> pagingResponse = PagingUtil.toResponse(postPage);
-        ApiResponse<PagingResponse<PostResponseDto>> response = ApiResponse.success(pagingResponse);
+        Page<PostListResponseDto> postPage = postService.getPostsSortedByHeart(pageable);
+        PagingResponse<PostListResponseDto> pagingResponse = PagingUtil.toResponse(postPage);
+        ApiResponse<PagingResponse<PostListResponseDto>> response = ApiResponse.success(pagingResponse);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
