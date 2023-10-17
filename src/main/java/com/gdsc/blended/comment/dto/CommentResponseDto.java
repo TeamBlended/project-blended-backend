@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 public class CommentResponseDto {
     private Long commentId;
     private String content;
-    private AuthorDto user;
+    private AuthorDto author;
     
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", shape = JsonFormat.Shape.STRING)
     private LocalDateTime modifiedDate;
