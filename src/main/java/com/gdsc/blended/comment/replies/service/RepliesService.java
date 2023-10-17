@@ -8,7 +8,6 @@ import com.gdsc.blended.comment.replies.entity.RepliesEntity;
 import com.gdsc.blended.comment.replies.repository.RepliesRepository;
 import com.gdsc.blended.comment.repository.CommentRepository;
 import com.gdsc.blended.common.message.CommentResponseMessage;
-import com.gdsc.blended.common.message.PostResponseMessage;
 import com.gdsc.blended.common.message.UserResponseMessage;
 import com.gdsc.blended.common.exception.ApiException;
 import com.gdsc.blended.post.entity.ExistenceStatus;
@@ -73,6 +72,7 @@ public class RepliesService {
 
         // Comment 엔티티 저장 로직
         AuthorDto authorDto = AuthorDto.builder()
+                .id(user.getId())
                 .nickname(user.getNickname())
                 .profileImageUrl(user.getProfileImageUrl())
                 .build();
@@ -80,7 +80,7 @@ public class RepliesService {
         return RepliesResponseDto.builder()
                 .repliesId(savedReplies.getId())
                 .content(savedReplies.getContent())
-                .user(authorDto)
+                .author(authorDto)
                 .modifiedDate(savedReplies.getModifiedDate())
                 .build();
     }
@@ -91,6 +91,7 @@ public class RepliesService {
         UserEntity user = findUserByEmail(email);
 
         AuthorDto authorDto = AuthorDto.builder()
+                .id(user.getId())
                 .nickname(user.getNickname())
                 .profileImageUrl(user.getProfileImageUrl())
                 .build();
@@ -98,7 +99,7 @@ public class RepliesService {
         return RepliesResponseDto.builder()
                 .repliesId(comment.getId())
                 .content(comment.getContent())
-                .user(authorDto)
+                .author(authorDto)
                 .modifiedDate(comment.getModifiedDate())
                 .build();
     }
@@ -123,7 +124,8 @@ public class RepliesService {
             RepliesResponseDto repliesResponseDto = RepliesResponseDto.builder()
                     .repliesId(replies.getId())
                     .content(replies.getContent())
-                    .user(AuthorDto.builder()
+                    .author(AuthorDto.builder()
+                            .id(replies.getUser().getId())
                             .nickname(replies.getUser().getNickname())
                             .profileImageUrl(replies.getUser().getProfileImageUrl())
                             .build())
@@ -145,6 +147,7 @@ public class RepliesService {
             RepliesEntity updateReplies= repliesRepository.save(replies);
 
             AuthorDto authorDto = AuthorDto.builder()
+                    .id(user.getId())
                     .nickname(user.getNickname())
                     .profileImageUrl(user.getProfileImageUrl())
                     .build();
@@ -152,7 +155,7 @@ public class RepliesService {
             return RepliesResponseDto.builder()
                     .repliesId(updateReplies.getId())
                     .content(updateReplies.getContent())
-                    .user(authorDto)
+                    .author(authorDto)
                     .modifiedDate(updateReplies.getModifiedDate())
                     .build();
         }
@@ -165,6 +168,7 @@ public class RepliesService {
         RepliesEntity updatedComment = repliesRepository.save(replies);
 
         AuthorDto authorDto = AuthorDto.builder()
+                .id(replies.getUser().getId())
                 .nickname(replies.getUser().getNickname())
                 .profileImageUrl(replies.getUser().getProfileImageUrl())
                 .build();
@@ -172,7 +176,7 @@ public class RepliesService {
                 .repliesId(updatedComment.getId())
                 .content(updatedComment.getContent())
                 .modifiedDate(updatedComment.getModifiedDate())
-                .user(authorDto)
+                .author(authorDto)
                 .build();
     }
 
