@@ -11,6 +11,7 @@ import com.gdsc.blended.common.image.entity.ImageEntity;
 import com.gdsc.blended.common.image.repository.ImageRepository;
 import com.gdsc.blended.common.image.service.S3UploadService;
 import com.gdsc.blended.common.image.service.ImageService;
+import com.gdsc.blended.jwt.oauth.OAuth2UserInfo;
 import com.gdsc.blended.post.dto.*;
 import com.gdsc.blended.post.dto.request.PostRequestDto;
 import com.gdsc.blended.post.dto.request.PostUpdateRequestDto;
@@ -52,11 +53,14 @@ public class PostService {
 
     @Transactional
     //전체 출력(Get)
-    public Page<PostResponseDto> getAllPost(Pageable pageable) {
-        List<PostResponseDto> postResponseDtos = postRepository.findAll(pageable).stream()
+    public Page<PostListResponseDto> getAllPost(Pageable pageable) {
+        List<PostListResponseDto> postResponseDtos = postRepository.findAll(pageable).stream()
                 .filter(postDto -> postDto.getExistenceStatus() != ExistenceStatus.NON_EXIST)
-                .map(postDto -> new PostResponseDto(postDto, imageService.findImagePathByPostId(postDto.getId())))
-                .collect(Collectors.toList());
+                .map(postDto -> {
+                    PostInAlcoholEntity alcoholEntity =postInAlcoholRepository.findByPostEntityId(postDto.getId());
+                    return new PostListResponseDto(postDto, imageService.findImagePathByPostId(postDto.getId()),alcoholEntity.getAlcoholEntity().getId());
+                })
+            .collect(Collectors.toList());
 
         return new PageImpl<>(postResponseDtos, pageable, postResponseDtos.size());
     }
@@ -364,8 +368,7 @@ public class PostService {
                 new ApiException(UserResponseMessage.USER_NOT_FOUND));
     }
     private PostInAlcoholEntity findAlcoholId(Long postId) {
-        return (PostInAlcoholEntity) postInAlcoholRepository.findByPostEntityId(postId).orElseThrow(() ->
-                new ApiException(AlcoholResponseMessage.ALCOHOL_NOT_FOUND));
+        return (PostInAlcoholEntity) postInAlcoholRepository.findByPostEntityId(postId);
     }
 
     private PostEntity checkPostOwnerShip(Long postId, String email){

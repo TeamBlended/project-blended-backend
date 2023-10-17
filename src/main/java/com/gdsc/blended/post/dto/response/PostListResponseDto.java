@@ -7,7 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.swing.*;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -27,7 +26,6 @@ public class PostListResponseDto {
     private Long viewCount;
     private Long scrapCount;
     private Long maxParticipantsCount;
-    private Long category;
     private AuthorDto author;
     private String image;
 
@@ -47,10 +45,14 @@ public class PostListResponseDto {
         this.scrapCount = post.getLikeCount();
         this.maxParticipantsCount = post.getMaxRecruits();
         this.shareDateTime = post.getShareDateTime();
-        //this.category = post.getCategory().getId();
-        this.author = new AuthorDto();
+        this.author = new AuthorDto(
+                post.getUserId().getId(),
+                post.getUserId().getNickname(),
+                post.getUserId().getProfileImageUrl()
+        );
         this.author.setNickname(post.getUserId().getNickname());
         this.author.setProfileImageUrl(post.getUserId().getProfileImageUrl());
         this.image = imagePathByPostId;
     }
+
 }
