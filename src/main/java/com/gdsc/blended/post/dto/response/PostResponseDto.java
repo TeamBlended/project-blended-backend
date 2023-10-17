@@ -80,4 +80,25 @@ public class PostResponseDto {
         this.author.setProfileImageUrl(updatedPost.getUserId().getProfileImageUrl());
     }
 
+    public PostResponseDto(PostEntity post, String imagePathByPostId, Long Alcoholid) {
+        this.id = post.getId();
+        this.title = post.getTitle();
+        this.content = post.getContent();
+        this.shareLocation = new LocationDto();
+        this.shareLocation.setName(post.getLocationName());
+        this.shareLocation.setLat(post.getLatitude());
+        this.shareLocation.setLng(post.getLongitude());
+        this.completed = post.getCompleted();
+        this.createdAt = post.getCreatedDate();
+        this.updatedAt = post.getModifiedDate();
+        this.viewCount = post.getViewCount();
+        this.scrapCount = post.getLikeCount();
+        this.maxParticipantsCount = post.getMaxRecruits();
+        this.shareDateTime = post.getShareDateTime();
+        //this.category = post.getCategory().getId();
+        this.author = new AuthorDto();
+        this.author.setNickname(post.getUserId().getNickname());
+        this.author.setProfileImageUrl(post.getUserId().getProfileImageUrl());
+        this.image = imagePathByPostId;
+    }
 }

@@ -2,6 +2,7 @@ package com.gdsc.blended.post.controller;
 
 import com.gdsc.blended.jwt.oauth.UserInfo;
 import com.gdsc.blended.post.dto.response.GeoListResponseDto;
+import com.gdsc.blended.post.dto.response.PostListResponseDto;
 import com.gdsc.blended.post.dto.response.PostResponseDto;
 import com.gdsc.blended.post.service.PostService;
 import com.gdsc.blended.common.message.ApiResponse;
@@ -43,34 +44,34 @@ public class PostListController {
 
     @Operation(summary = "최신 순으로 게시글 가져오기")
     @GetMapping("/posts/newestList")
-    public ResponseEntity<ApiResponse<PagingResponse<PostResponseDto>>> getNewestPosts(
+    public ResponseEntity<ApiResponse<PagingResponse<PostListResponseDto>>> getNewestPosts(
             @RequestParam(defaultValue = "0") Integer page,
             @RequestParam(defaultValue = "10") Integer size
     ) {
-        Page<PostResponseDto> posts = postService.getNewestPosts(page, size);
-        PagingResponse<PostResponseDto> pagingResponse = PagingUtil.toResponse(posts);
-        ApiResponse<PagingResponse<PostResponseDto>> response = ApiResponse.success(pagingResponse);
+        Page<PostListResponseDto> posts = postService.getNewestPosts(page, size);
+        PagingResponse<PostListResponseDto> pagingResponse = PagingUtil.toResponse(posts);
+        ApiResponse<PagingResponse<PostListResponseDto>> response = ApiResponse.success(pagingResponse);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @Operation(summary = "좋아요 많은 순으로 게시글 가져오기")
     @GetMapping("/posts/heartList")
-    public ResponseEntity<ApiResponse<PagingResponse<PostResponseDto>>> heartList(@RequestParam(defaultValue = "0") int page,
-                                                           @RequestParam(defaultValue = "10") int size) {
+    public ResponseEntity<ApiResponse<PagingResponse<PostListResponseDto>>> heartList(@RequestParam(defaultValue = "0") int page,
+                                                                                      @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<PostResponseDto> postPage = postService.getPostsSortedByHeart(pageable);
-        PagingResponse<PostResponseDto> pagingResponse = PagingUtil.toResponse(postPage);
-        ApiResponse<PagingResponse<PostResponseDto>> response = ApiResponse.success(pagingResponse);
+        Page<PostListResponseDto> postPage = postService.getPostsSortedByHeart(pageable);
+        PagingResponse<PostListResponseDto> pagingResponse = PagingUtil.toResponse(postPage);
+        ApiResponse<PagingResponse<PostListResponseDto>> response = ApiResponse.success(pagingResponse);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @Operation(summary = "내가 작성한 게시글 리스트")
     @GetMapping("/posts/myList")
-    public ResponseEntity<ApiResponse<PagingResponse<PostResponseDto>>> myPostList(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @AuthenticationPrincipal UserInfo userInfo){
+    public ResponseEntity<ApiResponse<PagingResponse<PostListResponseDto>>> myPostList(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @AuthenticationPrincipal UserInfo userInfo){
         Pageable pageable = PageRequest.of(page, size);
-        Page<PostResponseDto> postPage = postService.getMyPostList(userInfo.getEmail());
-        PagingResponse<PostResponseDto> pagingResponse = PagingUtil.toResponse(postPage);
-        ApiResponse<PagingResponse<PostResponseDto>> response = ApiResponse.success(pagingResponse);
+        Page<PostListResponseDto> postPage = postService.getMyPostList(userInfo.getEmail());
+        PagingResponse<PostListResponseDto> pagingResponse = PagingUtil.toResponse(postPage);
+        ApiResponse<PagingResponse<PostListResponseDto>> response = ApiResponse.success(pagingResponse);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

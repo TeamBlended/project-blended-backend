@@ -32,9 +32,9 @@ public class PostDetailResponseDto {
     private Long category;
     private AuthorDto author;
     private String image;
-    private Long alcoholId;
+    private AlcoholInfo alcoholInfo;
 
-    public PostDetailResponseDto(PostEntity postEntity, Boolean heartcheck, String imageUrl, PostInAlcoholEntity postInAlcohol){
+    public PostDetailResponseDto(PostEntity postEntity, Boolean heartcheck, String imageUrl, AlcoholInfo alcoholInfo) {
         this.id = postEntity.getId();
         this.title = postEntity.getTitle();
         this.content = postEntity.getContent();
@@ -55,6 +55,6 @@ public class PostDetailResponseDto {
         this.author.setNickname(postEntity.getUserId().getNickname());
         this.author.setProfileImageUrl(postEntity.getUserId().getProfileImageUrl());
         this.image = imageUrl;
-        this.alcoholId = postInAlcohol.getAlcoholEntity().getId();
+        this.alcoholInfo = alcoholInfo;
     }
 }
