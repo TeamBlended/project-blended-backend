@@ -193,6 +193,7 @@ public class PostService {
                     postDto.setUpdatedAt(postEntity.getModifiedDate());
                     postDto.setMaxParticipantsCount(postEntity.getMaxRecruits());
                     AuthorDto authorDto = new AuthorDto();
+                    authorDto.setId(postEntity.getUserId().getId());
                     authorDto.setNickname(postEntity.getUserId().getNickname());
                     authorDto.setProfileImageUrl(postEntity.getUserId().getProfileImageUrl());
                     postDto.setAuthor(authorDto);
