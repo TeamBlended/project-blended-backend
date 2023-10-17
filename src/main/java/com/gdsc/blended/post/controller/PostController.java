@@ -5,11 +5,8 @@ import com.gdsc.blended.common.image.service.ImageService;
 import com.gdsc.blended.common.image.service.S3UploadService;
 import com.gdsc.blended.jwt.oauth.UserInfo;
 import com.gdsc.blended.post.dto.request.PostRequestDto;
-import com.gdsc.blended.post.dto.response.PostCreateResponseDto;
-import com.gdsc.blended.post.dto.response.PostDetailResponseDto;
-import com.gdsc.blended.post.dto.response.PostResponseDto;
+import com.gdsc.blended.post.dto.response.*;
 import com.gdsc.blended.post.dto.request.PostUpdateRequestDto;
-import com.gdsc.blended.post.dto.response.SearchResponseDto;
 import com.gdsc.blended.post.service.PostService;
 import com.gdsc.blended.common.message.ApiResponse;
 import com.gdsc.blended.utils.PagingResponse;
@@ -59,12 +56,12 @@ public class PostController {
 
     @Operation(summary = "게시글 목록 전체 조회")
     @GetMapping("/posts")
-    public ResponseEntity<ApiResponse<PagingResponse<PostResponseDto>>> getAllPost(@RequestParam(defaultValue = "0") int page,
-                                                                      @RequestParam(defaultValue = "10") int size) {
+    public ResponseEntity<ApiResponse<PagingResponse<PostListResponseDto>>> getAllPost(@RequestParam(defaultValue = "0") int page,
+                                                                                       @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<PostResponseDto> postPage = postService.getAllPost(pageable);
-        PagingResponse<PostResponseDto> pagingResponse = PagingUtil.toResponse(postPage);
-        ApiResponse<PagingResponse<PostResponseDto>> response = ApiResponse.success(pagingResponse);
+        Page<PostListResponseDto> postPage = postService.getAllPost(pageable);
+        PagingResponse<PostListResponseDto> pagingResponse = PagingUtil.toResponse(postPage);
+        ApiResponse<PagingResponse<PostListResponseDto>> response = ApiResponse.success(pagingResponse);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
