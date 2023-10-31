@@ -34,11 +34,4 @@ public class UserService {
                 .orElseThrow(() -> new ApiException(UserResponseMessage.USER_NOT_FOUND));
     }
 
-    /*public UserEntity getUserByEmail(String email, String accessToken) {
-        if (!tokenProvider.validateToken(accessToken)){
-            throw new ApiException(UserResponseMessage.TOKEN_EXPIRED);
-        }
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new ApiException(UserResponseMessage.USER_NOT_FOUND));
-    }*/
 }

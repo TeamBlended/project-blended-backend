@@ -31,31 +31,9 @@ public class UserController {
 
     @GetMapping("/me")
     public ResponseEntity<ApiResponse<UserMeDto>> getMyProfile(@AuthenticationPrincipal UserInfo user) {
-        UserEntity userEntity;
-        try {
-            userEntity = userService.getUserByEmail(user.getEmail());
-        } catch (AuthenticationException e) {
-            ApiResponse<UserMeDto> apiResponse = ApiResponse.error(HttpStatus.UNAUTHORIZED, "토큰이 만료되었습니다.");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(apiResponse);
-        }
+        UserEntity userEntity = userService.getUserByEmail(user.getEmail());
         UserMeDto userMeDto = new UserMeDto(userEntity.getId(), userEntity.getNickname(), userEntity.getProfileImageUrl());
-        ApiResponse<UserMeDto> apiResponse = ApiResponse.success(userMeDto);
-        return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
-    }
-
-    @ExceptionHandler(AuthenticationException.class)
-    public ResponseEntity<ApiResponse<String>> handleAuthenticationException(AuthenticationException exception) {
-        ApiResponse<String> apiResponse = ApiResponse.error(HttpStatus.UNAUTHORIZED, "토큰이 만료되었습니다.");
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(apiResponse);
-    }
-
-    /*@GetMapping("/me")
-    public ResponseEntity<ApiResponse<UserMeDto>> getMyProfile(@AuthenticationPrincipal UserInfo user, String accesToken){
-        UserEntity userEntity = userService.getUserByEmail(user.getEmail(), accesToken);
-        UserMeDto userMeDto = new UserMeDto( userEntity.getId(),userEntity.getNickname(), userEntity.getProfileImageUrl());
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(userMeDto));
-    }*/
-
-
+    }
 }
 
