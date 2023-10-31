@@ -85,7 +85,7 @@ public class TokenProvider {
         return new UsernamePasswordAuthenticationToken(principal, "", authorities);
     }
 
-    public boolean validateToken(String token, HttpServletResponse response) {
+    public boolean validateToken(String token ) {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
@@ -94,9 +94,7 @@ public class TokenProvider {
             //throw new ApiException(AuthMessage.INVALID_JWT);
         } catch (ExpiredJwtException e) {
             logger.warn("만료된 JWT 토큰입니다.");
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401 에러 설정
             //throw new ApiException(AuthMessage.EXPIRED_TOKEN);
-            return false;
         } catch (UnsupportedJwtException e) {
             logger.warn("지원되지 않는 JWT 토큰입니다.");
             //throw new ApiException(AuthMessage.UNSUPPORTED_JWT);

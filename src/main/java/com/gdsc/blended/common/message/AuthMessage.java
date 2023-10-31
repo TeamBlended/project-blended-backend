@@ -13,7 +13,7 @@ public enum AuthMessage implements ResponseMessage {
     REISSUE_SUCCESS("토큰 재발급에 성공하였습니다.", HttpStatus.CREATED),
     REFRESH_TOKEN_INVALID("RefreshToken이 유효하지 않습니다.", HttpStatus.BAD_REQUEST),
     INVALID_JWT("잘못된 JWT 서명입니다.", HttpStatus.BAD_REQUEST),
-    EXPIRED_TOKEN("만료된 JWT입니다.", HttpStatus.BAD_REQUEST),
+    EXPIRED_TOKEN("만료된 JWT입니다.", HttpStatus.UNAUTHORIZED),
     UNSUPPORTED_JWT("지원하지 않는 JWT입니다.", HttpStatus.BAD_REQUEST),
     WRONG_JWT_TOKEN("JWT 토큰이 잘못되었습니다.", HttpStatus.BAD_REQUEST);
 

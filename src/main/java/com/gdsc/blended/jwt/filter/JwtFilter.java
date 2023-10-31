@@ -1,11 +1,14 @@
 package com.gdsc.blended.jwt.filter;
 
+import com.gdsc.blended.common.exception.ApiException;
+import com.gdsc.blended.common.message.AuthMessage;
 import com.gdsc.blended.jwt.token.TokenProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
@@ -25,12 +28,12 @@ public class JwtFilter extends OncePerRequestFilter {
         String jwt = resolveToken(request);
 
         if (StringUtils.hasText(jwt)) {
-            if (tokenProvider.validateToken(jwt, response)) {
+            if (tokenProvider.validateToken(jwt)) {
                 Authentication authentication = tokenProvider.getAuthentication(jwt);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             } else {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                return;
+                throw new ApiException(AuthMessage.EXPIRED_TOKEN);
             }
         }
         filterChain.doFilter(request, response);
