@@ -179,7 +179,7 @@ public class PostService {
             // 위도 경도 간의 거리 계산 로직
             double distance = calculateDistance(latitude, longitude, postLatitude, postLongitude);
             if (distance <= 6) { // 단위는 km
-                if (postEntity.getExistenceStatus() == ExistenceStatus.NON_EXIST) {
+                if (postEntity.getExistenceStatus() == ExistenceStatus.EXIST) {
                     PostInAlcoholEntity postInAlcohol = findAlcoholId(postEntity.getId());
 
                     GeoListResponseDto postDto = new GeoListResponseDto();
