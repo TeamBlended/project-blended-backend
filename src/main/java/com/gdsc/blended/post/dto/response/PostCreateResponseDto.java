@@ -48,6 +48,7 @@ public class PostCreateResponseDto {
         this.shareDateTime = postEntity.getShareDateTime();
         //this.category = postEntity.getCategory().getId();
         this.author = new AuthorDto();
+        this.author.setId(postEntity.getUserId().getId());
         this.author.setNickname(postEntity.getUserId().getNickname());
         this.author.setProfileImageUrl(postEntity.getUserId().getProfileImageUrl());
         this.image = image;

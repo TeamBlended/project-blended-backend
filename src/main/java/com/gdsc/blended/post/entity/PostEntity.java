@@ -6,6 +6,7 @@ import com.gdsc.blended.comment.entity.CommentEntity;
 import com.gdsc.blended.common.image.entity.ImageEntity;
 import com.gdsc.blended.post.heart.entity.HeartEntity;
 import com.gdsc.blended.user.entity.UserEntity;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -39,6 +40,7 @@ public class PostEntity extends BaseTimeEntity {
     // varchar를 넘어서는 큰 데이터를 넣을 때 @Lob 사용
     //@Lob
     @Size(max = 3000)
+    @Nullable
     private String content;
 
     private Boolean liked;
