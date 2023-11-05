@@ -187,13 +187,16 @@ public class PostService {
                     postDto.setAlcoholId(postInAlcohol.getAlcoholEntity().getId());
                     postDto.setTitle(postEntity.getTitle());
                     postDto.setContent(postEntity.getContent());
+                    postDto.setImageUrl(postInAlcohol.getAlcoholEntity().getImgUrl());
                     LocationDto locationDto = new LocationDto();
                     locationDto.setName(postEntity.getLocationName());
                     locationDto.setLng(postEntity.getLongitude());
                     locationDto.setLat(postEntity.getLatitude());
+                    postDto.setShareDateTime(postEntity.getShareDateTime());
                     postDto.setShareLocation(locationDto);
                     postDto.setDistanceRange(distance);
                     postDto.setCompleted(postEntity.getCompleted());
+                    postDto.setCreatedAt(postEntity.getCreatedDate());
                     postDto.setUpdatedAt(postEntity.getModifiedDate());
                     postDto.setMaxParticipantsCount(postEntity.getMaxRecruits());
                     AuthorDto authorDto = new AuthorDto();
