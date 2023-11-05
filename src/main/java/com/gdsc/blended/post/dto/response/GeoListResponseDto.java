@@ -14,7 +14,7 @@ import java.util.Date;
 public class GeoListResponseDto {
     private Long id;
     private Long alcoholId;
-    private String imageUrl;
+    private String image;
     private String title;
     private String content;
     private LocationDto shareLocation;
