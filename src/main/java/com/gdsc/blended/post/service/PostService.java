@@ -181,13 +181,14 @@ public class PostService {
             if (distance <= 6) { // 단위는 km
                 if (postEntity.getExistenceStatus() == ExistenceStatus.EXIST) {
                     PostInAlcoholEntity postInAlcohol = findAlcoholId(postEntity.getId());
+                    ImageEntity image = imageRepository.findByPostId(postEntity.getId());
 
                     GeoListResponseDto postDto = new GeoListResponseDto();
                     postDto.setId(postEntity.getId());
                     postDto.setAlcoholId(postInAlcohol.getAlcoholEntity().getId());
                     postDto.setTitle(postEntity.getTitle());
                     postDto.setContent(postEntity.getContent());
-                    postDto.setImageUrl(postInAlcohol.getAlcoholEntity().getImgUrl());
+                    postDto.setImageUrl(image.getPath());
                     LocationDto locationDto = new LocationDto();
                     locationDto.setName(postEntity.getLocationName());
                     locationDto.setLng(postEntity.getLongitude());
