@@ -20,6 +20,5 @@ public class CommentResponseDto {
     private String content;
     private AuthorDto author;
     
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", shape = JsonFormat.Shape.STRING)
     private LocalDateTime modifiedDate;
 }
