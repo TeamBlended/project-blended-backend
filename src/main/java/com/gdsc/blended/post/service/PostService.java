@@ -107,6 +107,7 @@ public class PostService {
         postRepository.delete(postEntity);
     }
 
+    @Transactional
     public PostResponseDto deletePost(Long postId, String email) {
         PostEntity postEntity = checkPostOwnerShip(postId, email);
         postEntity.setExistenceStatus(ExistenceStatus.NON_EXIST);
@@ -378,7 +379,7 @@ public class PostService {
     private PostEntity checkPostOwnerShip(Long postId, String email){
         PostEntity postEntity = findPostByPostId(postId);
         UserEntity user = findUserByEmail(email);
-        if (!postEntity.getUserId().equals(user)) {
+        if (!postEntity.getUserId().getId().equals(user.getId())) {
             throw new ApiException(UserResponseMessage.USER_NOT_MATCH);
         }
         return postEntity;
