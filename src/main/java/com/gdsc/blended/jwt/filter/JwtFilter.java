@@ -32,11 +32,18 @@ public class JwtFilter extends OncePerRequestFilter {
                 Authentication authentication = tokenProvider.getAuthentication(jwt);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             } else {
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                throw new ApiException(AuthMessage.EXPIRED_TOKEN);
+                sendUnauthorizedError(response, "Invalid or expired token");
+                return;
             }
         }
         filterChain.doFilter(request, response);
+    }
+
+    private void sendUnauthorizedError(HttpServletResponse response, String message) throws IOException {
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType("application/json");
+        String jsonResponse = "{\"status\": " + HttpServletResponse.SC_UNAUTHORIZED + ", \"error\": \"" + message + "\"}";
+        response.getWriter().write(jsonResponse);
     }
 
     private String resolveToken(HttpServletRequest request) {
