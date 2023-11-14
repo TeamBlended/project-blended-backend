@@ -49,13 +49,14 @@ public class CommentService {
 
         // Comment 엔티티 저장 로직
         AuthorDto authorDto = AuthorDto.builder()
+                .id(user.getId())
                 .nickname(user.getNickname())
                 .profileImageUrl(user.getProfileImageUrl())
                 .build();
         return CommentResponseDto.builder()
                 .commentId(savedComment.getId())
                 .content(savedComment.getContent())
-                .user(authorDto)
+                .author(authorDto)
                 .modifiedDate(savedComment.getModifiedDate())
                 .build();
     }
@@ -66,6 +67,7 @@ public class CommentService {
         UserEntity user = findUserByEmail(email);
 
         AuthorDto authorDto = AuthorDto.builder()
+                .id(user.getId())
                 .nickname(user.getNickname())
                 .profileImageUrl(user.getProfileImageUrl())
                 .build();
@@ -73,7 +75,7 @@ public class CommentService {
         return CommentResponseDto.builder()
                 .commentId(comment.getId())
                 .content(comment.getContent())
-                .user(authorDto)
+                .author(authorDto)
                 .modifiedDate(comment.getModifiedDate())
                 .build();
     }
@@ -100,7 +102,8 @@ public class CommentService {
                 commentResponseDto = CommentResponseDto.builder()
                         .commentId(comment.getId())
                         .content(comment.getContent())
-                        .user(AuthorDto.builder()
+                        .author(AuthorDto.builder()
+                                .id(comment.getUser().getId())
                                 .nickname(comment.getUser().getNickname())
                                 .profileImageUrl(comment.getUser().getProfileImageUrl())
                                 .build())
@@ -122,13 +125,14 @@ public class CommentService {
             CommentEntity updatedComment = commentRepository.save(comment);
 
             AuthorDto authorDto = AuthorDto.builder()
+                    .id(user.getId())
                     .nickname(user.getNickname())
                     .profileImageUrl(user.getProfileImageUrl())
                     .build();
             return CommentResponseDto.builder()
                     .commentId(updatedComment.getId())
                     .content(updatedComment.getContent())
-                    .user(authorDto)
+                    .author(authorDto)
                     .modifiedDate(updatedComment.getModifiedDate())
                     .build();
         }
@@ -146,6 +150,7 @@ public class CommentService {
         CommentEntity updatedComment = commentRepository.save(comment);
 
         AuthorDto authorDto = AuthorDto.builder()
+                .id(comment.getUser().getId())
                 .nickname(comment.getUser().getNickname())
                 .profileImageUrl(comment.getUser().getProfileImageUrl())
                 .build();
@@ -154,7 +159,7 @@ public class CommentService {
                 .commentId(updatedComment.getId())
                 .content(updatedComment.getContent())
                 .modifiedDate(updatedComment.getModifiedDate())
-                .user(authorDto)
+                .author(authorDto)
                 .build();
     }
 

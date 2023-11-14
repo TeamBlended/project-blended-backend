@@ -3,6 +3,7 @@ package com.gdsc.blended.post.dto.request;
 import com.gdsc.blended.post.entity.ExistenceStatus;
 import com.gdsc.blended.post.entity.PostEntity;
 import com.gdsc.blended.user.entity.UserEntity;
+import jakarta.annotation.Nullable;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -13,6 +14,7 @@ import java.util.Date;
 @Setter
 public class PostRequestDto {
     private String title;
+    @Nullable
     private String content;
     private Long maxParticipantsCount;
 //    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")

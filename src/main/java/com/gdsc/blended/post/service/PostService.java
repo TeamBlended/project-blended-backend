@@ -2,7 +2,6 @@ package com.gdsc.blended.post.service;
 
 import com.gdsc.blended.alcohol.entity.AlcoholEntity;
 import com.gdsc.blended.alcohol.repository.AlcoholRepository;
-import com.gdsc.blended.category.entity.CategoryEntity;
 import com.gdsc.blended.category.repository.CategoryRepository;
 import com.gdsc.blended.common.message.AlcoholResponseMessage;
 import com.gdsc.blended.common.message.PostResponseMessage;
@@ -12,6 +11,7 @@ import com.gdsc.blended.common.image.entity.ImageEntity;
 import com.gdsc.blended.common.image.repository.ImageRepository;
 import com.gdsc.blended.common.image.service.S3UploadService;
 import com.gdsc.blended.common.image.service.ImageService;
+import com.gdsc.blended.jwt.oauth.OAuth2UserInfo;
 import com.gdsc.blended.post.dto.*;
 import com.gdsc.blended.post.dto.request.PostRequestDto;
 import com.gdsc.blended.post.dto.request.PostUpdateRequestDto;
@@ -53,11 +53,14 @@ public class PostService {
 
     @Transactional
     //전체 출력(Get)
-    public Page<PostResponseDto> getAllPost(Pageable pageable) {
-        List<PostResponseDto> postResponseDtos = postRepository.findAll(pageable).stream()
+    public Page<PostListResponseDto> getAllPost(Pageable pageable) {
+        List<PostListResponseDto> postResponseDtos = postRepository.findAll(pageable).stream()
                 .filter(postDto -> postDto.getExistenceStatus() != ExistenceStatus.NON_EXIST)
-                .map(postDto -> new PostResponseDto(postDto, imageService.findImagePathByPostId(postDto.getId())))
-                .collect(Collectors.toList());
+                .map(postDto -> {
+                    PostInAlcoholEntity alcoholEntity =postInAlcoholRepository.findByPostEntityId(postDto.getId());
+                    return new PostListResponseDto(postDto, imageService.findImagePathByPostId(postDto.getId()),alcoholEntity.getAlcoholEntity().getId());
+                })
+            .collect(Collectors.toList());
 
         return new PageImpl<>(postResponseDtos, pageable, postResponseDtos.size());
     }
@@ -104,6 +107,7 @@ public class PostService {
         postRepository.delete(postEntity);
     }
 
+    @Transactional
     public PostResponseDto deletePost(Long postId, String email) {
         PostEntity postEntity = checkPostOwnerShip(postId, email);
         postEntity.setExistenceStatus(ExistenceStatus.NON_EXIST);
@@ -134,6 +138,16 @@ public class PostService {
         UserEntity user = findUserByEmail(email);
         PostEntity postEntity = findPostByPostId(postId);
         PostInAlcoholEntity postInAlcoholEntity = findAlcoholId(postId);
+        Optional<AlcoholEntity> alcohol = alcoholRepository.findById(postInAlcoholEntity.getAlcoholEntity().getId());
+
+        AlcoholInfo alcoholInfo = new AlcoholInfo();
+        alcoholInfo.setAlcohol_id(alcohol.get().getId());
+        alcoholInfo.setWhiskyKorean(alcohol.get().getWhiskyKorean());
+        alcoholInfo.setWhiskyEnglish(alcohol.get().getWhiskyEnglish());
+        alcoholInfo.setImgUrl(alcohol.get().getImgUrl());
+        alcoholInfo.setType(alcohol.get().getType());
+        alcoholInfo.setCountry(alcohol.get().getCountry());
+        alcoholInfo.setAbv(alcohol.get().getAbv());
 
         //image 찾아오기
         String imageUrl = imageService.findImagePathByPostId(postId);
@@ -146,7 +160,7 @@ public class PostService {
             postRepository.save(postEntity);
         }
 
-        return new PostDetailResponseDto(postEntity, heartCheck, imageUrl, postInAlcoholEntity);
+        return new PostDetailResponseDto(postEntity, heartCheck, imageUrl, alcoholInfo);
     }
 
     @Transactional
@@ -166,22 +180,29 @@ public class PostService {
             // 위도 경도 간의 거리 계산 로직
             double distance = calculateDistance(latitude, longitude, postLatitude, postLongitude);
             if (distance <= 6) { // 단위는 km
-                if (postEntity.getExistenceStatus() == ExistenceStatus.NON_EXIST) {
+                if (postEntity.getExistenceStatus() == ExistenceStatus.EXIST) {
+                    PostInAlcoholEntity postInAlcohol = findAlcoholId(postEntity.getId());
+                    ImageEntity image = imageRepository.findByPostId(postEntity.getId());
 
                     GeoListResponseDto postDto = new GeoListResponseDto();
                     postDto.setId(postEntity.getId());
+                    postDto.setAlcoholId(postInAlcohol.getAlcoholEntity().getId());
                     postDto.setTitle(postEntity.getTitle());
                     postDto.setContent(postEntity.getContent());
+                    postDto.setImageUrl(image.getPath());
                     LocationDto locationDto = new LocationDto();
                     locationDto.setName(postEntity.getLocationName());
                     locationDto.setLng(postEntity.getLongitude());
                     locationDto.setLat(postEntity.getLatitude());
+                    postDto.setShareDateTime(postEntity.getShareDateTime());
                     postDto.setShareLocation(locationDto);
                     postDto.setDistanceRange(distance);
                     postDto.setCompleted(postEntity.getCompleted());
+                    postDto.setCreatedAt(postEntity.getCreatedDate());
                     postDto.setUpdatedAt(postEntity.getModifiedDate());
                     postDto.setMaxParticipantsCount(postEntity.getMaxRecruits());
                     AuthorDto authorDto = new AuthorDto();
+                    authorDto.setId(postEntity.getUserId().getId());
                     authorDto.setNickname(postEntity.getUserId().getNickname());
                     authorDto.setProfileImageUrl(postEntity.getUserId().getProfileImageUrl());
                     postDto.setAuthor(authorDto);
@@ -220,7 +241,7 @@ public class PostService {
     }
 
     @Transactional
-    public Page<PostResponseDto> getNewestPosts(Integer page, Integer size) {
+    public Page<PostListResponseDto> getNewestPosts(Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
         Page<PostEntity> postPage = postRepository.findAll(pageable);
 
@@ -228,10 +249,11 @@ public class PostService {
             throw new ApiException(PostResponseMessage.POST_NOT_FOUND);
         }
 
-        List<PostResponseDto> validPosts = new ArrayList<>();
+        List<PostListResponseDto> validPosts = new ArrayList<>();
         for (PostEntity post : postPage) {
             if (post.getExistenceStatus() != ExistenceStatus.NON_EXIST) {
-                validPosts.add(new PostResponseDto(post, imageService.findImagePathByPostId(post.getId())));
+                PostInAlcoholEntity postInAlcohol = findAlcoholId(post.getId());
+                validPosts.add(new PostListResponseDto(post, imageService.findImagePathByPostId(post.getId()), postInAlcohol.getAlcoholEntity().getId()));
             }
         }
 
@@ -239,18 +261,19 @@ public class PostService {
     }
 
     @Transactional
-    public Page<PostResponseDto> getPostsSortedByHeart(Pageable pageable) {
+    public Page<PostListResponseDto> getPostsSortedByHeart(Pageable pageable) {
         Page<PostEntity> postPage = postRepository.findAllByOrderByLikeCountDesc(pageable);
         if (postPage.isEmpty()) {
             throw new ApiException(PostResponseMessage.POST_NOT_FOUND);
         }
-        List<PostResponseDto> validPosts = new ArrayList<>();
+        List<PostListResponseDto> validPosts = new ArrayList<>();
         for (PostEntity post : postPage) {
             if (post.getExistenceStatus() != ExistenceStatus.NON_EXIST) {
-                validPosts.add(new PostResponseDto(post, imageService.findImagePathByPostId(post.getId())));
+                PostInAlcoholEntity postInAlcohol = findAlcoholId(post.getId());
+                validPosts.add(new PostListResponseDto(post, imageService.findImagePathByPostId(post.getId()), postInAlcohol.getAlcoholEntity().getId()));
             }
         }
-        return postPage.map(post ->new PostResponseDto(post, imageService.findImagePathByPostId(post.getId())));
+        return new PageImpl<>(validPosts, pageable, validPosts.size());
     }
 
     @Transactional
@@ -314,20 +337,16 @@ public class PostService {
         }
     }
 
-    public ImageEntity findImagePath(String path){
-        return imageRepository.findByPath(path).orElseThrow(() ->
-                new ApiException(PostResponseMessage.NOT_FOUND_IMAGE));
-    }
-
     @Transactional
-    public Page<PostResponseDto> getMyPostList(String email) {
+    public Page<PostListResponseDto> getMyPostList(String email) {
         UserEntity user = findUserByEmail(email);
         List<PostEntity> postEntities = postRepository.findByUserId(user);
 
-        List<PostResponseDto> validPostDtos = new ArrayList<>();
+        List<PostListResponseDto> validPosts = new ArrayList<>();
         for (PostEntity postEntity : postEntities) {
             if (postEntity.getExistenceStatus() != ExistenceStatus.NON_EXIST) {
-                validPostDtos.add(new PostResponseDto(postEntity, imageService.findImagePathByPostId(postEntity.getId())));
+                PostInAlcoholEntity postInAlcohol = findAlcoholId(postEntity.getId());
+                validPosts.add(new PostListResponseDto(postEntity, imageService.findImagePathByPostId(postEntity.getId()), postInAlcohol.getAlcoholEntity().getId()));
             }
         }
 
@@ -335,9 +354,13 @@ public class PostService {
             throw new ApiException(PostResponseMessage.POST_NOT_FOUND);
         }
 
-        return new PageImpl<>(postEntities.stream().map(postEntity ->
-                new PostResponseDto(postEntity, imageService.findImagePathByPostId(postEntity.getId()))
-        ).toList());
+
+        return new PageImpl<>(validPosts);
+    }
+
+    public ImageEntity findImagePath(String path){
+        return imageRepository.findByPath(path).orElseThrow(() ->
+                new ApiException(PostResponseMessage.NOT_FOUND_IMAGE));
     }
 
     public PostEntity findPostByPostId(Long postId) {
@@ -350,14 +373,13 @@ public class PostService {
                 new ApiException(UserResponseMessage.USER_NOT_FOUND));
     }
     private PostInAlcoholEntity findAlcoholId(Long postId) {
-        return (PostInAlcoholEntity) postInAlcoholRepository.findByPostEntityId(postId).orElseThrow(() ->
-                new ApiException(AlcoholResponseMessage.ALCOHOL_NOT_FOUND));
+        return (PostInAlcoholEntity) postInAlcoholRepository.findByPostEntityId(postId);
     }
 
     private PostEntity checkPostOwnerShip(Long postId, String email){
         PostEntity postEntity = findPostByPostId(postId);
         UserEntity user = findUserByEmail(email);
-        if (!postEntity.getUserId().equals(user)) {
+        if (!postEntity.getUserId().getId().equals(user.getId())) {
             throw new ApiException(UserResponseMessage.USER_NOT_MATCH);
         }
         return postEntity;
