@@ -1,5 +1,7 @@
 package com.gdsc.blended.jwt.token;
 
+import com.gdsc.blended.common.exception.ApiException;
+import com.gdsc.blended.common.message.AuthMessage;
 import com.gdsc.blended.jwt.dto.TokenResponse;
 import com.gdsc.blended.jwt.oauth.UserInfo;
 import com.gdsc.blended.user.entity.RoleType;
@@ -87,13 +89,14 @@ public class TokenProvider {
 
     public boolean validateToken(String token ) {
         try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
             return true;
         } catch (SecurityException | MalformedJwtException e) {
             logger.warn("잘못된 JWT 서명입니다.");
             //throw new ApiException(AuthMessage.INVALID_JWT);
         } catch (ExpiredJwtException e) {
             logger.warn("만료된 JWT 토큰입니다.");
+            //throw new JwtException("만료된 JWT 토큰입니다.");
             //throw new ApiException(AuthMessage.EXPIRED_TOKEN);
         } catch (UnsupportedJwtException e) {
             logger.warn("지원되지 않는 JWT 토큰입니다.");
