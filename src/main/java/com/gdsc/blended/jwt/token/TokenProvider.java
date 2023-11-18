@@ -90,13 +90,13 @@ public class TokenProvider {
             return true;
         } catch (SecurityException | MalformedJwtException e) {
             logger.warn("잘못된 JWT 서명입니다.");
-            //throw new ApiException(AuthMessage.INVALID_JWT);
+            throw new TokenNotValidateException("잘못된 JWT 서명입니다.", e);
         } catch (ExpiredJwtException e) {
             logger.warn("만료된 JWT 토큰입니다.");
-            //throw  new ApiException(AuthMessage.EXPIRED_TOKEN);
+            throw new TokenNotValidateException("만료된 JWT 토큰입니다.", e);
         } catch (UnsupportedJwtException e) {
             logger.warn("지원되지 않는 JWT 토큰입니다.");
-            //throw new ApiException(AuthMessage.UNSUPPORTED_JWT);
+            throw new TokenNotValidateException("지원되지 않는 JWT 토큰입니다.", e);
         } catch (IllegalArgumentException e) {
             logger.warn("JWT 토큰이 잘못되었습니다.");
         }
@@ -110,6 +110,15 @@ public class TokenProvider {
             return e.getClaims();
         }
     }
+    public class TokenNotValidateException extends JwtException {
 
+        public TokenNotValidateException(String message) {
+            super(message);
+        }
+
+        public TokenNotValidateException(String message, Throwable cause) {
+            super(message, cause);
+        }
+    }
 
 }

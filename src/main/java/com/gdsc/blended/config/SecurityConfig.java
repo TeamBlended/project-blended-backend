@@ -1,6 +1,7 @@
 package com.gdsc.blended.config;
 
 import com.gdsc.blended.jwt.exception.JwtAuthenticationEntryPoint;
+import com.gdsc.blended.jwt.filter.ExceptionHandlerFilter;
 import com.gdsc.blended.jwt.handler.JwtAccessDeniedHandler;
 import com.gdsc.blended.jwt.token.TokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ public class SecurityConfig {
     private final TokenProvider tokenProvider;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+    private final ExceptionHandlerFilter exceptionHandlerFilter;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -58,7 +60,7 @@ public class SecurityConfig {
 
                 // JwtFilter 를 addFilterBefore 로 등록했던 JwtSecurityConfig 클래스를 적용
                 .and()
-                .apply(new JwtFilterConfig(tokenProvider))
+                .apply(new JwtFilterConfig(tokenProvider, exceptionHandlerFilter))
                 .and()
                 .build();
     }
