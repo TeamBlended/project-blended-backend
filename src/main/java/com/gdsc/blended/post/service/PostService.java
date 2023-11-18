@@ -189,7 +189,7 @@ public class PostService {
                     postDto.setAlcoholId(postInAlcohol.getAlcoholEntity().getId());
                     postDto.setTitle(postEntity.getTitle());
                     postDto.setContent(postEntity.getContent());
-                    postDto.setImageUrl(image.getPath());
+                    postDto.setImage(image.getPath());
                     LocationDto locationDto = new LocationDto();
                     locationDto.setName(postEntity.getLocationName());
                     locationDto.setLng(postEntity.getLongitude());
