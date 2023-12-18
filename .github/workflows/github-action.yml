@@ -100,11 +100,12 @@ jobs:
         password: ${{ secrets.PASSWORD }}
         port: 22
         script: |
-            cd /home/ubuntu/project
-            sudo docker rm -f $(docker ps -a -q)
+            cd /home/jsangmin/docker/blended
             sudo docker pull jsangmin99/project-blended-backend:dev
             docker-compose up -d
             docker image prune -f
+        ## sudo docker rm -f $(docker ps -a -q)
+            
   
 
 
