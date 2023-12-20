@@ -36,7 +36,7 @@ public class S3Config {
     }
 
     @Bean
-    public S3Client s3Client() {
+    public S3Client s3Client(@Value("${cloud.aws.region.static}") String region) {
         return S3Client.builder()
                 .credentialsProvider(customAwsCredentialsProvider())
                 .region(Region.of(region))
