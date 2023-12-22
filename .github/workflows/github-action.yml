@@ -48,7 +48,7 @@ jobs:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.HOSTNAME }}
         key: ${{ secrets.KEY }}
-        port: 50022
+        port: 22
         script: |
           cd /home/jsangmin/docker/blended
           docker-compose down --rmi local
