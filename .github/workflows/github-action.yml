@@ -52,7 +52,7 @@ jobs:
         script: |
           cd /home/jsangmin/docker/blended
           docker-compose down --rmi local
-          docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}:app
+          docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}:dev
           docker-compose up -d
           docker image prune -f
       continue-on-error: true

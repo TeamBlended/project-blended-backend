@@ -4,12 +4,14 @@ package com.gdsc.blended.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import software.amazon.awssdk.auth.credentials.AwsCredentials;
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 
 @Configuration
+@PropertySource("classpath:application.properties")
 public class S3Config {
     @Value("${cloud.aws.credentials.access-key}")
     private String accessKey;
@@ -42,7 +44,7 @@ public class S3Config {
                 .region(Region.of(region))
                 .build();
     }
-
+}
 
 
 
@@ -62,7 +64,7 @@ public class S3Config {
                 .withCredentials(new AWSStaticCredentialsProvider(awsCredentials))
                 .build();
     }*/
-}
+
 
 /*
     @Bean
